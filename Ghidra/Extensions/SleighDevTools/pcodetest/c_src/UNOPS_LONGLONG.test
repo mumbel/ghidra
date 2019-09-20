@@ -1,0 +1,133 @@
+#include "pcode_test.h"
+
+#ifdef HAS_LONGLONG
+
+
+TEST unopIncPrei8_Main()
+{
+	extern i8 unopIncPrei8(i8 lhs);
+	ASSERTI8(unopIncPrei8(0), 1);
+}
+
+TEST unopIncPreu8_Main()
+{
+	extern u8 unopIncPreu8(u8 lhs);
+	ASSERTU8(unopIncPreu8(0), 1);
+}
+
+TEST unopIncPosti8_Main()
+{
+	extern i8 unopIncPosti8(i8 lhs);
+	ASSERTI8(unopIncPosti8(0), 0);
+}
+
+TEST unopIncPostu8_Main()
+{
+	extern u8 unopIncPostu8(u8 lhs);
+	ASSERTU8(unopIncPostu8(0), 0);
+}
+
+TEST unopDecPrei8_Main()
+{
+	extern i8 unopDecPrei8(i8 lhs);
+	ASSERTI8(unopDecPrei8(1), 0);
+}
+
+TEST unopDecPreu8_Main()
+{
+	extern u8 unopDecPreu8(u8 lhs);
+	ASSERTU8(unopDecPreu8(1), 0);
+}
+
+TEST unopDecPosti8_Main()
+{
+	extern i8 unopDecPosti8(i8 lhs);
+	ASSERTI8(unopDecPosti8(1), 1);
+}
+
+TEST unopDecPostu8_Main()
+{
+	extern u8 unopDecPostu8(u8 lhs);
+	ASSERTU8(unopDecPostu8(1), 1);
+}
+
+TEST unopAddrRefi8_Main()
+{
+	extern i8 unopIndirecti8(i8 *lhs);
+	i8 x = 5;
+	i8 * ptr_x = (i8 *)&x;
+	ASSERTI8(unopIndirecti8(ptr_x), 5);
+}
+
+TEST unopAddrRefu8_Main()
+{
+	extern u8 unopIndirectu8(u8 *lhs);
+	u8 x = 5;
+	u8 * ptr_x = (u8 *)&x;
+	ASSERTU8(unopIndirectu8(ptr_x), 5);
+}
+
+TEST unopPositivei8_Main()
+{
+	extern i8 unopPositivei8(i8 lhs);
+	ASSERTI8(unopPositivei8(2), 2);
+	ASSERTI8(unopPositivei8(0x0101010101010101LL), 0x0101010101010101LL);
+	ASSERTI8(unopPositivei8(-0x0101010101010101LL), -0x0101010101010101LL);
+	ASSERTI8(unopPositivei8(I8_MAX), I8_MAX);
+	ASSERTI8(unopPositivei8(I8_MIN), I8_MIN);
+	ASSERTI8(unopPositivei8(0), 0);
+}
+
+TEST unopPositiveu8_Main()
+{
+	extern u8 unopPositiveu8(u8 lhs);
+	ASSERTU8(unopPositiveu8(2), 2);
+	ASSERTU8(unopPositiveu8(U8_MAX), U8_MAX);
+	ASSERTU8(unopPositiveu8(0), 0);
+}
+
+TEST unopNegativei8_Main()
+{
+	extern i8 unopNegativei8(i8 lhs);
+	ASSERTI8(unopNegativei8(2), -2);
+	ASSERTI8(unopNegativei8(0x0101010101010101LL), -0x0101010101010101LL);
+	ASSERTI8(unopNegativei8(-0x0101010101010101LL), 0x0101010101010101LL);
+	ASSERTI8(unopNegativei8(I8_MAX), I8_MIN+1);
+	ASSERTI8(unopNegativei8(I8_MIN), I8_MIN);
+	ASSERTI8(unopNegativei8(0), 0);
+}
+
+TEST unopOnesCompu8_Main()
+{
+	extern u8 unopOnesCompu8(u8 lhs);
+	ASSERTU8(unopOnesCompu8(2), 0);
+}
+
+TEST unopOnesCompi8_Main()
+{
+	extern i8 unopOnesCompi8(i8 lhs);
+	ASSERTI8(unopOnesCompi8(2), 0);
+}
+
+
+TEST unopLogicalNegateu8_Main()
+{
+	extern u8 unopLogicalNegateu8(u8 lhs);
+	ASSERTU8(unopLogicalNegateu8(2), 0);
+}
+
+TEST unopLogicalNegatei8_Main()
+{
+	extern i8 unopLogicalNegatei8(i8 lhs);
+	ASSERTI8(unopLogicalNegatei8(0x0101010101010101LL), 0);
+	ASSERTI8(unopLogicalNegatei8(2), 0);
+	ASSERTI8(unopLogicalNegatei8(I8_MAX), 0);
+	ASSERTI8(unopLogicalNegatei8(I8_MIN), 0);
+	ASSERTI8(unopLogicalNegatei8(0), 1);
+}
+
+
+MAIN UNOPS_LONGLONG_main() { }
+
+
+#endif

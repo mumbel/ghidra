@@ -1,0 +1,184 @@
+#include "pcode_test.h"
+
+TEST pcode_i1_to_i1_convert_main()
+{	extern i1 pcode_i1_to_i1_convert(i1 a);
+	ASSERTI1(pcode_i1_to_i1_convert(0), 0);
+}
+
+TEST pcode_i1_to_i2_convert_main()
+{	extern i2 pcode_i1_to_i2_convert(i1 a);
+	ASSERTI2(pcode_i1_to_i2_convert(0), 0);
+}
+
+TEST pcode_i1_to_i4_convert_main()
+{	extern i4 pcode_i1_to_i4_convert(i1 a);
+	ASSERTI4(pcode_i1_to_i4_convert(0), 0);
+}
+
+TEST pcode_i1_to_u1_convert_main()
+{	extern u1 pcode_i1_to_u1_convert(i1 a);
+	ASSERTU1(pcode_i1_to_u1_convert(0), 0);
+}
+
+TEST pcode_i1_to_u2_convert_main()
+{	extern u2 pcode_i1_to_u2_convert(i1 a);
+	ASSERTU2(pcode_i1_to_u2_convert(0), 0);
+}
+
+TEST pcode_i1_to_u4_convert_main()
+{	extern u4 pcode_i1_to_u4_convert(i1 a);
+	ASSERTU4(pcode_i1_to_u4_convert(0), 0);
+}
+
+TEST pcode_i2_to_i1_convert_main()
+{	extern i1 pcode_i2_to_i1_convert(i2 a);
+	ASSERTI1(pcode_i2_to_i1_convert(0), 0);
+}
+
+TEST pcode_i2_to_i2_convert_main()
+{	extern i2 pcode_i2_to_i2_convert(i2 a);
+	ASSERTI2(pcode_i2_to_i2_convert(0), 0);
+}
+
+TEST pcode_i2_to_i4_convert_main()
+{	extern i4 pcode_i2_to_i4_convert(i2 a);
+	ASSERTI4(pcode_i2_to_i4_convert(0), 0);
+}
+
+TEST pcode_i2_to_u1_convert_main()
+{	extern u1 pcode_i2_to_u1_convert(i2 a);
+	ASSERTU1(pcode_i2_to_u1_convert(0), 0);
+}
+
+TEST pcode_i2_to_u2_convert_main()
+{	extern u2 pcode_i2_to_u2_convert(i2 a);
+	ASSERTU2(pcode_i2_to_u2_convert(0), 0);
+}
+
+TEST pcode_i2_to_u4_convert_main()
+{	extern u4 pcode_i2_to_u4_convert(i2 a);
+	ASSERTU4(pcode_i2_to_u4_convert(0), 0);
+}
+
+TEST pcode_i4_to_i1_convert_main()
+{	extern i1 pcode_i4_to_i1_convert(i4 a);
+	ASSERTI1(pcode_i4_to_i1_convert(0), 0);
+}
+
+TEST pcode_i4_to_i2_convert_main()
+{	extern i2 pcode_i4_to_i2_convert(i4 a);
+	ASSERTI2(pcode_i4_to_i2_convert(0), 0);
+}
+
+TEST pcode_i4_to_i4_convert_main()
+{	extern i4 pcode_i4_to_i4_convert(i4 a);
+	ASSERTI4(pcode_i4_to_i4_convert(0), 0);
+}
+
+TEST pcode_i4_to_u1_convert_main()
+{	extern u1 pcode_i4_to_u1_convert(i4 a);
+	ASSERTU1(pcode_i4_to_u1_convert(0), 0);
+}
+
+TEST pcode_i4_to_u2_convert_main()
+{	extern u2 pcode_i4_to_u2_convert(i4 a);
+	ASSERTU2(pcode_i4_to_u2_convert(0), 0);
+}
+
+TEST pcode_i4_to_u4_convert_main()
+{	extern u4 pcode_i4_to_u4_convert(i4 a);
+	ASSERTU4(pcode_i4_to_u4_convert(0), 0);
+}
+
+TEST pcode_u1_to_i1_convert_main()
+{	extern i1 pcode_u1_to_i1_convert(u1 a);
+	ASSERTI1(pcode_u1_to_i1_convert(0), 0);
+}
+
+TEST pcode_u1_to_i2_convert_main()
+{	extern i2 pcode_u1_to_i2_convert(u1 a);
+	ASSERTI2(pcode_u1_to_i2_convert(0), 0);
+}
+
+TEST pcode_u1_to_i4_convert_main()
+{	extern i4 pcode_u1_to_i4_convert(u1 a);
+	ASSERTI4(pcode_u1_to_i4_convert(0), 0);
+}
+
+TEST pcode_u1_to_u1_convert_main()
+{	extern u1 pcode_u1_to_u1_convert(u1 a);
+	ASSERTU1(pcode_u1_to_u1_convert(0), 0);
+}
+
+TEST pcode_u1_to_u2_convert_main()
+{	extern u2 pcode_u1_to_u2_convert(u1 a);
+	ASSERTU2(pcode_u1_to_u2_convert(0), 0);
+}
+
+TEST pcode_u1_to_u4_convert_main()
+{	extern u4 pcode_u1_to_u4_convert(u1 a);
+	ASSERTU4(pcode_u1_to_u4_convert(0), 0);
+}
+
+TEST pcode_u2_to_i1_convert_main()
+{	extern i1 pcode_u2_to_i1_convert(u2 a);
+	ASSERTI1(pcode_u2_to_i1_convert(0), 0);
+}
+
+TEST pcode_u2_to_i2_convert_main()
+{	extern i2 pcode_u2_to_i2_convert(u2 a);
+	ASSERTI2(pcode_u2_to_i2_convert(0), 0);
+}
+
+TEST pcode_u2_to_i4_convert_main()
+{	extern i4 pcode_u2_to_i4_convert(u2 a);
+	ASSERTI4(pcode_u2_to_i4_convert(0), 0);
+}
+
+TEST pcode_u2_to_u1_convert_main()
+{	extern u1 pcode_u2_to_u1_convert(u2 a);
+	ASSERTU1(pcode_u2_to_u1_convert(0), 0);
+}
+
+TEST pcode_u2_to_u2_convert_main()
+{	extern u2 pcode_u2_to_u2_convert(u2 a);
+	ASSERTU2(pcode_u2_to_u2_convert(0), 0);
+}
+
+TEST pcode_u2_to_u4_convert_main()
+{	extern u4 pcode_u2_to_u4_convert(u2 a);
+	ASSERTU4(pcode_u2_to_u4_convert(0), 0);
+}
+
+TEST pcode_u4_to_i1_convert_main()
+{	extern i1 pcode_u4_to_i1_convert(u4 a);
+	ASSERTI1(pcode_u4_to_i1_convert(0), 0);
+}
+
+TEST pcode_u4_to_i2_convert_main()
+{	extern i2 pcode_u4_to_i2_convert(u4 a);
+	ASSERTI2(pcode_u4_to_i2_convert(0), 0);
+}
+
+TEST pcode_u4_to_i4_convert_main()
+{	extern i4 pcode_u4_to_i4_convert(u4 a);
+	ASSERTI4(pcode_u4_to_i4_convert(0), 0);
+}
+
+TEST pcode_u4_to_u1_convert_main()
+{	extern u1 pcode_u4_to_u1_convert(u4 a);
+	ASSERTU1(pcode_u4_to_u1_convert(0), 0);
+}
+
+TEST pcode_u4_to_u2_convert_main()
+{	extern u2 pcode_u4_to_u2_convert(u4 a);
+	ASSERTU2(pcode_u4_to_u2_convert(0), 0);
+}
+
+TEST pcode_u4_to_u4_convert_main()
+{	extern u4 pcode_u4_to_u4_convert(u4 a);
+	ASSERTU4(pcode_u4_to_u4_convert(0), 0);
+}
+
+
+MAIN CONVERT_main() { }

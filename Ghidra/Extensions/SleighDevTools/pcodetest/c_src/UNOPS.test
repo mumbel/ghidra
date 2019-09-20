@@ -1,0 +1,362 @@
+#include "pcode_test.h"
+
+TEST unopIncPrei1_Main()
+{
+	extern i1 unopIncPrei1(i1 lhs);
+	ASSERTI1(unopIncPrei1(0), 1);
+}
+
+TEST unopIncPreu1_Main()
+{
+	extern u1 unopIncPreu1(u1 lhs);
+	ASSERTU1(unopIncPreu1(0), 1);
+}
+
+TEST unopIncPrei2_Main()
+{
+	extern i2 unopIncPrei2(i2 lhs);
+	ASSERTI2(unopIncPrei2(0), 1);
+}
+
+TEST unopIncPreu2_Main()
+{
+	extern u2 unopIncPreu2(u2 lhs);
+	ASSERTU2(unopIncPreu2(0), 1);
+}
+
+TEST unopIncPrei4_Main()
+{
+	extern i4 unopIncPrei4(i4 lhs);
+	ASSERTI4(unopIncPrei4(0), 1);
+}
+
+TEST unopIncPreu4_Main()
+{
+	extern u4 unopIncPreu4(u4 lhs);
+	ASSERTU4(unopIncPreu4(0), 1);
+}
+
+TEST unopIncPosti1_Main()
+{
+	extern i1 unopIncPosti1(i1 lhs);
+	ASSERTI1(unopIncPosti1(0), 0);
+}
+
+TEST unopIncPostu1_Main()
+{
+	extern u1 unopIncPostu1(u1 lhs);
+	ASSERTU1(unopIncPostu1(0), 0);
+}
+
+TEST unopIncPosti2_Main()
+{
+	extern i2 unopIncPosti2(i2 lhs);
+	ASSERTI2(unopIncPosti2(0), 0);
+}
+
+TEST unopIncPostu2_Main()
+{
+	extern u2 unopIncPostu2(u2 lhs);
+	ASSERTU2(unopIncPostu2(0), 0);
+}
+
+TEST unopIncPosti4_Main()
+{
+	extern i4 unopIncPosti4(i4 lhs);
+	ASSERTI4(unopIncPosti4(0), 0);
+}
+
+TEST unopIncPostu4_Main()
+{
+	extern u4 unopIncPostu4(u4 lhs);
+	ASSERTU4(unopIncPostu4(0), 0);
+}
+
+TEST unopDecPrei1_Main()
+{
+	extern i1 unopDecPrei1(i1 lhs);
+	ASSERTI1(unopDecPrei1(1), 0);
+}
+
+TEST unopDecPreu1_Main()
+{
+	extern u1 unopDecPreu1(u1 lhs);
+	ASSERTU1(unopDecPreu1(1), 0);
+}
+
+TEST unopDecPrei2_Main()
+{
+	extern i2 unopDecPrei2(i2 lhs);
+	ASSERTI2(unopDecPrei2(1), 0);
+}
+
+TEST unopDecPreu2_Main()
+{
+	extern u2 unopDecPreu2(u2 lhs);
+	ASSERTU2(unopDecPreu2(1), 0);
+}
+
+TEST unopDecPrei4_Main()
+{
+	extern i4 unopDecPrei4(i4 lhs);
+	ASSERTI4(unopDecPrei4(1), 0);
+}
+
+TEST unopDecPreu4_Main()
+{
+	extern u4 unopDecPreu4(u4 lhs);
+	ASSERTU4(unopDecPreu4(1), 0);
+}
+
+TEST unopDecPosti1_Main()
+{
+	extern i1 unopDecPosti1(i1 lhs);
+	ASSERTI1(unopDecPosti1(1), 1);
+}
+
+TEST unopDecPostu1_Main()
+{
+	extern u1 unopDecPostu1(u1 lhs);
+	ASSERTU1(unopDecPostu1(1), 1);
+}
+
+TEST unopDecPosti2_Main()
+{
+	extern i2 unopDecPosti2(i2 lhs);
+	ASSERTI2(unopDecPosti2(1), 1);
+}
+
+TEST unopDecPostu2_Main()
+{
+	extern u2 unopDecPostu2(u2 lhs);
+	ASSERTU2(unopDecPostu2(1), 1);
+}
+
+TEST unopDecPosti4_Main()
+{
+	extern i4 unopDecPosti4(i4 lhs);
+	ASSERTI4(unopDecPosti4(1), 1);
+}
+
+TEST unopDecPostu4_Main()
+{
+	extern u4 unopDecPostu4(u4 lhs);
+	ASSERTU4(unopDecPostu4(1), 1);
+}
+
+TEST unopAddrRefi1_Main()
+{
+	extern i1 unopIndirecti1(i1 *lhs);
+	i1 x = 5;
+	i1 * ptr_x = (i1 *)&x;
+	ASSERTI1(unopIndirecti1(ptr_x), 5);
+}
+
+TEST unopAddrRefu1_Main()
+{
+	extern u1 unopIndirectu1(u1 *lhs);
+	u1 x = 5;
+	u1 * ptr_x = (u1 *)&x;
+	ASSERTU1(unopIndirectu1(ptr_x), 5);
+}
+
+TEST unopAddrRefi2_Main()
+{
+	extern i2 unopIndirecti2(i2 *lhs);
+	i2 x = 5;
+	i2 * ptr_x = (i2 *)&x;
+	ASSERTI2(unopIndirecti2(ptr_x), 5);
+}
+
+TEST unopAddrRefu2_Main()
+{
+	extern u2 unopIndirectu2(u2 *lhs);
+	u2 x = 5;
+	u2 * ptr_x = (u2 *)&x;
+	ASSERTU2(unopIndirectu2(ptr_x), 5);
+}
+
+TEST unopAddrRefi4_Main()
+{
+	extern i4 unopIndirecti4(i4 *lhs);
+	i4 x = 5;
+	i4 * ptr_x = (i4 *)&x;
+	ASSERTI4(unopIndirecti4(ptr_x), 5);
+}
+
+TEST unopAddrRefu4_Main()
+{
+	extern u4 unopIndirectu4(u4 *lhs);
+	u4 x = 5;
+	u4 * ptr_x = (u4 *)&x;
+	ASSERTU4(unopIndirectu4(ptr_x), 5);
+}
+
+TEST unopPositivei1_Main()
+{
+	extern i1 unopPositivei1(i1 lhs);
+	ASSERTI1(unopPositivei1(2), 2);
+	ASSERTI1(unopPositivei1(I1_MAX), 127);
+	ASSERTI1(unopPositivei1(I1_MIN), -128);
+	ASSERTI1(unopPositivei1(0), 0);
+}
+
+TEST unopPositivei2_Main()
+{
+	extern i2 unopPositivei2(i2 lhs);
+	ASSERTI2(unopPositivei2(0x0101), 0x0101);
+	ASSERTI2(unopPositivei2(-0x0101), -0x0101);
+	ASSERTI2(unopPositivei2(2), 2);
+	ASSERTI2(unopPositivei2(I2_MAX), 32767);
+	ASSERTI2(unopPositivei2(I2_MIN), -32768);
+	ASSERTI2(unopPositivei2(0), 0);
+}
+
+TEST unopPositivei4_Main()
+{
+	extern i4 unopPositivei4(i4 lhs);
+	ASSERTI4(unopPositivei4(0x01010101), 0x01010101);
+	ASSERTI4(unopPositivei4(-0x01010101), -0x01010101);
+	ASSERTI4(unopPositivei4(2), 2);
+	ASSERTI4(unopPositivei4(I4_MAX), 2147483647);
+	ASSERTI4(unopPositivei4(I4_MIN), -2147483648);
+	ASSERTI4(unopPositivei4(0), 0);
+}
+
+TEST unopNegativei1_Main()
+{
+	extern i1 unopNegativei1(i1 lhs);
+	ASSERTI1(unopNegativei1(2), -2);
+	ASSERTI1(unopNegativei1(I1_MAX), -127);
+	ASSERTI1(unopNegativei1(I1_MIN), -128);
+	ASSERTI1(unopNegativei1(0), 0);
+}
+
+TEST unopNegativei2_Main()
+{
+	extern i2 unopNegativei2(i2 lhs);
+	ASSERTI2(unopNegativei2(0x0101), -0x0101);
+	ASSERTI2(unopNegativei2(-0x0101), 0x0101);
+	ASSERTI2(unopNegativei2(I2_MAX), -32767);
+	ASSERTI2(unopNegativei2(I2_MIN), I2_MIN);
+	ASSERTI2(unopNegativei2(0), 0);
+}
+
+TEST unopNegativei4_Main()
+{
+	extern i4 unopNegativei4(i4 lhs);
+	ASSERTI4(unopNegativei4(0x01010101), -0x01010101);
+	ASSERTI4(unopNegativei4(-0x01010101), 0x01010101);
+	ASSERTI4(unopNegativei4(I4_MAX), -I4_MAX);
+	ASSERTI4(unopNegativei4(I4_MIN), I4_MIN);
+	ASSERTI4(unopNegativei4(0), 0);
+}
+
+TEST unopLogicalNegatei1_Main()
+{
+	extern i1 unopLogicalNegatei1(i1 lhs);
+	ASSERTI1(unopLogicalNegatei1(2), 0);
+	ASSERTI1(unopLogicalNegatei1(I1_MAX), 0);
+	ASSERTI1(unopLogicalNegatei1(I1_MIN), 0);
+	ASSERTI1(unopLogicalNegatei1(0), 1);
+}
+
+TEST unopLogicalNegateu1_Main()
+{
+	extern u1 unopLogicalNegateu1(u1 lhs);
+	ASSERTU1(unopLogicalNegateu1(0x01), 0);
+	ASSERTU1(unopLogicalNegateu1(U1_MAX), 0);
+	ASSERTU1(unopLogicalNegateu1(0), 1);
+}
+
+TEST unopLogicalNegateu2_Main()
+{
+	extern u2 unopLogicalNegateu2(u2 lhs);
+	ASSERTU2(unopLogicalNegateu2(2), 0);
+	ASSERTU2(unopLogicalNegateu2(U2_MAX), 0);
+	ASSERTU2(unopLogicalNegateu2(0), 1);
+}
+
+TEST unopLogicalNegatei2_Main()
+{
+	extern i2 unopLogicalNegatei2(i2 lhs);
+	ASSERTI2(unopLogicalNegatei2(0x0101), 0);
+	ASSERTI2(unopLogicalNegatei2(2), 0);
+	ASSERTI2(unopLogicalNegatei2(I2_MAX), 0);
+	ASSERTI2(unopLogicalNegatei2(I2_MIN), 0);
+	ASSERTI2(unopLogicalNegatei2(0), 1);
+}
+
+TEST unopLogicalNegatei4_Main()
+{
+	extern i4 unopLogicalNegatei4(i4 lhs);
+	ASSERTI4(unopLogicalNegatei4(0x01010101), 0);
+	ASSERTI4(unopLogicalNegatei4(2), 0);
+	ASSERTI4(unopLogicalNegatei4(I4_MAX), 0);
+	ASSERTI4(unopLogicalNegatei4(I4_MIN), 0);
+	ASSERTI4(unopLogicalNegatei4(0), 1);
+}
+
+TEST unopLogicalNegateu4_Main()
+{
+	extern u4 unopLogicalNegateu4(u4 lhs);
+	ASSERTU4(unopLogicalNegateu4(0x01010101), 0);
+	ASSERTU4(unopLogicalNegateu4(2), 0);
+	ASSERTU4(unopLogicalNegateu4(U4_MAX), 0);
+}
+
+TEST unopOnesCompi1_Main()
+{
+	extern i1 unopOnesCompi1(i1 lhs);
+	ASSERTI1(unopOnesCompi1(2), 0);
+	ASSERTI1(unopOnesCompi1(I1_MAX), 0);
+	ASSERTI1(unopOnesCompi1(I1_MIN), 0);
+	ASSERTI1(unopOnesCompi1(0), 1);
+}
+
+TEST unopOnesCompu1_Main()
+{
+	extern u1 unopOnesCompu1(u1 lhs);
+	ASSERTU1(unopOnesCompu1(0x01), 0);
+	ASSERTU1(unopOnesCompu1(U1_MAX), 0);
+	ASSERTU1(unopOnesCompu1(0), 1);
+}
+
+TEST unopOnesCompu2_Main()
+{
+	extern u2 unopOnesCompu2(u2 lhs);
+	ASSERTU2(unopOnesCompu2(2), 0);
+	ASSERTU2(unopOnesCompu2(U2_MAX), 0);
+	ASSERTU2(unopOnesCompu2(0), 1);
+}
+
+TEST unopOnesCompi2_Main()
+{
+	extern i2 unopOnesCompi2(i2 lhs);
+	ASSERTI2(unopOnesCompi2(0x0101), 0);
+	ASSERTI2(unopOnesCompi2(2), 0);
+	ASSERTI2(unopOnesCompi2(I2_MAX), 0);
+	ASSERTI2(unopOnesCompi2(I2_MIN), 0);
+	ASSERTI2(unopOnesCompi2(0), 1);
+}
+
+TEST unopOnesCompi4_Main()
+{
+	extern i4 unopOnesCompi4(i4 lhs);
+	ASSERTI4(unopOnesCompi4(0x01010101), 0);
+	ASSERTI4(unopOnesCompi4(2), 0);
+	ASSERTI4(unopOnesCompi4(I4_MAX), 0);
+	ASSERTI4(unopOnesCompi4(I4_MIN), 0);
+	ASSERTI4(unopOnesCompi4(0), 1);
+}
+
+TEST unopOnesCompu4_Main()
+{
+	extern u4 unopOnesCompu4(u4 lhs);
+	ASSERTU4(unopOnesCompu4(0x01010101), 0);
+	ASSERTU4(unopOnesCompu4(2), 0);
+	ASSERTU4(unopOnesCompu4(U4_MAX), 0);
+}
+
+
+MAIN UNOPS_main() { }

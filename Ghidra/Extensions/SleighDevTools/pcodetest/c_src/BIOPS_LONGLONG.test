@@ -222,61 +222,6 @@ TEST biopLogicAndi8i8_Main()
 }
 #endif
 
-#ifdef HAS_LONGLONG
-TEST unopNotu8_Main()
-{
-	extern u8 unopNotu8(u8 lhs);
-	ASSERTU8(unopNotu8(2), 0);
-}
-#endif
-
-#ifdef HAS_LONGLONG
-TEST unopNoti8_Main()
-{
-	extern i8 unopNoti8(i8 lhs);
-	ASSERTI8(unopNoti8(0x0101010101010101LL), 0);
-	ASSERTI8(unopNoti8(2), 0);
-	ASSERTI8(unopNoti8(I8_MAX), 0);
-	ASSERTI8(unopNoti8(I8_MIN), 0);
-	ASSERTI8(unopNoti8(0), 1);
-}
-#endif
-
-#ifdef HAS_LONGLONG
-TEST unopPlusu8_Main()
-{
-	extern u8 unopPlusu8(u8 lhs);
-	ASSERTU8(unopPlusu8(2), 2);
-	ASSERTU8(unopPlusu8(U8_MAX), U8_MAX);
-	ASSERTU8(unopPlusu8(0), 0);
-}
-#endif
-
-#ifdef HAS_LONGLONG
-TEST unopNegativei8_Main()
-{
-	extern i8 unopNegativei8(i8 lhs);
-	ASSERTI8(unopNegativei8(2), -2);
-	ASSERTI8(unopNegativei8(0x0101010101010101LL), -0x0101010101010101LL);
-	ASSERTI8(unopNegativei8(-0x0101010101010101LL), 0x0101010101010101LL);
-	ASSERTI8(unopNegativei8(I8_MAX), I8_MIN+1);
-	ASSERTI8(unopNegativei8(I8_MIN), I8_MIN);
-	ASSERTI8(unopNegativei8(0), 0);
-}
-#endif
-
-#ifdef HAS_LONGLONG
-TEST unopPlusi8_Main()
-{
-	extern i8 unopPlusi8(i8 lhs);
-	ASSERTI8(unopPlusi8(2), 2);
-	ASSERTI8(unopPlusi8(0x0101010101010101LL), 0x0101010101010101LL);
-	ASSERTI8(unopPlusi8(-0x0101010101010101LL), -0x0101010101010101LL);
-	ASSERTI8(unopPlusi8(I8_MAX), I8_MAX);
-	ASSERTI8(unopPlusi8(I8_MIN), I8_MIN);
-	ASSERTI8(unopPlusi8(0), 0);
-}
-#endif
 
 #ifdef HAS_LONGLONG
 TEST biopMultu8u8_Main()
