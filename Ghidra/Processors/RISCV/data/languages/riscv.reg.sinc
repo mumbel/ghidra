@@ -4,44 +4,64 @@ define alignment=2;
 define space ram type=ram_space size=$(XLEN) default;
 define space register type=register_space size=4;
 
+# MXL 1:32, 2:64, 3:128
+# A - Atomic extension
+# B - Bit-Manipulation extension
+# C - Compressed extension
+# D - Double-precision floating-point extension
+# E - RV32E base ISA
+# F - Single-precision floating-point extension
+# G - Reserved
+# H - Hypervisor extension
+# I - RV32I/64I/128I base ISA
+# J - Dynamically Translated Languages extension
+# K - Reserved
+# L - Decimal floating-point extension
+# M - Integer Multiply/Divide extension
+# N - User-level interrupts supported
+# O - Reserved
+# P - Packed-SIMD extension
+# Q - Quad-precision floating-point extension
+# R - Reserved
+# S - Supervisor mode implemented
+# T - Transactional Memory extension
+# U - User mode implemented
+# V - Vector extension
+# W - Reserved
+# X - Non-standard extensions present
+# Y - Reserved
+# Z - Reserved
 
-# A - Atomic instructions
-# B - Bit manipulation instructions
-# C - Compressed instructions
-# D - Double-precision floating-point instructions
-# E - Embedded applications, resource-constrained subset
-# F - Single-precision floating-point instructions
-# G - General (I + M + A + F + D)
-# I - Integer base instructions
-# J - Dynamically translated languages
-# L - Decimal floating point instructions
-# M - Integer multiplication and division instructions
-# N - User-level interrupt instructions
-# P - Packed-SIMD instructions
-# Q - Quad-precision floating-point instructions
-# T - Transactional Memory instructions
-# V - Vector operations instructions
-# RV [32, 64, 128] I, M, A, F, D, G, Q, L, C, B, J, T, P, V, N
+#TODO  change to misa
 define register offset=0x1020 size=8 extensions;
 define context extensions
-  RVI=(0,0)
-  RVM=(1,1)
-  RVA=(2,2)
-  RVF=(3,3)
-  RVD=(4,4)
-  RVG=(0,4)
-  RVQ=(5,5)
-  RVL=(6,6)
-  RVC=(7,7)
-  RVB=(8,8)
+  RVA=(0,0)
+  RVB=(1,1)
+  RVC=(2,2)
+  RVD=(3,3)
+  RVE=(4,4)
+  RVF=(5,5)
+  RVG=(6,6)
+  RVH=(7,7)
+  RVI=(8,8)
   RVJ=(9,9)
-  RVT=(10,10)
-  RVP=(11,11)
-  RVV=(12,12)
+  RVK=(10,10)
+  RVL=(11,11)
+  RVM=(12,12)
   RVN=(13,13)
-  RV128=(61,61)
-  RV64=(62,62)
-  RV32=(63,63)
+  RVO=(14,14)
+  RVP=(15,15)
+  RVQ=(16,16)
+  RVR=(17,17)
+  RVS=(18,18)
+  RVT=(19,19)
+  RVU=(20,20)
+  RVV=(21,21)
+  RVW=(22,22)
+  RVX=(23,23)
+  RVY=(24,24)
+  RVZ=(25,25)
+  MXL=($(MXLEN_2), $(MXLEN_1))
 ;
 
 define register offset=0x1000 size=$(XLEN) [ pc ];
