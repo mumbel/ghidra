@@ -1,7 +1,5 @@
 # RV32F  Standard Extension
 
-with : MXL>0 & RVF=1 {
-
 # fadd.s D,S,T 00007053 fe00707f SIMPLE (0, 0) 
 :fadd.s frd,frs1S,frs2S is frs1S & frd & frs2S & op0001=0x3 & op0204=0x4 & op0506=0x2 & funct3=0x7 & funct7=0x0
 {
@@ -354,5 +352,3 @@ with : MXL>0 & RVF=1 {
 	local ea:$(XLEN) = immS + rs1;
 	*[ram]:$(SFLEN) ea = frs2S;
 }
-
-} # MXL>0 & RVF=1

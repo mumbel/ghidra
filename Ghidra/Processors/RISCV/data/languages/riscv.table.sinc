@@ -67,28 +67,25 @@ rdL: zero is r0711 & zero & op0711=0 { export 0:8; }
 # fmt: ".q" is op2526=3 { export $(QFLEN):1; }
 
 
-with : (RVD=1 | RVF=1 | RVQ=1) {
+@ifdef FPSIZE
 frd:  fr0711 is fr0711 { export fr0711; }
 frs1: fr1519 is fr1519 { export fr1519; }
 frs2: fr2024 is fr2024 { export fr2024; }
 frs3: fr2731 is fr2731 { export fr2731; }
-}
 
-with : RVF=1 {
 #TODO  dest may be bad, might need an assign macro
 #frdS:  fr0711 is fr0711 { local tmp = fr0711:$(SFLEN); export tmp; }
 frs1S: fr1519 is fr1519 { local tmp = fr1519:$(SFLEN); export tmp; }
 frs2S: fr2024 is fr2024 { local tmp = fr2024:$(SFLEN); export tmp; }
 frs3S: fr2731 is fr2731 { local tmp = fr2731:$(SFLEN); export tmp; }
-}
 
-with : RVD=1 {
+@if (defined(FPSIZE)&&((FPSIZE == "64")||(FPSIZE == "128")))
 #TODO  dest may be bad, might need an assign macro
 #frdD:  fr0711 is fr0711 { local tmp = fr0711:$(DFLEN); export tmp; }
 frs1D: fr1519 is fr1519 { local tmp = fr1519:$(DFLEN); export tmp; }
 frs2D: fr2024 is fr2024 { local tmp = fr2024:$(DFLEN); export tmp; }
 frs3D: fr2731 is fr2731 { local tmp = fr2731:$(DFLEN); export tmp; }
-} # RVD=1
+@endif
 
 macro fassignS(dest, src) {
 @if FPSIZE == "32"
@@ -97,6 +94,7 @@ macro fassignS(dest, src) {
 	dest = zext(src);
 @endif
 }
+@endif
 
 
 macro assignW(dest, src) {
@@ -166,12 +164,12 @@ crs1: cr0711 is cr0711 & cop0711!=0 { export cr0711; }
 crs1: zero is cr0711 & zero & cop0711=0 { export 0:$(XLEN); }
 
 crd: cd0711 is cd0711 & cop0711!=0 { export cd0711; }
-crd: zero is cd0711 & zero & cop0711=0 { export 0:$(XLEN); }
+crd: zero is zero & cop0711=0 { export 0:$(XLEN); }
 
 crs2: cr0206 is cr0206 & cop0206!=0 { export cr0206; }
 crs2: zero is cr0206 & zero & cop0206=0 { export 0:$(XLEN); }
 
-@if FPSIZE == "32" || FPSIZE == "64" || FPSIZE == "128"
+@if defined(FPSIZE)
 cfrs1: cfr0711 is cfr0711 { export cfr0711; }
 
 cfrd: cfr0711 is cfr0711 { export cfr0711; }
@@ -212,23 +210,27 @@ caddi4spnimm: uimm is cop1112 & cop0710 & cop0606 & cop0505 [ uimm = (cop0710 <<
 caddi16spimm: imm is scop1212 & cop0606 & cop0505 & cop0304 & cop0202 [ imm = (scop1212 << 9) | (cop0304 << 7) | (cop0505 << 6) | (cop0202 << 5) | (cop0606 << 4); ] { local tmp:$(XLEN) = imm; export tmp; }
 
 
-cldimm: uimm is cop1012 & cop0506 [ uimm = (cop1012 << 3) | (cop0506 << 6); ] { local tmp:$(XLEN) = uimm; export tmp; }
-
 clwimm: uimm is cop1012 & cop0606 & cop0505 [ uimm = (cop1012 << 3) | (cop0606 << 2) | (cop0505 << 6); ] { local tmp:$(XLEN) = uimm; export tmp; }
-
-clqimm: uimm is cop1112 & cop1010 & cop0506 [ uimm = (cop1112 << 4) | (cop1010 << 8) | (cop0506 << 6); ] { local tmp:$(XLEN) = uimm; export tmp; }
-
-cldspimm: uimm is cop1212 & cop0506 & cop0204 [ uimm = (cop1212 << 5) | (cop0506 << 3) | (cop0204 << 6); ] { local tmp:$(XLEN) = uimm; export tmp; }
-
-clqspimm: uimm is MXL=3 & cop1212 & cop0606 & cop0205 [ uimm = (cop1212 << 5) | (cop0606 << 4) | (cop0205 << 6); ] { local tmp:$(XLEN) = uimm; export tmp; }
 
 clwspimm: uimm is cop1212 & cop0406 & cop0203 [ uimm = (cop1212 << 5) | (cop0406 << 2) | (cop0203 << 6); ] { local tmp:$(XLEN) = uimm; export tmp; }
 
+cswspimm: uimm is cop0708 & cop0912 [ uimm = (cop0708 << 6) | (cop0912 << 2); ] { local tmp:$(XLEN) = uimm; export tmp; }
+
+cldimm: uimm is cop1012 & cop0506 [ uimm = (cop1012 << 3) | (cop0506 << 6); ] { local tmp:$(XLEN) = uimm; export tmp; }
+
+cldspimm: uimm is cop1212 & cop0506 & cop0204 [ uimm = (cop1212 << 5) | (cop0506 << 3) | (cop0204 << 6); ] { local tmp:$(XLEN) = uimm; export tmp; }
+
 csdspimm: uimm is cop0709 & cop1012 [ uimm = (cop0709 << 6) | (cop1012 << 3); ] { local tmp:$(XLEN) = uimm; export tmp; }
 
-csqspimm: uimm is MXL=3 & cop0710 & cop1112 [ uimm = (cop0710 << 6) | (cop1112 << 4); ] { local tmp:$(XLEN) = uimm; export tmp; }
+@if ADDRSIZE == "128"
+clqimm: uimm is cop1112 & cop1010 & cop0506 [ uimm = (cop1112 << 4) | (cop1010 << 8) | (cop0506 << 6); ] { local tmp:$(XLEN) = uimm; export tmp; }
 
-cswspimm: uimm is cop0708 & cop0912 [ uimm = (cop0708 << 6) | (cop0912 << 2); ] { local tmp:$(XLEN) = uimm; export tmp; }
+clqspimm: uimm is cop1212 & cop0606 & cop0205 [ uimm = (cop1212 << 5) | (cop0606 << 4) | (cop0205 << 6); ] { local tmp:$(XLEN) = uimm; export tmp; }
+
+csqspimm: uimm is cop0710 & cop1112 [ uimm = (cop0710 << 6) | (cop1112 << 4); ] { local tmp:$(XLEN) = uimm; export tmp; }
+@endif
+
+
 
 
 

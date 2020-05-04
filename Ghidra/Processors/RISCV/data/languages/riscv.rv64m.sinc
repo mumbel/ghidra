@@ -1,7 +1,5 @@
 # RV64M  Standard Exention (in addition to RV32M)
 
-with : MXL>1 & RVM=1 {
-
 # divuw d,s,t 0200503b fe00707f SIMPLE (64, 0) 
 :divuw rd,rs1,rs2 is rs1 & rs2 & rd & op0001=0x3 & op0204=0x6 & op0506=0x1 & funct3=0x5 & funct7=0x1
 {
@@ -44,5 +42,3 @@ with : MXL>1 & RVM=1 {
 	local tmpr2:4 = rs2:4;
 	rd = sext(tmpr1 s% tmpr2);
 }
-
-} # MXL>1 & RVM=1

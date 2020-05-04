@@ -1,7 +1,5 @@
 # RV32M Standard Extension
 
-with : MXL>0 & RVM=1 {
-
 # div d,s,t 02004033 fe00707f SIMPLE (0, 0) 
 :div rd,rs1,rs2 is rs1 & rs2 & rd & op0001=0x3 & op0204=0x4 & op0506=0x1 & funct3=0x4 & funct7=0x1
 {
@@ -65,5 +63,3 @@ with : MXL>0 & RVM=1 {
 {
 	rd = rs1 % rs2;
 }
-
-} # MXL>0 & RVM=1

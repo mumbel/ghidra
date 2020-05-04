@@ -1,7 +1,5 @@
 # RV64A  Standard Extension (in addition to RV32A)
 
-with : MXL>1 & RVA=1 {
-
 # amoadd.d d,t,0(s) 0000302f fe00707f QWORD|DREF (64, 8) 
 :amoadd.d^aqrl rdL,rs2L,(rs1) is rs1 & rs2L & rdL & op0001=0x3 & op0204=0x3 & op0506=0x1 & funct3=0x3 & op2731=0x0 & aqrl
 {
@@ -134,5 +132,3 @@ with : MXL>1 & RVA=1 {
 	RESERVE = 0;
 	RESERVE_LENGTH = 0;
 }
-
-} # MXL>1 & RVA=1

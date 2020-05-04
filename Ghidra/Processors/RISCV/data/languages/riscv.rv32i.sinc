@@ -1,7 +1,5 @@
 # RV32I  Base Instruction Set
 
-with : MXL>0 & RVI=1 {
-
 # add d,s,t 00000033 fe00707f SIMPLE (0, 0) 
 :add rd,rs1,rs2 is rs1 & rs2 & rd & op0001=0x3 & op0204=0x4 & op0506=0x1 & funct3=0x0 & funct7=0x0
 {
@@ -358,5 +356,3 @@ with : MXL>0 & RVI=1 {
 {
 	rd = ~rs1;
 }
-
-} # MXL>0 & RVI=1

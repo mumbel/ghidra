@@ -1,7 +1,5 @@
 # RV32Q  Standard Extension
 
-with : MXL>0 & RVQ=1 {
-
 # fadd.q D,S,T 06007053 fe00707f SIMPLE (0, 0) 
 :fadd.q frd,frs1,frs2 is frs1 & frd & frs2 & op0001=0x3 & op0204=0x4 & op0506=0x2 & funct3=0x7 & funct7=0x3
 {
@@ -316,5 +314,3 @@ with : MXL>0 & RVQ=1 {
 {
 	frd = frs1 f- frs2;
 }
-
-} # MXL>0 & RVQ=1

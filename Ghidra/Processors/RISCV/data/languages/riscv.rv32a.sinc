@@ -1,7 +1,5 @@
 # RV32A  Standard Extension
 
-with : MXL>0 & RVA=1 {
-
 # amoadd.w d,t,0(s) 0000202f fe00707f DWORD|DREF (0, 4) 
 :amoadd.w^aqrl rd,rs2W,(rs1) is rs1 & rs2W & rd & op0001=0x3 & op0204=0x3 & op0506=0x1 & funct3=0x2 & op2731=0 & aqrl
 {
@@ -134,5 +132,3 @@ with : MXL>0 & RVA=1 {
 	RESERVE = 0;
 	RESERVE_LENGTH = 0;
 }
-
-} # MXL>0 & RVA=1

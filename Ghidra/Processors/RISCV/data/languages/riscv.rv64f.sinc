@@ -1,7 +1,5 @@
 # RV64F  Standard Extension (in addition to RV32F)
 
-with : MXL>1 & RVF=1 {
-
 # fcvt.l.s d,S c0207053 fff0707f SIMPLE (64, 0) 
 :fcvt.l.s rdL,frs1S is frs1S & rdL & op0001=0x3 & op0204=0x4 & op0506=0x2 & funct3=0x7 & funct7=0x60 & op2024=0x2
 {
@@ -66,5 +64,3 @@ with : MXL>1 & RVF=1 {
 	local tmp:4 = int2float(u64);
 	fassignS(frd, tmp);
 }
-
-} # MXL>1 & RVF=1
