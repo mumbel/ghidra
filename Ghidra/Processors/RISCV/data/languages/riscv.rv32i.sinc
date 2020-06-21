@@ -127,7 +127,7 @@
 # j a 0000006f 00000fff BRANCH|ALIAS (0, 0)
 :j immUJ is immUJ & op0001=0x3 & op0204=0x3 & op0506=0x3 & op0711=0x0
 {
-	call immUJ;
+	goto immUJ;
 }
 
 
@@ -143,14 +143,14 @@
 :jr immI(rs1) is immI & rs1 & op0001=0x3 & op0204=0x1 & op0506=0x3 & funct3=0x0 & op0711=0x0 & op2031!=0
 {
 	local ea:$(XLEN) = (rs1 + immI) & ~1;
-	call [ea];
+	goto [ea];
 }
 
 # jr s 00000067 fff07fff BRANCH|ALIAS (0, 0)
 :jr rs1 is rs1 & op0001=0x3 & op0204=0x1 & op0506=0x3 & funct3=0x0 & op0711=0x0 & op2031=0x0 & op1519>1
 {
 	local ea:$(XLEN) = rs1 & ~1;
-	call [ea];
+	goto [ea];
 }
 
 # ret  00008067 ffffffff BRANCH|ALIAS (0, 0)
