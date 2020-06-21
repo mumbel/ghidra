@@ -4,8 +4,11 @@ define endian=little;
 @define XLEN2 16
 @define FLEN 0
 
+@define MXLEN_1 63
+@define MXLEN_2 62
+
 @define ADDRSIZE "64"
-@define FPSIZE ""
+@define FPSIZE "0"
 
 @include "riscv.reg.sinc"
 @include "riscv.table.sinc"

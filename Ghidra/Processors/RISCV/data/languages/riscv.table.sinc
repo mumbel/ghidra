@@ -25,31 +25,18 @@ rs2: zero is r2024 & zero & op2024=0 { export 0:$(XLEN); }
 rd: r0711 is r0711 & op0711!=0 { export r0711; }
 rd: zero is r0711 & zero & op0711=0 { export 0:$(XLEN); }
 
-@if ADDRSIZE == "32"
 
-rs1W: r1519 is RV32 & r1519 & op1519!=0 { export r1519; }
-rs1W: zero is RV32 & r1519 & zero & op1519=0 { export 0:$(XLEN); }
+rs1W: r1519 is r1519 & op1519!=0 { local tmp:$(WXLEN) = r1519:$(WXLEN); export tmp; }
+rs1W: zero is r1519 & zero & op1519=0 { export 0:$(WXLEN); }
 
-rs2W: r2024 is RV32 & r2024 & op2024!=0 { export r2024; }
-rs2W: zero is RV32 & r2024 & zero & op2024=0 { export 0:$(XLEN); }
-
-#TODO  dest may be bad, might need an assign macro
-rdW: r0711 is RV32 & r0711 & op0711!=0 { export r0711; }
-rdW: zero is RV32 & r0711 & zero & op0711=0 { export 0:$(XLEN); }
-
-@else
-
-rs1W: r1519 is r1519 & op1519!=0 { local tmp:4 = r1519:4; export tmp; } 
-rs1W: zero is r1519 & zero & op1519=0 { export 0:4; }
-
-rs2W: r2024 is r2024 & op2024!=0 { local tmp:4 = r2024:4; export tmp; }
-rs2W: zero is r2024 & zero & op2024=0 { export 0:4; }
+rs2W: r2024 is r2024 & op2024!=0 { local tmp:$(WXLEN) = r2024:$(WXLEN); export tmp; }
+rs2W: zero is r2024 & zero & op2024=0 { export 0:$(WXLEN); }
 
 #TODO  dest may be bad, might need an assign macro
-rdW: r0711 is r0711 & op0711!=0 { export r0711; }
-rdW: zero is r0711 & zero & op0711=0 { export 0:8; }
+rdW: r0711 is r0711 & op0711!=0 { local tmp:$(WXLEN) = r0711:$(WXLEN); export tmp; }
+rdW: zero is r0711 & zero & op0711=0 { export 0:$(WXLEN); }
 
-@endif
+
 
 #TODO  does this need to be in an if/endif
 @if ADDRSIZE == "64"
@@ -79,8 +66,8 @@ rdL: zero is r0711 & zero & op0711=0 { export 0:8; }
 # # 128-bit quad-precision  $(QFLEN)
 # fmt: ".q" is op2526=3 { export $(QFLEN):1; }
 
-@if FPSIZE != ""
 
+@if FPSIZE != "0"
 frd:  fr0711 is fr0711 { export fr0711; }
 frs1: fr1519 is fr1519 { export fr1519; }
 frs2: fr2024 is fr2024 { export fr2024; }
@@ -92,13 +79,13 @@ frs1S: fr1519 is fr1519 { local tmp = fr1519:$(SFLEN); export tmp; }
 frs2S: fr2024 is fr2024 { local tmp = fr2024:$(SFLEN); export tmp; }
 frs3S: fr2731 is fr2731 { local tmp = fr2731:$(SFLEN); export tmp; }
 
-
+@if ((FPSIZE == "64") || (FPSIZE == "128"))
 #TODO  dest may be bad, might need an assign macro
 #frdD:  fr0711 is fr0711 { local tmp = fr0711:$(DFLEN); export tmp; }
 frs1D: fr1519 is fr1519 { local tmp = fr1519:$(DFLEN); export tmp; }
 frs2D: fr2024 is fr2024 { local tmp = fr2024:$(DFLEN); export tmp; }
 frs3D: fr2731 is fr2731 { local tmp = fr2731:$(DFLEN); export tmp; }
-
+@endif
 
 macro fassignS(dest, src) {
 @if FPSIZE == "32"
@@ -107,8 +94,8 @@ macro fassignS(dest, src) {
 	dest = zext(src);
 @endif
 }
-
 @endif
+
 
 macro assignW(dest, src) {
 @if ADDRSIZE == "32"
@@ -129,7 +116,7 @@ macro zassignW(dest, src) {
 macro zassignD(dest, src) {
 @if ADDRSIZE == "64"
 	dest = src;
-@else
+@elif ADDRSIZE == "128"
 	dest = zext(src);
 @endif
 }
@@ -177,12 +164,12 @@ crs1: cr0711 is cr0711 & cop0711!=0 { export cr0711; }
 crs1: zero is cr0711 & zero & cop0711=0 { export 0:$(XLEN); }
 
 crd: cd0711 is cd0711 & cop0711!=0 { export cd0711; }
-crd: zero is cd0711 & zero & cop0711=0 { export 0:$(XLEN); }
+crd: zero is zero & cop0711=0 { export 0:$(XLEN); }
 
 crs2: cr0206 is cr0206 & cop0206!=0 { export cr0206; }
 crs2: zero is cr0206 & zero & cop0206=0 { export 0:$(XLEN); }
 
-@if FPSIZE != ""
+@if FPSIZE != "0"
 cfrs1: cfr0711 is cfr0711 { export cfr0711; }
 
 cfrd: cfr0711 is cfr0711 { export cfr0711; }
@@ -223,137 +210,134 @@ caddi4spnimm: uimm is cop1112 & cop0710 & cop0606 & cop0505 [ uimm = (cop0710 <<
 caddi16spimm: imm is scop1212 & cop0606 & cop0505 & cop0304 & cop0202 [ imm = (scop1212 << 9) | (cop0304 << 7) | (cop0505 << 6) | (cop0202 << 5) | (cop0606 << 4); ] { local tmp:$(XLEN) = imm; export tmp; }
 
 
-cldimm: uimm is cop1012 & cop0506 [ uimm = (cop1012 << 3) | (cop0506 << 6); ] { local tmp:$(XLEN) = uimm; export tmp; }
-
 clwimm: uimm is cop1012 & cop0606 & cop0505 [ uimm = (cop1012 << 3) | (cop0606 << 2) | (cop0505 << 6); ] { local tmp:$(XLEN) = uimm; export tmp; }
 
-clqimm: uimm is cop1112 & cop1010 & cop0506 [ uimm = (cop1112 << 4) | (cop1010 << 8) | (cop0506 << 6); ] { local tmp:$(XLEN) = uimm; export tmp; }
+clwspimm: uimm is cop1212 & cop0406 & cop0203 [ uimm = (cop1212 << 5) | (cop0406 << 2) | (cop0203 << 6); ] { local tmp:$(XLEN) = uimm; export tmp; }
+
+cswspimm: uimm is cop0708 & cop0912 [ uimm = (cop0708 << 6) | (cop0912 << 2); ] { local tmp:$(XLEN) = uimm; export tmp; }
+
+cldimm: uimm is cop1012 & cop0506 [ uimm = (cop1012 << 3) | (cop0506 << 6); ] { local tmp:$(XLEN) = uimm; export tmp; }
 
 cldspimm: uimm is cop1212 & cop0506 & cop0204 [ uimm = (cop1212 << 5) | (cop0506 << 3) | (cop0204 << 6); ] { local tmp:$(XLEN) = uimm; export tmp; }
-
-@if ADDRSIZE == "64"
-clqspimm: uimm is cop1212 & cop0606 & cop0205 [ uimm = (cop1212 << 5) | (cop0606 << 4) | (cop0205 << 6); ] { local tmp:$(XLEN) = uimm; export tmp; }
-@endif
-
-clwspimm: uimm is cop1212 & cop0406 & cop0203 [ uimm = (cop1212 << 5) | (cop0406 << 2) | (cop0203 << 6); ] { local tmp:$(XLEN) = uimm; export tmp; }
 
 csdspimm: uimm is cop0709 & cop1012 [ uimm = (cop0709 << 6) | (cop1012 << 3); ] { local tmp:$(XLEN) = uimm; export tmp; }
 
 @if ADDRSIZE == "128"
+clqimm: uimm is cop1112 & cop1010 & cop0506 [ uimm = (cop1112 << 4) | (cop1010 << 8) | (cop0506 << 6); ] { local tmp:$(XLEN) = uimm; export tmp; }
+
+clqspimm: uimm is cop1212 & cop0606 & cop0205 [ uimm = (cop1212 << 5) | (cop0606 << 4) | (cop0205 << 6); ] { local tmp:$(XLEN) = uimm; export tmp; }
+
 csqspimm: uimm is cop0710 & cop1112 [ uimm = (cop0710 << 6) | (cop1112 << 4); ] { local tmp:$(XLEN) = uimm; export tmp; }
 @endif
 
-cswspimm: uimm is cop0708 & cop0912 [ uimm = (cop0708 << 6) | (cop0912 << 2); ] { local tmp:$(XLEN) = uimm; export tmp; }
 
 
 
-#TODO  this is broken
-#TODO  maybe 2 tables are needed for address and size
-#      instead of register name
-# CSR have different access level, use, and accessibility
-# just formatting this way for readability.  Breaking up
-# csr into multiples to avoid having an 'attach variables'
-# with 0x1000 fields
+
 # SEE riscv-privileged.pdf Section 'CSR Listing' for description
+# This implementation aligns with the table breakdown
+
+# csr[11:10] - read/write (00, 01, 10) or read-only (11)
+# csr[9:8] - lowest privilege that can access the CSR
 
 # 0x000-0x0ff
 with csr: op3031=0 & op2829=0 {
-	: csr_0 is csr_0 {}
+	: csr_0 is csr_0 { export csr_0; } # user, standard read/write
 }
 
 # 0x100-0x1ff
 with csr: op3031=0 & op2829=1 {
-	: csr_1 is csr_1 {}
+	: csr_1 is csr_1 { export csr_1; } # supervisor, standard read/write
 }
 
 # 0x200-0x2ff
 with csr: op3031=0 & op2829=2 {
-	: csr_2 is csr_2 {}
+	: csr_2 is csr_2 { export csr_2; } # hypervisor, standard read/write
 }
 
 # 0x300-0x3ff
 with csr: op3031=0 & op2829=3 {
-	: csr_3 is csr_3 {}
+	: csr_3 is csr_3 { export csr_3; } # machine, standard read/write
 }
 
 # 0x400-0x4ff
 with csr: op3031=1 & op2829=0 {
-	: csr_4 is csr_4 {}
+	: csr_4 is csr_4 { export csr_4; } # user, standard read/write
 }
 
 # 0x500-0x5ff
 with csr: op3031=1 & op2829=1 {
-	: csr_50 is csr_50 & op2727=0 {}
-	: csr_58 is csr_58 & op2627=2 {}
-	: csr_5C is csr_5C & op2627=3 {}
+	: csr_50 is csr_50 & op2727=0 { export csr_50; } # supervisor, standard read/write
+	: csr_58 is csr_58 & op2627=2 { export csr_58; } # supervisor, standard read/write
+	: csr_5C is csr_5C & op2627=3 { export csr_5C; } # supervisor, custom read/write
 }
 
 # 0x600-0x6ff
 with csr: op3031=1 & op2829=2 {
-	: csr_60 is csr_60 & op2727=0 {}
-	: csr_68 is csr_68 & op2627=2 {}
-	: csr_6C is csr_6C & op2627=3 {}
+	: csr_60 is csr_60 & op2727=0 { export csr_60; } # hypervisor, standard read/write
+	: csr_68 is csr_68 & op2627=2 { export csr_68; } # hypervisor, standard read/write
+	: csr_6C is csr_6C & op2627=3 { export csr_6C; } # hypervisor, custom read/write
 }
 
 # 0x700-0x7ff
 with csr: op3031=1 & op2829=3 {
-	: csr_70 is csr_70 & op2727=0   {}
-	: csr_78 is csr_78 & op2527=4   {}
-	: csr_7A is csr_7A & op2427=0xa {}
-	: csr_7B is csr_7B & op2427=0xb {}
-	: csr_7C is csr_7C & op2627=3   {}
+	: csr_70 is csr_70 & op2727=0   { export csr_70; } # machine, standard read/write
+	: csr_78 is csr_78 & op2527=4   { export csr_78; } # machine, standard read/write
+	: csr_7A is csr_7A & op2427=0xa { export csr_7A; } # machine, standard read/write debug
+	: csr_7B is csr_7B & op2427=0xb { export csr_7B; } # machine, debug-mode-only
+	: csr_7C is csr_7C & op2627=3   { export csr_7C; } # machine, custom read/write
 }
 
 # 0x800-0x8ff
 with csr: op3031=2 & op2829=0 {
-	: csr_8 is csr_8 {}
+	: csr_8 is csr_8 { export csr_8; } # user, custom read/write
 }
 
 # 0x900-0x9ff
 with csr: op3031=2 & op2829=1 {
-	: csr_90 is csr_90 & op2727=0 {}
-	: csr_98 is csr_98 & op2627=2 {}
-	: csr_9C is csr_9C & op2627=3 {}
+	: csr_90 is csr_90 & op2727=0 { export csr_90; } # supervisor, standard read/write
+	: csr_98 is csr_98 & op2627=2 { export csr_98; } # supervisor, standard read/write
+	: csr_9C is csr_9C & op2627=3 { export csr_9C; } # supervisor, custom read/write
 }
 
 # 0xa00-0xaff
 with csr: op3031=2 & op2829=2 {
-	: csr_A0 is csr_A0 & op2727=0 {}
-	: csr_A8 is csr_A8 & op2627=2 {}
-	: csr_AC is csr_AC & op2627=3 {}
+	: csr_A0 is csr_A0 & op2727=0 { export csr_A0; } # hypervisor, standard read/write
+	: csr_A8 is csr_A8 & op2627=2 { export csr_A8; } # hypervisor, standard read/write
+	: csr_AC is csr_AC & op2627=3 { export csr_AC; } # hypervisor, custom read/write
 }
 
 # 0xb00-0xbff
 with csr: op3031=2 & op2829=3 {
-	: csr_B0 is csr_B0 & op2727=0 {}
-	: csr_B8 is csr_B8 & op2627=2 {}
-	: csr_BC is csr_BC & op2627=3 {}
+	: csr_B0 is csr_B0 & op2727=0 { export csr_B0; } # machine, standard read/write
+	: csr_B8 is csr_B8 & op2627=2 { export csr_B8; } # machine, standard read/write
+	: csr_BC is csr_BC & op2627=3 { export csr_BC; } # machine, custom read/write
 }
 
 # 0xc00-0xcff
 with csr: op3031=3 & op2829=0 {
-	: csr_C0 is csr_C0 & op2727=0 {}
-	: csr_C8 is csr_C8 & op2627=2 {}
-	: csr_CC is csr_CC & op2627=3 {}
+	: csr_C0 is csr_C0 & op2727=0 { export csr_C0; } # user, standard read-only
+	: csr_C8 is csr_C8 & op2627=2 { export csr_C8; } # user, standard read-only
+	: csr_CC is csr_CC & op2627=3 { export csr_CC; } # user, custom read-only
 }
 
 # 0xd00-0xdff
 with csr: op3031=3 & op2829=1 {
-	: csr_D0 is csr_D0 & op2727=0 {}
-	: csr_D8 is csr_D8 & op2627=2 {}
-	: csr_DC is csr_DC & op2627=3 {}
+	: csr_D0 is csr_D0 & op2727=0 { export csr_D0; } # supervisor, standard read-only
+	: csr_D8 is csr_D8 & op2627=2 { export csr_D8; } # supervisor, standard read-only
+	: csr_DC is csr_DC & op2627=3 { export csr_DC; } # supervisor, custom read-only
 }
 
 # 0xe00-0xeff
 with csr: op3031=3 & op2829=2 {
-	: csr_E0 is csr_E0 & op2727=0 {}
-	: csr_E8 is csr_E8 & op2627=2 {}
-	: csr_EC is csr_EC & op2627=3 {}
+	: csr_E0 is csr_E0 & op2727=0 { export csr_E0; } # hypervisor, standard read-only
+	: csr_E8 is csr_E8 & op2627=2 { export csr_E8; } # hypervisor, standard read-only
+	: csr_EC is csr_EC & op2627=3 { export csr_EC; } # hypervisor, custom read-only
 }
 
 # 0xf00-0xfff
 with csr: op3031=3 & op2829=3 {
-	: csr_F0 is csr_F0 & op2727=0 {}
-	: csr_F8 is csr_F8 & op2627=2 {}
-	: csr_FC is csr_FC & op2627=3 {}
+	: csr_F0 is csr_F0 & op2727=0 { export csr_F0; } # machine, standard read-only
+	: csr_F8 is csr_F8 & op2627=2 { export csr_F8; } # machine, standard read-only
+	: csr_FC is csr_FC & op2627=3 { export csr_FC; } # machine, custom read-only
 }
