@@ -1,4 +1,6 @@
 @define SH_VERSION "2A"
 @define FPU "1"
+@define SH_DSP "1"
 
 @include "superh.sinc"
+@include "dsp.sinc"

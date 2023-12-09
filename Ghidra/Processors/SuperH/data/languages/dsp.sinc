@@ -1,0 +1,1286 @@
+# DSP instructions
+
+@if defined(SH_DSP)
+
+#
+# Repeat control
+#
+
+# PHASE 0 : Inside loop
+# * Handle the end of the loop (RE)
+# * Handle instructions in loop
+
+macro dc_always_borrow(borrow_bit, negative_bit, zero_bit, overflow_bit) {
+      $(DSPDCBIT) = borrow_bit;
+      $(DSPGTBIT) = ~((negative_bit ^ overflow_bit) | zero_bit);
+      $(DSPZBIT) = zero_bit;
+      $(DSPNBIT) = negative_bit;
+      $(DSPVBIT) = overflow_bit;
+}
+
+macro dc_always_carry(carry_bit, negative_bit, zero_bit, overflow_bit) {
+      $(DSPDCBIT) = carry_bit;
+      $(DSPGTBIT) = ~((negative_bit ^ overflow_bit) | zero_bit);
+      $(DSPZBIT) = zero_bit;
+      $(DSPNBIT) = negative_bit;
+      $(DSPVBIT) = overflow_bit;      
+}
+
+macro minus_dc_bit(borrow_bit, negative_bit, zero_bit, overflow_bit) {
+      #TODO  DSPCSBITS  handle the DC bit settings
+      $(DSPDCBIT) = borrow_bit;
+
+      $(DSPGTBIT) = ~((negative_bit ^ overflow_bit) | zero_bit);
+      $(DSPZBIT) = zero_bit;
+      $(DSPNBIT) = negative_bit;
+      $(DSPVBIT) = overflow_bit;
+}
+
+macro plus_dc_bit(carry_bit, negative_bit, zero_bit, overflow_bit) {
+      #TODO  DSPCSBITS  handle the DC bit settings
+      $(DSPDCBIT) = carry_bit;
+
+      $(DSPGTBIT) = ~((negative_bit ^ overflow_bit) | zero_bit);
+      $(DSPZBIT) = zero_bit;
+      $(DSPNBIT) = negative_bit;
+      $(DSPVBIT) = overflow_bit;
+}
+
+macro logical_dc_bit(negative_bit, zero_bit) {
+      #TODO  DSPCSBITS  handle the DC bit settings
+      $(DSPDCBIT) = 0;
+
+      $(DSPGTBIT) = 0;
+      $(DSPZBIT) = zero_bit;
+      $(DSPNBIT) = negative_bit;
+      $(DSPVBIT) = 0;
+}
+
+macro shift_dc_bit(carry_bit, negative_bit, zero_bit, overflow_bit) {
+      #TODO  DSPCSBITS  handle the DC bit settings
+      $(DSPDCBIT) = carry_bit;
+      
+      $(DSPGTBIT) = 0;
+      $(DSPZBIT) = zero_bit;
+      $(DSPNBIT) = negative_bit;
+      $(DSPVBIT) = overflow_bit;      
+}
+
+
+alusrc1: is opcode_06_07=2 { local tmp:5 = (sext(a0g) << 4) | zext(a0); export tmp; }
+alusrc1: is opcode_06_07=3 { local tmp:5 = (sext(a1g) << 4) | zext(a1); export tmp; }
+alusrc1: is sx             { local tmp:5 = sext(sx);                    export tmp; }
+alusrc2: is sy             { local tmp:5 = sext(sy);                    export tmp; }
+
+RS: is rstart { export *:4 rstart; }
+
+:^instruction is phase=0 & blockEnd=1 & instruction & RS [ phase=1; ]
+{
+	$(RC_FLAG) = $(RC_FLAG) - 1;
+	if ($(RC_FLAG) != 0) goto RS;
+}
+
+:^instruction is phase=0 & instruction [ phase=1; ] { build instruction; }
+
+:^instruction is phase=1 & instruction [ phase=2; ] { build instruction; }
+
+#:^instruction is paraphase=0 & opcode_12_15=0b1111 & opcode_11=1 & parallel=0 & instruction
+:^instruction is paraphase=0 & opcode_12_15=0b1111 & opcode_11=0 & instruction
+[ paraphase=1; ]
+{
+	build instruction;
+}
+:^instruction is paraphase=0 & opcode_12_15=0b1111 & opcode_11=1 & instruction
+[ parallel=1; globalset(inst_next, parallel); paraphase=1; ]
+{
+	build instruction;
+}
+
+CrossBuildAddress: loc is paraphase=1 [ loc = inst_start - 2; ] { export *[ram]:4 loc;}
+CrossBuildAddress: loc is paraphase=2 [ loc = inst_start; ]     { export *[ram]:4 loc;}
+CrossBuildAddress: loc is paraphase=3 [ loc = inst_start + 2; ] { export *[ram]:4 loc;}
+# CrossBuildAddress: loc is paraphase=1 [ loc = inst_start; ]     { export *[ram]:4 loc;}
+# CrossBuildAddress: loc is paraphase=2 [ loc = inst_start + 2; ] { export *[ram]:4 loc;}
+
+#checkParallel check for movy
+checkParallel: "" is CrossBuildAddress & paraphase=1
+[ paraphase=2; ]
+{
+	crossbuild CrossBuildAddress, MOVY;
+}
+
+# #check parallel check for parallel instructions
+checkParallel: "" is CrossBuildAddress & paraphase=2 & opcode_11=1
+[ paraphase=3; ]
+{
+	crossbuild CrossBuildAddress, PARA_INST;
+}
+
+# double-transfer only, no parallel
+checkParallel: "" is paraphase=2 & opcode_11=0 [ paraphase=3; ] { }
+# checkParallel: "" is paraphase=2 [ paraphase=3; ] { }
+
+#
+# DSP Instructions
+#
+
+with : phase=2 {
+with : parallel=0 {
+
+:ldc rm_08_11,mod is opcode_12_15=0b0100 & mod & rm_08_11 & opcode_00_07=0b01011110
+{
+	mod = rm_08_11;
+}
+
+:ldc rm_08_11,re is opcode_12_15=0b0100 & re & rm_08_11 & opcode_00_07=0b01111110
+{
+	re = rm_08_11;
+}
+
+:ldc rm_08_11,rs is opcode_12_15=0b0100 & rs & rm_08_11 & opcode_00_07=0b01101110
+{
+	rs = rm_08_11;
+}
+
+:ldc.l @rm_08_11+,mod is opcode_12_15=0b0100 & mod & rm_08_11 & opcode_00_07=0b01010111
+{
+	mod = *rm_08_11;
+	rm_08_11 = rm_08_11 + 4;
+}
+
+:ldc.l @rm_08_11+,re is opcode_12_15=0b0100 & re & rm_08_11 & opcode_00_07=0b01110111
+{
+	re = *rm_08_11;
+	rm_08_11 = rm_08_11 + 4;
+}
+
+:ldc.l @rm_08_11+,rs is opcode_12_15=0b0100 & rs & rm_08_11 & opcode_00_07=0b01100111
+{
+	rs = *rm_08_11;
+	rm_08_11 = rm_08_11 + 4;
+}
+
+:stc mod,rn_08_11 is opcode_12_15=0b0000 & mod & rn_08_11 & opcode_00_07=0b01010010
+{
+	rn_08_11 = mod;
+}
+
+:stc re,rn_08_11 is opcode_12_15=0b0000 & re & rn_08_11 & opcode_00_07=0b01110010
+{
+	rn_08_11 = re;
+}
+
+:stc rs,rn_08_11 is opcode_12_15=0b0000 & rs & rn_08_11 & opcode_00_07=0b01100010
+{
+	rn_08_11 = rs;
+}
+
+:stc.l mod,@-rn_08_11 is opcode_12_15=0b0100 & mod & rn_08_11 & opcode_00_07=0b01010011
+{
+	rn_08_11 = rn_08_11 - 4;
+	*rn_08_11 = mod;
+}
+
+:stc.l re,@-rn_08_11 is opcode_12_15=0b0100 & re & rn_08_11 & opcode_00_07=0b01110011
+{
+	rn_08_11 = rn_08_11 - 4;
+	*rn_08_11 = re;
+}
+
+:stc.l rs,@-rn_08_11 is opcode_12_15=0b0100 & rs & rn_08_11 & opcode_00_07=0b01100011
+{
+	rn_08_11 = rn_08_11 - 4;
+	*rn_08_11 = rs;
+}
+
+:lds rm_08_11,dsr is opcode_12_15=0b0100 & dsr & rm_08_11 & opcode_00_07=0b01101010
+{
+	dsr = rm_08_11 & 0x0f;
+}
+
+:lds.l @rm_08_11+,dsr is opcode_12_15=0b0100 & dsr & rm_08_11 & opcode_00_07=0b01100110
+{
+	dsr = *rm_08_11 & 0x0f;
+	rm_08_11 = rm_08_11 + 4;
+}
+
+:lds rm_08_11,a0 is opcode_12_15=0b0100 & a0 & rm_08_11 & opcode_00_07=0b01111010
+{
+	a0 = rm_08_11;
+}
+
+:lds.l @rm_08_11+,a0 is opcode_12_15=0b0100 & a0 & rm_08_11 & opcode_00_07=0b01110110
+{
+	a0 = *rm_08_11;
+	rm_08_11 = rm_08_11 + 4;
+}
+
+:lds rm_08_11,x0 is opcode_12_15=0b0100 & x0 & rm_08_11 & opcode_00_07=0b10001010
+{
+	x0 = rm_08_11;
+}
+
+:lds.l @rm_08_11+,x0 is opcode_12_15=0b0100 & x0 & rm_08_11 & opcode_00_07=0b10000110
+{
+	x0 = *rm_08_11;
+	rm_08_11 = rm_08_11 + 4;
+}
+
+:lds rm_08_11,x1 is opcode_12_15=0b0100 & x1 & rm_08_11 & opcode_00_07=0b10011010
+{
+	x1 = rm_08_11;
+}
+
+:lds.l @rm_08_11+,x1 is opcode_12_15=0b0100 & x1 & rm_08_11 & opcode_00_07=0b10010110
+{
+	x1 = *rm_08_11;
+	rm_08_11 = rm_08_11 + 4;
+}
+
+:lds rm_08_11,y0 is opcode_12_15=0b0100 & y0 & rm_08_11 & opcode_00_07=0b10101010
+{
+	y0 = rm_08_11;
+}
+
+:lds.l @rm_08_11+,y0 is opcode_12_15=0b0100 & y0 & rm_08_11 & opcode_00_07=0b10100110
+{
+	y0 = *rm_08_11;
+	rm_08_11 = rm_08_11 + 4;
+}
+
+:lds rm_08_11,y1 is opcode_12_15=0b0100 & y1 & rm_08_11 & opcode_00_07=0b10111010
+{
+	y1 = rm_08_11;
+}
+
+:lds.l @rm_08_11+,y1 is opcode_12_15=0b0100 & y1 & rm_08_11 & opcode_00_07=0b10110110
+{
+	y1 = *rm_08_11;
+	rm_08_11 = rm_08_11 + 4;
+}
+
+:sts dsr,rn_08_11 is opcode_12_15=0b0000 & dsr & rn_08_11 & opcode_00_07=0b01101010
+{
+	rn_08_11 = dsr;
+}
+
+:sts.l dsr,@-rn_08_11 is opcode_12_15=0b0100 & dsr & rn_08_11 & opcode_00_07=0b01100010
+{
+	rn_08_11 = rn_08_11 - 4;
+	*rn_08_11 = dsr;
+}
+
+:sts a0,rn_08_11 is opcode_12_15=0b0000 & a0 & rn_08_11 & opcode_00_07=0b01111010
+{
+	rn_08_11 = a0;
+}
+
+:sts.l a0,@-rn_08_11 is opcode_12_15=0b0100 & a0 & rn_08_11 & opcode_00_07=0b01110010
+{
+	rn_08_11 = rn_08_11 - 4;
+	*rn_08_11 = a0;
+}
+
+:sts x0,rn_08_11 is opcode_12_15=0b0000 & x0 & rn_08_11 & opcode_00_07=0b10001010
+{
+	rn_08_11 = x0;
+}
+
+:sts.l x0,@-rn_08_11 is opcode_12_15=0b0100 & x0 & rn_08_11 & opcode_00_07=0b10000010
+{
+	rn_08_11 = rn_08_11 - 4;
+	*rn_08_11 = x0;
+}
+
+:sts x1,rn_08_11 is opcode_12_15=0b0000 & x1 & rn_08_11 & opcode_00_07=0b10011010
+{
+	rn_08_11 = x1;
+	
+}
+
+:sts.l x1,@-rn_08_11 is opcode_12_15=0b0100 & x1 & rn_08_11 & opcode_00_07=0b10010010
+{
+	rn_08_11 = rn_08_11 - 4;
+	*rn_08_11 = x1;
+}
+
+:sts y0,rn_08_11 is opcode_12_15=0b0000 & y0 & rn_08_11 & opcode_00_07=0b10101010
+{
+	rn_08_11 = y0;
+}
+
+:sts.l y0,@-rn_08_11 is opcode_12_15=0b0100 & y0 & rn_08_11 & opcode_00_07=0b10100010
+{
+	rn_08_11 = rn_08_11 - 4;
+	*rn_08_11 = y0;
+}
+
+:sts y1,rn_08_11 is opcode_12_15=0b0000 & y1 & rn_08_11 & opcode_00_07=0b10111010
+{
+	rn_08_11 = y1;
+}
+
+:sts.l y1,@-rn_08_11 is opcode_12_15=0b0100 & y1 & rn_08_11 & opcode_00_07=0b10110010
+{
+	rn_08_11 = rn_08_11 - 4;
+	*rn_08_11 = y1;
+}
+
+# LDRS (Load Effective Address to RS Register): System Control Instruction
+:ldrs disppc2 is opcode_08_15=0b10001100 & disppc2 & disp_00_07 [ rstart = inst_start + 4 + (disp_00_07 << 1); globalset(inst_next, rstart); ]
+{
+	# disp x 2+PC->RS
+	# 1.  Set the repeat start address in the RS register
+	rs = disppc2;
+}
+
+# LDRE (Load Effective Address to RE Register): System Control Instruction
+:ldre disppc2 is opcode_08_15=0b10001110 & disppc2
+[
+	blockEnd=1;
+	globalset(disppc2,blockEnd);
+	globalset(disppc2,rstart);
+]
+{
+	# disp x 2+PC->RE
+	# 2.  Set the repeat end address in the RE register
+	re = disppc2;
+}
+
+:setrc rm_08_11 is opcode_12_15=0b0100 & rm_08_11 & opcode_00_07=0b00010100
+{
+	# Rm[11:0]->RC (SR[27:16), repeat flag->RF1,RF0
+	# 3.  Set the repeat count in the RC counter
+	# 4.  Execute the repeated program (loop)
+	$(RC_FLAG) = rm_08_11[0,12];
+}
+
+:setrc imm_00_07 is opcode_08_15=0b10000010 & imm_00_07
+{
+	# imm->RC(SR[23:16]),zeros->SR[27:24], repeat flag->RF1,RF0
+	# 3.  Set the repeat count in the RC counter
+	# 4.  Execute the repeated program (loop)
+	local tmp:2 = imm_00_07;
+	$(RC_FLAG) = tmp[0,12];
+}
+
+} # with : parallel=0
+
+#
+# Data Transfer Instructions
+#
+
+with : opcode_12_15=0b1111 & opcode_10=0 {
+
+# X data transfer
+
+# nopx ;; No operation ;; 1111000*0*0*00**
+:nopx is opcode_09=0 & opcode_07=0 & opcode_05=0 & opcode_02_03=0b00 & checkParallel & paraphase=1
+{
+    local tmp:1 = 0;
+    tmp = tmp;
+    <<MOVY>>
+}
+
+# movx.w	@Ax,Dx ;; (Ax) -> MSW of Dx, 0 -> LSW of Dx ;; 111100A*D*0*01**
+:movx.w @ax,dx is ax & dx & opcode_05=0 & opcode_02_03=0b01 & checkParallel & paraphase=1
+{
+    dx = ax << 16;
+    <<MOVY>>
+}
+
+# movx.w	@Ax+,Dx ;; (Ax) -> MSW of Dx, 0 -> LSW of Dx, Ax+2 -> Ax ;; 111100A*D*0*10**
+:movx.w @ax+,dx is ax & dx & opcode_05=0 & opcode_02_03=0b10 & checkParallel & paraphase=1
+{
+    dx = ax << 16;
+    ax = ax + 2;
+    <<MOVY>>
+}
+
+# movx.w	@Ax+Ix,Dx ;; (Ax) -> MSW of Dx, 0 -> LSW of Dx, Ax+Ix -> Ax ;; 111100A*D*0*11**
+:movx.w @ax+r8,dx is ax & r8 & dx & opcode_05=0 & opcode_02_03=0b11 & checkParallel & paraphase=1
+{
+    dx = ax << 16;
+    ax = ax + r8;
+    <<MOVY>>
+}
+
+# movx.w	Da,@Ax ;; MSW of Da -> (Ax) ;; 111100A*D*1*01**
+:movx.w dax,@ax is ax & dax & opcode_05=1 & opcode_02_03=0b01 & checkParallel & paraphase=1
+{
+    local tmp:4 = dax >> 16;
+    *:2 ax = tmp:2;
+    <<MOVY>>
+}
+
+# movx.w	Da,@Ax+ ;; MSW of Da -> (Ax), Ax+2 -> Ax ;; 111100A*D*1*10**
+:movx.w dax,@ax+ is ax & dax & opcode_05=1 & opcode_02_03=0b10 & checkParallel & paraphase=1
+{
+    local tmp:4 = dax >> 16;
+    *:2 ax = tmp:2;
+    ax = ax + 2;
+    <<MOVY>>
+}
+
+# movx.w	Da,@Ax+Ix ;; MSW of Da -> (Ax), Ax+Ix -> Ax ;; 111100A*D*1*11**
+:movx.w dax,@ax+r8 is ax & r8 & dax & opcode_05=1 & opcode_02_03=0b11 & checkParallel & paraphase=1
+{
+    local tmp:4 = dax >> 16;
+    *:2 ax = tmp:2;
+    ax = ax + r8;
+    <<MOVY>>
+}
+
+# Y data transfer
+
+# nopy ;; No Operation ;; 111100*0*0*0**00
+:nopy is opcode_08=0 & opcode_06=0 & opcode_04=0 & opcode_00_01=0b00 & checkParallel & paraphase=2
+{
+    local tmp:1 = 0;
+    tmp = tmp;
+    <<PARA_INST>>
+}
+
+# movy.w	@Ay,Dy ;; (Ay) -> MSW of Dy, 0 -> LSW of Dy ;; 111100*A*D*0**01
+:movy.w @ay,dy is ay & dy & opcode_04=0 & opcode_00_01=0b01 & checkParallel & paraphase=2
+{
+    dy = ay << 16;
+    <<PARA_INST>>
+}
+
+# movy.w	@Ay+,Dy ;; (Ay) -> MSW of Dy, 0 -> LSW of Dy, Ay+2 -> Ay ;; 111100*A*D*0**10
+:movy.w @ay+,dy is ay & dy & opcode_04=0 & opcode_00_01=0b10 & checkParallel & paraphase=2
+{
+    dy = ay << 16;
+    dy = dy + 2;
+    <<PARA_INST>>
+}
+
+# movy.w	@Ay+Iy,Dy ;; (Ay) -> MSW of Dy, 0 -> LSW of Dy, Ay+Iy -> Ay ;; 111100*A*D*0**11
+:movy.w @ay+r9,dy is ay & r9 & dy & opcode_04=0 & opcode_00_01=0b11 & checkParallel & paraphase=2
+{
+    dy = ay << 16;
+    ay = ay + r9;
+    <<PARA_INST>>
+}
+
+# movy.w	Da,@Ay ;; MSW of Da -> (Ay) ;; 111100*A*D*1**01
+:movy.w day,@ay is ay & day & opcode_04=1 & opcode_00_01=0b01 & checkParallel & paraphase=2
+{
+    local tmp:4 = day >> 16;
+    *:2 ay = tmp:2;
+    <<PARA_INST>>
+}
+
+# movy.w	Da,@Ay+ ;; MSW of Da -> (Ay), Ay+2 -> Ay ;; 111100*A*D*1**10
+:movy.w day,@ay+ is ay & day & opcode_04=1 & opcode_00_01=0b10 & checkParallel & paraphase=2
+{
+    local tmp:4 = day >> 16;
+    *:2 ay = tmp:2;
+    ay = ay + 2;
+    <<PARA_INST>>
+}
+
+# movy.w	Da,@Ay+Iy ;; MSW of Da -> (Ay), Ay+Iy -> Ay ;; 111100*A*D*1**11
+:movy.w day,@ay+r9 is ay & r9 & day & opcode_04=1 & opcode_00_01=0b11 & checkParallel & paraphase=2
+{
+    local tmp:4 = day >> 16;
+    *:2 ay = tmp:2;
+    ay = ay + r9;
+    <<PARA_INST>>
+}
+
+} # with : opcode_12_15=0b1111 & opcode_10=0 {
+
+
+#
+# Single Data Transfer
+#
+
+# movs.w	@-As,Ds ;; As-2 -> As, (As) -> MSW of Ds, 0 -> LSW of Ds ;; 111101AADDDD0000
+:movs.w @-as,ds is opcode_10_15=0b111101 & as & ds & opcode_00_03=0b0000
+{
+    as = as - 2;
+    ds = as << 16;
+}
+
+# movs.w	@As,Ds ;; (As) -> MSW of Ds, 0 -> LSW of Ds ;; 111101AADDDD0100
+:movs.w @as,ds is opcode_10_15=0b111101 & as & ds & opcode_00_03=0b0100
+{
+    ds = as << 16;
+}
+
+# movs.w	@As+,Ds ;; (As) -> MSW of Ds, 0 -> LSW of Ds, As+2 -> As ;; 111101AADDDD1000
+:movs.w @as+,ds is opcode_10_15=0b111101 & as & ds & opcode_00_03=0b1000
+{
+    ds = as << 16;
+    as = as + 2;
+}
+
+# movs.w	@As+Ix,Ds ;; (As) -> MSW of Ds, 0 -> LSW of DS, As+Ix -> As ;; 111101AADDDD1100
+:movs.w @as+r8,ds is opcode_10_15=0b111101 & as & r8 & ds & opcode_00_03=0b1100
+{
+    ds = as << 16;
+    as = as + r8;
+}
+
+# movs.w	Ds,@-As ;; As-2 -> As, MSW of Ds -> (As)111101AADDDD0001
+:movs.w ds,@-as is opcode_10_15=0b111101 & as & ds & opcode_00_03=0b0001
+{
+    as = as - 2;
+    local tmp:4 = ds >> 16;
+    *:2 as = tmp:2;
+}
+
+# movs.w	Ds,@As ;; MSW of Ds -> (As)111101AADDDD0101
+:movs.w ds,@as is opcode_10_15=0b111101 & as & ds & opcode_00_03=0b0101
+{
+    local tmp:4 = ds >> 16;
+    *:2 as = tmp:2;
+}
+
+# movs.w	Ds,@As+MSW of Ds -> (As), As+2 -> As ;; 111101AADDDD1001
+:movs.w ds,@as is opcode_10_15=0b111101 & as & ds & opcode_00_03=0b1001
+{
+    local tmp:4 = ds >> 16;
+    *:2 as = tmp:2;
+    as = as + 2;
+}
+
+# movs.w	Ds,@As+Is ;; MSW of DS -> (As), As+Is -> As ;; 111101AADDDD1101
+:movs.w ds,@as+r8 is opcode_10_15=0b111101 & as & r8 & ds & opcode_00_03=0b1101
+{
+    local tmp:4 = ds >> 16;
+    *:2 as = tmp:2;
+    as = as + r8;
+}
+
+# movs.l	@-As,Ds ;; As-4 -> As, (As) -> Ds ;; 111101AADDDD0010
+:movs.l @-as,ds is opcode_10_15=0b111101 & as & ds & opcode_00_03=0b0010
+{
+    as = as - 4;
+    ds = *:4 as;
+}
+
+# movs.l	@As,Ds ;; (As) -> Ds ;; 111101AADDDD0110
+:movs.l @as,ds is opcode_10_15=0b111101 & as & ds & opcode_00_03=0b0110
+{
+    ds = *:4 as;
+}
+
+# movs.l	@As+,Ds ;; (As) -> Ds, As+4 -> As ;; 111101AADDDD1010
+:movs.l @as+ds is opcode_10_15=0b111101 & as & ds & opcode_00_03=0b1010
+{
+    ds = *:4 as;
+    as = as + 4;
+}
+
+# movs.l	@As+Is,Ds ;; (As) -> Ds, As+Is -> As ;; 111101AADDDD1110
+:movs.l @as+r8,ds is opcode_10_15=0b111101 & as & r8 & ds & opcode_00_03=0b1110
+{
+    ds = *:4 as;
+    as = as + r8;
+}
+
+# movs.l	Ds,@-As ;; As-4 -> As, Ds -> (As) ;; 111101AADDDD0011
+:movs.l ds,@-as is opcode_10_15=0b111101 & as & ds & opcode_00_03=0b0011
+{
+    as = as - 4;
+    *:4 as = ds;
+}
+
+# movs.l	Ds,@As ;; Ds -> (As) ;; 111101AADDDD0111
+:movs.l ds,@as is opcode_10_15=0b111101 & as & ds & opcode_00_03=0b0111
+{
+    *:4 as = ds;
+}
+
+# movs.l	Ds,@As+ ;; Ds -> (As), As+4 -> As ;; 111101AADDDD1011
+:movs.l ds,@as+ is opcode_10_15=0b111101 & as & ds & opcode_00_03=0b1011
+{
+    *:4 as = ds;
+    as = as + 4;
+}
+
+# movs.l	Ds,@As+Is ;; Ds -> (As), As+Is -> As ;; 111101AADDDD1111
+:movs.l ds,@as+r8 is opcode_10_15=0b111101 & as & r8 & ds & opcode_00_03=0b1111
+{
+    *:4 as = ds;
+    as = as + r8;
+}
+
+
+#
+# ALU Arithmetic Operation Instructions
+#
+# ATTN:  parallel instructions, all start with 111110**********
+
+# with : parallel=1 [ parallel = 0; ] {
+
+# pabs		Sx,Dz ;; If Sx >= 0: Sx -> Dz If Sx < 0: 0 - Sx -> Dz ;; 111110********** 10001000xx00zzzz ;; Update                  
+:pabs sx,dz is parallel=1 & opcode_08_15=0b10001000 & sx & opcode_04_05=0b00 & dz
+{
+    local tmp:1 = (sx s>= 0);
+    dz = (zext(tmp != 0) * sx) + (zext(tmp == 0) * -sx);
+    #TODO  FLAGS
+}
+
+# pabs		Sy,Dz ;; If Sy >= 0: Sy -> DzIf Sy < 0: 0 - Sy -> Dz ;; 111110********** 1010100000yyzzzz ;; Update                  
+:pabs sy,dz is parallel=1 & opcode_06_15=0b1010100000 & sy & dz
+{
+    local tmp:1 = (sy s>= 0);
+    dz = (zext(tmp != 0) * sy) + (zext(tmp == 0) * -sy);
+    #TODO  FLAGS
+}
+
+# padd		Sx,Sy,Dz ;; Sx + Sy -> Dz ;; 111110********** 10110001xxyyzzzz ;; Update                  
+:padd sx,sy,dz is parallel=1 & opcode_08_15=0b10110001 & sx & sy & dz
+{
+    dz = sx + sy;
+    #TODO  FLAGS
+}
+
+# dct padd	Sx,Sy,Dz ;; If DC = 1: Sx + Sy -> Dz Else: nop ;; 111110********** 10110010xxyyzzzz
+:dct^" padd" sx,sy,dz is parallel=1 & opcode_08_15=0b10110010 & sx & sy & dz
+{
+    if ($(DSPDCBIT) == 0) goto <done>;
+    dz = sx + sy;
+  <done>
+}
+
+# dcf padd	Sx,Sy,Dz ;; If DC = 0: Sx + Sy -> Dz Else: nop ;; 111110********** 10110011xxyyzzzz
+:dcf^" padd" sx,sy,dz is parallel=1 & opcode_08_15=0b10110011 & sx & sy & dz
+{
+    if ($(DSPDCBIT) != 0) goto <done>;
+    dz = sx + sy;
+  <done>
+}
+
+#TODO  No clue how to make this a thing
+# padd		Sx,Sy,Du ;; Sx + Sy -> Du
+# pmuls		Se,Sf,Dg ;; MSW of Se * MSW of Sf -> Dg 111110********** 0111eeffxxyygguu Update
+:padd^"/pmuls" sx,sy,du is parallel=1 & opcode_12_15=0b0111 & sx & sy & du & se & sf & dg 
+{
+    local tmpX:4 = se >> 16;
+    local tmpY:4 = sf >> 16;
+    du = sx + sy;
+    dg = tmpX * tmpY;
+    #TODO  FLAGS
+}
+
+# paddc		Sx,Sy,Dz ;; Sx + Sy + DC -> Dz ;; 111110********** 10110000xxyyzzzz ;; Update                  
+:paddc sx,sy,dz is parallel=1 & opcode_08_15=0b10110000 & sx & sy & dz
+{
+    dz = sx + sy + zext($(DSPDCBIT));
+    #TODO  FLAGS
+}
+
+# pclr		Dz ;; 0x00000000 -> Dz ;; 111110********** 100011010000zzzz Update                  
+:pclr dz is parallel=1 & opcode_04_15=0b100011010000 & dz
+{
+    dz = 0;
+    #TODO  FLAGS
+    plus_dc_bit(0:1, 0:1, 1:1, 0:1);
+}
+
+# dct pclr	Dz ;; If DC = 1: 0x00000000 -> Dz Else: nop ;; 111110********** 100011100000zzzz
+:dct^" pclr" dz is parallel=1 & opcode_04_15=0b100011100000 & dz
+{
+    if ($(DSPDCBIT) == 0) goto <done>;
+    dz = 0;
+  <done>
+}
+
+# dcf pclr	Dz ;; If DC = 0: 0x00000000 -> Dz Else: nop ;; 111110********** 100011110000zzzz
+:dcf^" pclr" dz is parallel=1 & opcode_04_15=0b100011110000 & dz
+{
+    if ($(DSPDCBIT) != 0) goto <done>;
+    dz = 0;
+  <done>
+}
+
+# pcmp		Sx,Sy ;; Sx - Sy ;; 111110********** 10000100xxyy0000 ;; Update           
+:pcmp sx,sy is parallel=1 & opcode_08_15=0b10000100 & sx & sy & opcode_00_03=0b0000 & alusrc1 & alusrc2 
+{
+    local tmp:4 = sx - sy;
+    #TODO  FLAGS
+    # DSP_ALU_SRC1 = sx;
+    # DSP_ALU_SRC1G =
+    # DSP_ALU_SRC2 = sy;
+    # DSP_ALU_DSP2G =
+    # DSP_ALU_DST = DSP_ALU_SRC1 - DSP_ALU_SRC2;
+    # carry_bit = ((DSP_ALLU_SRC1_MSG | !DSP_ALU_SRC2_MSB) && !DSP_ALU_DST_MSB) | (DSP_ALU_SRC1_MSB & ! DSP_ALU_SRC2_MSB);
+    # borrow_bit = !carry_bit;
+    # DSP_ALU_DSTG_LSB8 = DSP_ALU_SRC1G_LSB8 - DSP_ALU_SRC2G_LSB8 - borrow_bit;
+    # negative_bit = DSP_ALU_DSTG_BIT7;
+    # zero_bit = (DSP_ALU_DST==0) & (DSP_ALU_DSTG_LSB8==0);
+    # MINUS_OP_G_OV = ((~DSP_ALU_SRC1G_BIT7 && DSP_ALU_SRC2G_BIT7 && DSP_ALU_DSTG_BIT7) || (DSP_ALU_SRC1G_BIT7 && ~DSP_ALU_SRC2G_BIT7 && ~DSP_ALU_DSTG_BIT7));
+    # POS_NOT_OV = ((DSP_ALU_DSTG_LSB8==0x00) && (DSP_ALU_DST_MSB==0x00))
+    # NEG_NOT_OV = ((DSP_ALU_DSTG_LSB8==0xff) && (DSP_ALU_DST_MSB==0x01))
+    # overlfow_bit = MINUS_OP_G_OV || !(POS_NOT_OV || NEG_NOT_OV);
+    # overflow_protection();
+    # minus_dc_bit();
+}
+
+# pcopy		Sx,Dz ;; Sx -> Dz ;; 111110********** 11011001xx00zzzz ;; Update                  
+:pcopy sx,dz is parallel=1 & opcode_08_15=0b11011001 & sx & opcode_04_05=0b00 & dz
+{
+    dz = sx;
+    #TODO  FLAGS
+}
+
+# pcopy		Sy,Dz ;; Sy -> Dz ;; 111110********** 1111100100yyzzzz ;; Update                  
+:pcopy sy,dz is parallel=1 & opcode_06_15=0b1111100100 & sy & dz
+{
+    dz = sy;
+    #TODO  FLAGS
+}
+
+# dct pcopy	Sx,Dz ;; If DC = 1: Sx -> Dz Else: nop ;; 111110********** 11011010xx00zzzz
+:dct^" pcopy" sx,dz is parallel=1 & opcode_08_15=0b11011010 & sx & opcode_04_05=0b00 & dz
+{
+    if ($(DSPDCBIT) == 0) goto <done>;
+    dz = sx;
+  <done>
+}
+
+# dct pcopy	Sy,Dz ;; If DC = 1: Sy -> Dz Else: nop ;; 111110********** 1111101000yyzzzz
+:dct^" pcopy" sy,dz is parallel=1 & opcode_06_15=0b1111101000 & sy & dz
+{
+    if ($(DSPDCBIT) == 0) goto <done>;
+    dz = sy;
+  <done>
+}
+
+# dcf pcopy	Sx,Dz ;; If DC = 0: Sx -> Dz Else: nop ;; 111110********** 11011011xx00zzzz
+:dcf^" pcopy" sx,dz is parallel=1 & opcode_08_15=0b11011011 & sx & opcode_04_05=0b00 & dz
+{
+    if ($(DSPDCBIT) != 0) goto <done>;
+    dz = sx;
+  <done>
+}
+
+# dcf pcopy	Sy,Dz ;; If DC = 0: Sy -> Dz Else: nop ;; 111110********** 1111101100yyzzzz
+:dcf^" pcopy" sy,dz is parallel=1 & opcode_06_15=0b1111101100 & sy & dz
+{
+    if ($(DSPDCBIT) != 0) goto <done>;
+    dz = sy;
+  <done>
+}
+
+# pneg		Sx,Dz ;; 0 - Sx -> Dz ;; 111110********** 11001001xx00zzzz ;; Update                  
+:pneg sx,dz is parallel=1 & opcode_08_15=0b11001001 & sx & opcode_04_05=0b00 & dz
+{
+    dz = -sx;
+    #TODO  FLAGS
+}
+
+# pneg		Sy,Dz ;; 0 - Sy -> Dz ;; 111110********** 1110100100yyzzzz ;; Update                  
+:pneg sy,dz is parallel=1 & opcode_06_15=0b1110100100 & sy & dz
+{
+    dz = -sy;
+    #TODO  FLAGS
+}
+
+# dct pneg	Sx,Dz ;; If DC = 1: 0 - Sx -> Dz Else: nop ;; 111110********** 11001010xx00zzzz
+:dct^" pneg" sx,dz is parallel=1 & opcode_08_15=0b11001010 & sx & opcode_04_05=0b00 & dz
+{
+    if ($(DSPDCBIT) == 0) goto <done>;
+    dz = -sx;
+  <done>
+}
+
+# dct pneg	Sy,Dz ;; If DC = 1: 0 - Sy -> Dz Else: nop ;; 111110********** 1110101000yyzzzz
+:dct^" pneg" sy,dz is parallel=1 & opcode_06_15=0b1110101000 & sy & dz
+{
+    if ($(DSPDCBIT) == 0) goto <done>;
+    dz = -sy;
+  <done>
+}
+
+# dcf pneg	Sx,Dz ;; If DC = 0: 0 - Sx -> Dz Else: nop ;; 111110********** 11001011xx00zzzz
+:dcf^" pneg" sx,dz is parallel=1 & opcode_08_15=0b11001011 & sx & opcode_04_05=0b00 & dz
+{
+    if ($(DSPDCBIT) != 0) goto <done>;
+    dz = -sx;
+  <done>
+}
+
+# dcf pneg	Sy,Dz;; If DC = 0: 0 - Sy -> Dz Else: nop ;; 111110********** 1110101100yyzzzz
+:dcf^" pneg" sy,dz is parallel=1 & opcode_06_15=0b1110101100 & sy & dz
+{
+    if ($(DSPDCBIT) != 0) goto <done>;
+    dz = -sy;
+  <done>
+}
+
+# psub		Sx,Sy,Dz ;; Sx - Sy -> Dz ;; 111110********** 10100001xxyyzzzz ;; Update
+:psub sx,sy,dz is parallel=1 & opcode_08_15=0b10100001 & sx & sy & dz
+{
+    dz = sx - sy;
+    #TODO  FLAGS
+}
+
+# dct psub	Sx,Sy,Dz ;; If DC = 1: Sx - Sy -> Dz Else: nop ;; 111110********** 10100010xxyyzzzz
+:dct^" psub" sx,sy,dz is parallel=1 & opcode_08_15=0b10100010 & sx & sy & dz
+{
+    if ($(DSPDCBIT) == 0) goto <done>;
+    dz = sx - sy;
+  <done>
+}
+
+# dcf psub 	Sx,Sy,Dz ;; If DC = 0: Sx - Sy -> Dz Else: nop ;; 111110********** 10100011xxyyzzzz
+:dcf^" psub" sx,sy,dz is parallel=1 & opcode_08_15=0b10100011 & sx & sy & dz
+{
+    if ($(DSPDCBIT) != 0) goto <done>;
+    dz = sx - sy;
+  <done>
+}
+
+#TODO  No clue how to make this a thing cleanly
+# psub		Sx,Sy,Du ;; Sx - Sy -> Du
+# pmuls		Se,Sf,Dg ;; MSW of Se * MSW of Sf -> Dg ;; 111110********** 0110eeffxxyygguu ;; Update                  
+:psub^"/pmuls" sx,sy,du is parallel=1 & opcode_12_15=0b0110 & sx & sy & du & se & sf & dg 
+{
+    local tmpX:4 = se >> 16;
+    local tmpY:4 = sy >> 16;
+    du = sx - sy;
+    dg = tmpX * tmpY;
+    #TODO  FLAGS
+}
+
+# psubc		Sx,Sy,Dz ;; Sx - Sy - DC -> Dz ;; 111110********** 10100000xxyyzzzz ;; Update                  
+:psubc sx,sy,dz is parallel=1 & opcode_08_15=0b10100000 & sx & sy & dz
+{
+    dz = sx - sy - zext($(DSPDCBIT));
+    #TODO  FLAGS
+}
+
+# pdec		Sx,Dz ;; MSW of Sx - 1 -> MSW of Dz, clear LSW of Dz ;; 111110********** 10001001xx00zzzz Update                  
+:pdec sx,dz is parallel=1 & opcode_08_15=0b10100011 & sx & opcode_04_05=0b00 & dz
+{
+    dz = (sx - 1) << 16;
+    #TODO  FLAGS
+}
+
+# pdec		Sy,DzMSW of Sy - 1 -> MSW of Dz, clear LSW of Dz ;; 111110********** 1010100100yyzzzz Update                  
+:pdec sy,dz is parallel=1 & opcode_06_15=0b1010100100 & sy & dz
+{
+    dz = (sy - 1) << 16;
+    #TODO  FLAGS
+}
+
+# dct pdec	Sx,Dz ;; If DC = 1: MSW of Sx - 1 -> MSW of DZ, clear LSW of Dz Else: nop ;; 111110********** 10001010xx00zzzz
+:dct^" pdec" sx,dz is parallel=1 & opcode_08_15=0b10001010 & sx & opcode_04_05=0b00 & dz
+{
+    if ($(DSPDCBIT) == 0) goto <done>;
+    dz = (sx - 1) << 16;
+  <done>
+}
+
+# dct pdec	Sy,Dz ;; If DC = 1: MSW of Sy - 1 -> MSW of DZ, clear LSW of Dz Else: nop ;; 111110********** 1010101000yyzzzz
+:dct^" pdec" sy,dz is parallel=1 & opcode_06_15=0b1010101000 & sy & dz
+{
+    if ($(DSPDCBIT) == 0) goto <done>;
+    dz = (sy - 1) << 16;
+  <done>
+}
+
+# dcf pdec	Sx,Dz ;; If DC = 0: MSW of Sx - 1 -> MSW of DZ, clear LSW of Dz Else: nop ;; 111110********** 10001011xx00zzzz
+:dcf^" pdec" sx,dz is parallel=1 & opcode_08_15=0b10001011 & sx & opcode_04_05=0b00 & dz
+{
+    if ($(DSPDCBIT) != 0) goto <done>;
+    dz = (sx - 1) << 16;
+  <done>
+}
+
+# dcf pdec	Sy,Dz ;; If DC = 0: MSW of Sy - 1 -> MSW of DZ, clear LSW of Dz Else: nop ;; 111110********** 1010101100yyzzzz
+:dcf^" pdec" sy,dz is parallel=1 & opcode_06_15=0b1010101100 & sy & dz
+{
+    if ($(DSPDCBIT) != 0) goto <done>;
+    dz = (sy - 1) << 16;
+  <done>
+}
+
+# pinc		Sx,Dz ;; MSW of Sy + 1 -> MSW of Dz, clear LSW of Dz ;; 111110********** 10011001xx00zzzz ;; update                  
+:pinc sx,dz is parallel=1 & opcode_08_15=0b10011001 & sx & opcode_04_05=0b00 & dz
+{
+    dz = (sx + 1) << 16;
+    #TODO  FLAGS
+}
+
+# pinc		Sy,Dz ;; MSW of Sy + 1 -> MSW of Dz, clear LSW of Dz ;; 111110********** 1011100100yyzzzz ;; update                  
+:pinc sy,dz is parallel=1 & opcode_06_15=0b1011100100 & sy & dz
+{
+    dz = (sy + 1) << 16;
+    #TODO  FLAGS
+}
+
+# dct pinc	Sx,Dz ;; If DC = 1: MSW of Sx + 1 -> MSW of Dz, clear LSW of Dz Else: nop ;; 111110********** 10011010xx00zzzz
+:dct^" pinc" sx,dz is parallel=1 & opcode_08_15=0b10011010 & sx & opcode_04_05=0b00 & dz
+{
+    if ($(DSPDCBIT) == 0) goto <done>;
+    dz = (sx + 1) << 16;
+  <done>
+}
+
+# dct pinc	Sy,Dz ;; If DC = 1: MSW of Sy + 1 -> MSW of Dz, clear LSW of Dz Else: nop ;; 111110********** 1011101000yyzzzz
+:dct^" pinc" sy,dz is parallel=1 & opcode_06_15=0b1011101000 & sy & dz
+{
+    if ($(DSPDCBIT) == 0) goto <done>;
+    dz = (sy + 1) << 16;
+  <done>
+}
+
+# dcf pinc	Sx,Dz ;; If DC = 0: MSW of Sx + 1 -> MSW of Dz, clear LSW of Dz Else: nop ;; 111110********** 10011011xx00zzzz
+:dcf^" pinc" sx,dz is parallel=1 & opcode_08_15=0b10011011 & sx & opcode_04_05=0b00 & dz
+{
+    if ($(DSPDCBIT) != 0) goto <done>;
+    dz = (sx + 1) << 16;
+  <done>
+}
+
+# dcf pinc	Sy,Dz ;; If DC = 0: MSW of Sy + 1 -> MSW of Dz, clear LSW of Dz Else: nop ;; 111110********** 1011101100yyzzzz
+:dcf^" pinc" sy,dz is parallel=1 & opcode_06_15=0b1011101100 & sy & dz
+{
+    if ($(DSPDCBIT) != 0) goto <done>;
+    dz = (sy + 1) << 16;
+  <done>
+}
+
+# pdmsb		Sx,Dz ;; Sx data MSB position -> MSW of Dz, clear LSW of Dz ;; 111110********** 10011101xx00zzzz ;; update                  
+:pdmsb sx,dz is parallel=1 & opcode_08_15=0b10011101 & sx & opcode_04_05=0b00 & dz
+{
+    #TODO  implement
+    #TODO  FLAGS
+}
+
+# pdmsb		Sy,Dz ;; Sy data MSB position -> MSW of Dz, clear LSW of Dz ;; 111110********** 1011110100yyzzzz ;; update                  
+:pdmsb sy,dz is parallel=1 & opcode_06_15=0b1011110100 & sy & dz
+{
+    #TODO  implement
+    #TODO  FLAGS
+}
+
+# dct pdmsb	Sx,Dz ;; If DC = 1: Sx data MSB position -> MSW of Dz, clear LSW of Dz Else: nop ;; 111110********** 10011110xx00zzzz
+:dct^" pdmsb" sx,dz is parallel=1 & opcode_08_15=0b10011110 & sx & opcode_04_05=0b00 & dz
+{
+    if ($(DSPDCBIT) == 0) goto <done>; #TODO implement between done's
+  <done>
+}
+
+# dct pdmsb	Sy,Dz ;; If DC = 1: Sy data MSB position -> MSW of Dz, clear LSW of Dz Else: nop ;; 111110********** 1011111000yyzzzz
+:dct^" pdmsb" sy,dz is parallel=1 & opcode_06_15=0b101111000 & sy & dz
+{
+    if ($(DSPDCBIT) == 0) goto <done>; #TODO implement between done's
+  <done>
+}
+
+# dcf pdmsb	Sx,Dz ;; If DC = 0: Sx data MSB position -> MSW of Dz, clear LSW of Dz Else: nop ;; 111110********** 10011111xx00zzzz
+:dcf^" pdmsb" sx,dz is parallel=1 & opcode_08_15=0b10011111 & sx & opcode_04_05=0b00 & dz
+{
+    if ($(DSPDCBIT) != 0) goto <done>; #TODO implement between done's
+  <done>
+}
+
+# dcf pdmsb	Sy,Dz ;; If DC = 0: Sy data MSB position -> MSW of Dz, clear LSW of Dz Else: nop ;; 111110********** 1011111100yyzzzz
+:dcf^" pdmsb" sy,dz is parallel=1 & opcode_06_15=0b1011111100 & sy & dz
+{
+    if ($(DSPDCBIT) != 0) goto <done>; #TODO implement between done's
+  <done>
+}
+
+# prnd		Sx,Dz ;; Sx + 0x00008000 -> Dz, clear LSW of Dz ;; 111110********** 10011000xx00zzzz
+:prnd sx,dz is parallel=1 & opcode_08_15=0b10011000 & sx & opcode_04_05=0b00 & dz
+{
+    dz = (sx + 0x8000) & 0xffff0000;
+}
+
+# prnd		Sy,Dz ;; Sy + 0x00008000 -> Dz, clear LSW of Dz ;; 111110********** 1011100000yyzzzz
+:prnd sy,dz is parallel=1 & opcode_06_15=0b1011100000 & sy & dz
+{
+    dz = (sy + 0x8000) & 0xffff0000;
+}
+
+
+#
+# ALU Logical Operation Instructions
+#
+
+# pand		Sx,Sy,Dz ;; Sx & Sy -> Dz, clear LSW of Dz ;; 111110********** 10010101xxyyzzzz ;; Update
+:pand sx,sy,dz is parallel=1 & opcode_08_15=0b10010101 & sx & sy & dz
+{
+    dz = (sx & sy) & 0xffff0000;
+    #TODO  FLAGS
+}
+
+# dct pand	Sx,Sy,Dz ;; If DC = 1: Sx & Sy -> Dz, clear LSW of Dz Else: nop ;; 111110********** 10010110xxyyzzzz
+:dct^" pand" sx,sy,dz is parallel=1 & opcode_08_15=0b10010110 & sx & sy & dz
+{
+    if ($(DSPDCBIT) == 0) goto <done>;
+    dz = (sx & sy) & 0xffff0000;
+  <done>
+}
+
+# dcf pand	Sx,Sy,Dz ;; If DC = 0: Sx & Sy -> Dz, clear LSW of Dz Else: nop ;; 111110********** 10010111xxyyzzzz
+:dcf^" pand" sx,sy,dz is parallel=1 & opcode_08_15=0b10010111 & sx & sy & dz
+{
+    if ($(DSPDCBIT) != 0) goto <done>;
+    dz = (sx & sy) & 0xffff0000;
+  <done>
+}
+
+# por		Sx,Sy,Dz ;; Sx | Sy -> Dz, clear LSW of Dz ;; 111110********** 10110101xxyyzzzz ;; Update                  
+:por sx,sy,dz is parallel=1 & opcode_08_15=0b10110101 & sx & sy & dz
+{
+    dz = (sx | sy) & 0xffff0000;
+    #TODO  FLAGS
+}
+
+# dct por		Sx,Sy,Dz ;; If DC = 1: Sx | Sy -> Dz, clear LSW of Dz Else: nop ;; 111110********** 10110110xxyyzzzz
+:dct^" por" sx,sy,dz is parallel=1 & opcode_08_15=0b10110110 & sx & sy & dz
+{
+    if ($(DSPDCBIT) == 0) goto <done>;
+    dz = (sx | sy) & 0xffff0000;
+  <done>
+}
+
+# dcf por		Sx,Sy,Dz ;; If DC = 0: Sx | Sy -> Dz, clear LSW of Dz Else: nop ;; 111110********** 10110111xxyyzzzz
+:dcf^" por" sx,sy,dz is parallel=1 & opcode_08_15=0b10110111 & sx & sy & dz
+{
+    if ($(DSPDCBIT) != 0) goto <done>;
+    dz = (sx | sy) & 0xffff0000;
+  <done>
+}
+
+# pxor		Sx,Sy,Dz ;; Sx ^ Sy -> Dz, clear LSW of Dz ;; 111110********** 10100101xxyyzzzz ;; Update                  
+:pxor sx,sy,dz is parallel=1 & opcode_08_15=0b10100101 & sx & sy & dz
+{
+    dz = (sx ^ sy) & 0xffff0000;
+    #TODO  FLAGS
+}
+
+# dct pxor	Sx,Sy,Dz ;; If DC = 1: Sx ^ Sy -> Dz, clear LSW of Dz Else: nop ;; 111110********** 10100110xxyyzzzz
+:dct^" pxor" sx,sy,dz is parallel=1 & opcode_08_15=0b10100110 & sx & sy & dz
+{
+    if ($(DSPDCBIT) == 0) goto <done>;
+    dz = (sx ^ sy) & 0xffff0000;
+  <done>
+}
+
+# dcf pxor	Sx,Sy,Dz ;; If DC = 0: Sx ^ Sy -> Dz, clear LSW of Dz Else: nop ;; 111110********** 10100111xxyyzzzz
+:dcf^" pxor" sx,sy,dz is parallel=1 & opcode_08_15=0b10100111 & sx & sy & dz
+{
+    if ($(DSPDCBIT) != 0) goto <done>;
+    dz = (sx ^ sy) & 0xffff0000;
+  <done>
+}
+
+
+#
+# Fixed Decimal Point Multiplcation Instructions
+#
+
+# pmuls	Se,Sf,Dg ;; MSW of Se * MSW of Sf -> Dg ;;111110********** 0100eeff0000gg00
+:pmuls se,sf,dg is parallel=1 & opcode_12_15=0b0100 & se & sf & opcode_04_07=0b0000 & dg & opcode_00_01=0b00
+{
+    local tmpX:4 = se;
+    local tmpY:4 = sf;
+    dg = tmpX * tmpY;
+}
+
+
+#
+# Shift Operation Instructions
+#
+
+# psha		Sx,Sy,Dz ;; If Sy >= 0: Sx << Sy -> Dz
+#                       If Sy < 0: Sx >> Sy -> Dz ;; 111110********** 10010001xxyyzzzz ;; Update                  
+:psha sx,sy,dz is parallel=1 & opcode_08_15=0b10010001 & sx & sy & dz
+{
+    local shift:4 = sy;
+    local cond:1 = (shift s>= 0);
+    dz = (zext(cond != 0) * (sx << shift)) + (zext(cond == 0) * (sx >> -shift));
+    #TODO  FLAGS
+}
+
+# dct psha	Sx,Sy,Dz ;; If DC = 1 & Sy >= 0: Sx << Sy -> Dz
+#                       If DC = 1 & Sy < 0: Sx >> Sy -> Dz
+#                       If DC = 0: nop ;; 111110********** 10010010xxyyzzzz
+:dct^" psha" sx,sy,dz is parallel=1 & opcode_08_15=0b10010010 & sx & sy & dz
+{
+    if ($(DSPDCBIT) == 0) goto <done>;
+    local shift:4 = sy;
+    local cond:1 = (shift s>= 0);
+    dz = (zext(cond != 0) * (sx << shift)) + (zext(cond == 0) * (sx >> -shift));
+  <done>
+}
+
+# dcf psha	Sx,Sy,Dz ;; If DC = 0 & Sy >= 0: Sx << Sy -> Dz
+#                       If DC = 0 & Sy < 0: Sx >> Sy -> Dz
+#                       If DC = 1: nop ;; 111110********** 10010011xxyyzzzz
+:dcf^" psha" sx,sy,dz is parallel=1 & opcode_08_15=0b10010011 & sx & sy & dz
+{
+    if ($(DSPDCBIT) != 0) goto <done>;
+    local shift:4 = sy;
+    local cond:1 = (shift s>= 0);
+    dz = (zext(cond != 0) * (sx << shift)) + (zext(cond == 0) * (sx >> -shift));
+  <done>
+}
+
+# psha		#imm,Dz ;; If imm >= 0: Dz << imm -> Dz
+#                      If imm < 0: Dz >> imm -> Dz ;; 111110********** 00000iiiiiiizzzz ;; Update
+:psha #simm_04_10,dz is parallel=1 & opcode_11_15=0b00000 & simm_04_10 & dz
+{
+    local shift:4 = simm_04_10;
+    local cond:1 = (shift s>= 0);
+    dz = (zext(cond != 0) * (dz << shift)) + (zext(cond == 0) * (dz >> -shift));
+    #TODO  FLAGS
+}
+
+# pshl		Sx,Sy,Dz ;; If Sy >= 0: Sx << Sy -> Dz, clear LSW of Dz
+#                       If Sy < 0: Sx >> Sy -> Dz, clear LSW of Dz ;; 111110********** 10000001xxyyzzzz ;; Update                  
+:pshl sx,sy,dz is parallel=1 & opcode_08_15=0b10000001 & sx & sy & dz
+{
+    local shift:4 = sy;
+    local cond:1 = (shift s>= 0);
+    dz = (zext(cond != 0) * (sx << shift)) + (zext(cond == 0) * (sx >> -shift));
+    dz = dz & 0xffff0000;
+    #TODO  FLAGS
+}
+
+# dct pshl	Sx,Sy,Dz ;; If DC = 1 & Sy >= 0: Sx << Sy -> Dz, clear LSW of Dz
+#                       If DC = 1 & Sy < 0: Sx >> Sy -> Dz, clear LSW of Dz
+#                       If DC = 0: nop ;; 111110********** 10000010xxyyzzzz
+:dct^" pshl" sx,sy,dz is parallel=1 & opcode_08_15=0b10000010 & sx & sy & dz
+{
+    if ($(DSPDCBIT) == 0) goto <done>;
+    local shift:4 = sy;
+    local cond:1 = (shift s>= 0);
+    dz = (zext(cond != 0) * (sx << shift)) + (zext(cond == 0) * (sx >> -shift));
+    dz = dz & 0xffff0000;
+  <done>
+}
+
+# dcf pshl	Sx,Sy,Dz ;; If DC = 0 & Sy >= 0: Sx << Sy -> Dz, clear LSW of Dz
+#                       If DC = 0 & Sy < 0: Sx >> Sy -> Dz, clear LSW of Dz
+#                       If DC = 1: nop ;; 111110********** 10000011xxyyzzzz
+:dcf^" pshl" sx,sy,dz is parallel=1 & opcode_08_15=0b10000011 & sx & sy & dz
+{
+    if ($(DSPDCBIT) != 0) goto <done>;
+    local shift:4 = sy;
+    local cond:1 = (shift s>= 0);
+    dz = (zext(cond != 0) * (sx << shift)) + (zext(cond == 0) * (sx >> -shift));
+    dz = dz & 0xffff0000;
+  <done>
+}
+
+# pshl		#imm,Dz ;; If imm >= 0: Dz << imm -> Dz, clear LSW of Dz
+#                      If imm < 0: Dz >> imm, clear LSW of Dz ;; 111110********** 00010iiiiiiizzzz ;; Update
+:pshl #simm_04_10,dz is parallel=1 & opcode_11_15=0b00010 & simm_04_10 & dz
+{
+    local shift:4 = simm_04_10;
+    local cond:1 = (shift s>= 0);
+    dz = (zext(cond != 0) * (dz << shift)) + (zext(cond == 0) * (dz >> -shift));
+    dz = dz & 0xffff0000;
+    #TODO  FLAGS
+}
+
+
+#
+# System Control Instructions
+#
+
+# plds		Dz,MACH ;; Dz -> MACH ;; 111110********** 111011010000zzzz
+:plds dz,mach is parallel=1 & opcode_04_15=0b111011010000 & dz & mach
+{
+    mach = dz;
+}
+
+# plds		Dz,MACL ;; Dz -> MACL ;; 111110********** 111111010000zzzz
+:plds dz,macl is parallel=1 & opcode_04_15=0b111111010000 & dz & macl
+{
+    macl = dz;
+}
+
+# dct plds	Dz,MACH ;; If DC = 1: Dz -> MACH Else: nop ;; 111110********** 111011100000zzzz
+:dct^" plds" dz,mach is parallel=1 & opcode_04_15=0b111011100000 & dz & mach
+{
+    if ($(DSPDCBIT) == 0) goto <done>;
+    mach = dz;
+  <done>
+}
+
+# dct plds	Dz,MACL ;; If DC = 1: Dz -> MACL Else: nop ;; 111110********** 111111100000zzzz
+:dct^" plds" dz,macl is parallel=1 & opcode_04_15=0b111111100000 & dz & macl
+{
+    if ($(DSPDCBIT) == 0) goto <done>;
+    macl = dz;
+  <done>
+}
+
+# dcf plds	Dz,MACH ;; If DC = 0: Dz -> MACH Else: nop ;; 111110********** 111011110000zzzz
+:dcf^" plds" dz,mach is parallel=1 & opcode_04_15=0b111011110000 & dz & mach
+{
+    if ($(DSPDCBIT) != 0) goto <done>;
+    mach = dz;
+  <done>
+}
+
+# dcf plds	Dz,MACL ;; If DC = 0: Dz -> MACL Else: nop ;; 111110********** 111111110000zzzz
+:dcf^" plds" dz,macl is parallel=1 & opcode_04_15=0b111111110000 & dz & macl
+{
+    if ($(DSPDCBIT) != 0) goto <done>;
+    macl = dz;
+  <done>
+}
+
+# psts		MACH,Dz ;; MACH -> Dz ;; 111110********** 110011010000zzzz
+:psts mach,dz is parallel=1 & opcode_04_15=0b110011010000 & dz & mach
+{
+    dz = mach;
+}
+
+# psts		MACL,Dz ;; MACL -> Dz ;; 111110********** 110111010000zzzz
+:psts macl,dz is parallel=1 & opcode_04_15=0b110111010000 & dz & macl
+{
+    dz = macl;
+}
+
+# dct psts	MACH,Dz ;; If DC = 1: MACH -> Dz Else: nop ;; 111110********** 110011100000zzzz
+:dct^" psts" mach,dz is parallel=1 & opcode_04_15=0b110011100000 & dz & mach
+{
+    if ($(DSPDCBIT) == 0) goto <done>;
+    dz = mach;
+  <done>
+}
+
+# dct psts	MACL,Dz ;; If DC = 1: MACL -> Dz Else: nop ;; 111110********** 110111100000zzzz
+:dct^" psts" macl,dz is parallel=1 & opcode_04_15=0b110111100000 & dz & macl
+{
+    if ($(DSPDCBIT) == 0) goto <done>;
+    dz = macl;
+  <done>
+}
+
+# dcf psts	MACH,Dz ;; If DC = 0: MACH -> Dz Else: nop ;; 111110********** 110011110000zzzz
+:dcf^" psts" mach,dz is parallel=1 & opcode_04_15=0b110011110000 & dz & mach
+{
+    if ($(DSPDCBIT) != 0) goto <done>;
+    dz = mach;
+  <done>
+}
+
+# dcf psts	MACL,Dz ;; If DC = 0: MACL -> Dz Else: nop ;; 111110********** 110111110000zzzz
+:dcf^" psts" macl,dz is parallel=1 & opcode_04_15=0b110111110000 & dz & macl
+{
+    if ($(DSPDCBIT) != 0) goto <done>;
+    dz = macl;
+  <done>
+}
+
+# } # with : parallel=1 [ parallel = 0; ] {
+
+} # with : phase=2
+
+@endif

@@ -1,0 +1,88 @@
+# SH3 instructions
+
+@if defined(SH_DSP)
+with : phase=2 {
+@endif
+
+@if defined(SH3)
+
+
+:ldc rm_08_11,ssr is opcode_12_15=0b0100 & ssr & rm_08_11 & opcode_00_07=0b00111110
+{
+    ssr = rm_08_11;
+}
+
+:ldc.l @rm_08_11,ssr is opcode_12_15=0b0100 & ssr & rm_08_11 & opcode_00_07=0b00110111
+{
+    ssr = *rm_08_11;
+    rm_08_11 = rm_08_11 + 4;
+}
+
+:ldc rm_08_11,spc is opcode_12_15=0b0100 & spc & rm_08_11 & opcode_00_07=0b01001110
+{
+    spc = rm_08_11;
+}
+
+:ldc.l @rm_08_11,spc is opcode_12_15=0b0100 & spc & rm_08_11 & opcode_00_07=0b01000111
+{
+    spc = *rm_08_11;
+    rm_08_11 = rm_08_11 + 4;
+}
+
+#TODO  BANK
+# :ldc rm_08_11, rn_bank is opcode_12_15=0b0100 & rm_08_11 & opcode_07=1 & rn_bank & opcode_00_03=0b1110
+# {
+#     rn_bank = rm_08_11;
+# }
+
+#TODO  BANK
+# :ldc rm_08_11, rn_bank is opcode_12_15=0b0100 & rm_08_11 & opcode_07=1 & rn_bank & opcode_00_03=0b0111
+# {
+#     rn_bank = *rm_08_11;
+#     rm_08_11 = rm_08_11 + 4;
+# }
+
+:sets is opcode_00_15=0b0000000001011000
+{
+    $(S_FLAG) = 1;
+}
+
+:stc ssr,rn_08_11 is opcode_12_15=0b0000 & ssr & rn_08_11 & opcode_00_07=0b00110010
+{
+    rn_08_11 = ssr;
+}
+
+:stc ssr,@-rn_08_11 is opcode_12_15=0b0000 & ssr & rn_08_11 & opcode_00_07=0b00110011
+{
+    rn_08_11 = rn_08_11 - 4;
+    *rn_08_11 = ssr; 
+}
+
+:stc spc,rn_08_11 is opcode_12_15=0b0000 & spc & rn_08_11 & opcode_00_07=0b01000010
+{
+    rn_08_11 = spc;
+}
+
+:stc spc,@-rn_08_11 is opcode_12_15=0b0000 & spc &rn_08_11 & opcode_00_07=0b01000011
+{
+    rn_08_11 = rn_08_11 - 4;
+    *rn_08_11 = spc; 
+}
+
+#TODO BANK
+# :stc rm_bank,rn_08_11 is opcode_12_15=0b0000 & rn_08_11 & opcode_07=1 & rm_bank & opcode_00_03=0b0010
+# {
+#     rn_08_11 = rm_bank;
+# }
+
+# :stc rm_bank,@-rn_08_11 is opcode_12_15=0b0100 & rn_08_11 & opcode_07=1 & rm_bank & opcode_00_03=0b0011
+# {
+#     rn_08_11 = rn_08_11 - 4;
+#     *rn_08_11 = rm_bank;
+# }
+
+@endif
+
+@if defined(SH_DSP)
+}  # with : phase=2
+@endif
