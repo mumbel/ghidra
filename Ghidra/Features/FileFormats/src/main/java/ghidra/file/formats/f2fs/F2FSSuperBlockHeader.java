@@ -9,6 +9,7 @@ import ghidra.program.model.data.ArrayDataType;
 import ghidra.program.model.data.DataType;
 import ghidra.program.model.data.Structure;
 import ghidra.program.model.data.StructureDataType;
+import ghidra.util.Msg;
 import ghidra.util.exception.DuplicateNameException;
 
 public class F2FSSuperBlockHeader implements StructConverter {
@@ -131,8 +132,8 @@ public class F2FSSuperBlockHeader implements StructConverter {
 	}
 	
 	public void dump() {
-		System.out.println(String.format("Superblock  (start=0x%x, end=0x%x)", start_index, end_index));
-		System.out.println(String.format("%d,%d. %08x/%d %08x/%d %08x/%d %08x/%d %08x/%d %08x/%d",
+		Msg.debug(this, String.format("Superblock  (start=0x%x, end=0x%x)", start_index, end_index));
+		Msg.debug(this, String.format("%d,%d. %08x/%d %08x/%d %08x/%d %08x/%d %08x/%d %08x/%d",
 				block_count, segment_count,
 				segment0_blkaddr, section_count,
 				cp_blkaddr, segment_count_ckpt,
@@ -140,11 +141,11 @@ public class F2FSSuperBlockHeader implements StructConverter {
 				nat_blkaddr, segment_count_nat,
 				ssa_blkaddr, segment_count_ssa,
 				main_blkaddr, segment_count_main));
-		System.out.println(String.format("%d %d %d, %d", cp_payload, extension_count, encryption_level, log_blocks_per_seg));
-		System.out.println(String.format("version %s", new String(version, StandardCharsets.UTF_8)));
-		System.out.println(String.format("version %s", new String(init_version, StandardCharsets.UTF_8)));
+		Msg.debug(this, String.format("%d %d %d, %d", cp_payload, extension_count, encryption_level, log_blocks_per_seg));
+		Msg.debug(this, String.format("version %s", new String(version, StandardCharsets.UTF_8)));
+		Msg.debug(this, String.format("version %s", new String(init_version, StandardCharsets.UTF_8)));
 		for (int i = 0; i < extension_count; i++) {
-			System.out.println(String.format("ext %d:  %s", i, new String(extension_list[i], StandardCharsets.UTF_8)));
+			Msg.debug(this, String.format("ext %d:  %s", i, new String(extension_list[i], StandardCharsets.UTF_8)));
 		}
 	}
 	
@@ -399,7 +400,7 @@ public class F2FSSuperBlockHeader implements StructConverter {
 		structure.add(new ArrayDataType(WORD, F2FSConstants.MAX_VOLUME_NAME, WORD.getLength()), "volume_name", null);
 		structure.add(DWORD, "extension_count", null);
 		ArrayDataType ext_item = new ArrayDataType(BYTE, F2FSConstants.F2FS_MAX_EXTENSION, BYTE.getLength());
-		structure.add(new ArrayDataType(ext_item, 8, ext_item.getLength()), "extension_list", null);
+		structure.add(new ArrayDataType(ext_item, F2FSConstants.F2FS_EXTENSION_LEN, ext_item.getLength()), "extension_list", null);
 		structure.add(DWORD, "cp_payload", null);
 		structure.add(new ArrayDataType(BYTE, F2FSConstants.VERSION_LEN, BYTE.getLength()), "version", null);
 		structure.add(new ArrayDataType(BYTE, F2FSConstants.VERSION_LEN, BYTE.getLength()), "init_version", null);

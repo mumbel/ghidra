@@ -7,6 +7,7 @@ import ghidra.app.util.bin.StructConverter;
 import ghidra.program.model.data.DataType;
 import ghidra.program.model.data.Structure;
 import ghidra.program.model.data.StructureDataType;
+import ghidra.util.Msg;
 import ghidra.util.exception.DuplicateNameException;
 
 public class F2FSJournalHeader implements StructConverter {
@@ -45,18 +46,29 @@ public class F2FSJournalHeader implements StructConverter {
 	}
 	
 	public void dump() {
-		System.out.println(String.format("F2FSJournalHeader %s (s=0x%x, e=0x%x)", jtype.name(), start_index, end_index));
+		Msg.debug(this, String.format("F2FSJournalHeader %s (s=0x%x, e=0x%x) n_nats=%d,n_sits=%d",
+				jtype.name(), start_index, end_index, n_nats, n_sits));
 		if (F2FSConstants.F2FSJournalType.NAT_JOURNAL == jtype) {
-			for (int i = 0; i < n_nats; i++) {
-				System.out.println(String.format("\tnid(%d) = %d", i, nat_j.getEntries()[i].getNid()));
+			for (int i = 0; i < F2FSConstants.NAT_JOURNAL_ENTRIES; i++) {
+				Msg.debug(this, String.format("\tnid(%d/%d) = %d, %d, %d, 0x%x",
+						i,
+						F2FSConstants.NAT_JOURNAL_ENTRIES,
+						nat_j.getEntries()[i].getNid(),
+						nat_j.getEntries()[i].getNe().getIno(),
+						nat_j.getEntries()[i].getNe().getVersion(),
+						nat_j.getEntries()[i].getNe().getBlockAddr()));
 			}
 		} else if (F2FSConstants.F2FSJournalType.SIT_JOURNAL == jtype) {
-			for (int i = 0; i < n_sits; i++) {
-				System.out.println(String.format("\tsegno(%d/%d/%d) = %d",
-						i, n_sits, sit_j.getEntries().length, sit_j.getEntries()[i].getSegno()));
+			for (int i = 0; i < F2FSConstants.SIT_JOURNAL_ENTRIES; i++) {
+				Msg.debug(this, String.format("\tsegno(%d/%d) = %d, %d, %d",
+						i,
+						sit_j.getEntries().length,
+						sit_j.getEntries()[i].getSegno(),
+						sit_j.getEntries()[i].getSe().getVblocks(),
+						sit_j.getEntries()[i].getSe().getMtime()));
 			}
 		} else {
-			System.out.println(String.format("\tf2fs_extra_info.kbytes_written 0x%16x", info.getKbytesWritten()));
+			Msg.debug(this, String.format("\tf2fs_extra_info.kbytes_written 0x%16x", info.getKbytesWritten()));
 		}
 	}
 	

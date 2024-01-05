@@ -7,6 +7,7 @@ import ghidra.app.util.bin.StructConverter;
 import ghidra.program.model.data.DataType;
 import ghidra.program.model.data.Structure;
 import ghidra.program.model.data.StructureDataType;
+import ghidra.util.Msg;
 import ghidra.util.exception.DuplicateNameException;
 
 public class F2FSNodeHeader implements StructConverter {
@@ -38,7 +39,7 @@ public class F2FSNodeHeader implements StructConverter {
 			//TODO  this gets garbage... is it a direct or indirect?
 			//TODO  this should maybe determine type
 			long value = footer.getFlag() >> F2FSConstants.F2FSBitShift.OFFSET_BIT_SHIFT.ordinal();
-			System.out.println("TODO: ....... flag "+footer.getFlag()+", ofs "+value);
+			Msg.debug(this, "TODO: ....... flag "+footer.getFlag()+", ofs "+value);
 			reader.setPointerIndex(start_index + F2FSConstants.F2FS_BLKSIZE);
 			end_index = reader.getPointerIndex();
 			dump();
@@ -68,7 +69,7 @@ public class F2FSNodeHeader implements StructConverter {
 	}
 	
 	public void dump() {
-		System.out.println(String.format("F2FSNodeHeader (s=0x%x, e=0x%x)", start_index, end_index));
+		Msg.debug(this, String.format("F2FSNodeHeader (s=0x%x, e=0x%x)", start_index, end_index));
 	}
 	
 	public F2FSDirectNodeHeader getDn() {

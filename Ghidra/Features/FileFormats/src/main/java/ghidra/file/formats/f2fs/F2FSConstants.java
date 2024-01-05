@@ -27,7 +27,8 @@ public class F2FSConstants {
 	
 	//
 	public static final int F2FS_MAX_EXTENSION = 64;
-	
+	public static final int F2FS_EXTENSION_LEN = 8;
+
 	//
 	public static final int VERSION_LEN = 256;
 	
@@ -70,7 +71,9 @@ public class F2FSConstants {
 	public static final int CP_COMPACT_SUM_FLAG		 = 0x00000004;
 	public static final int CP_ORPHAN_PRESENT_FLAG	 = 0x00000002;
 	public static final int CP_UMOUNT_FLAG			 = 0x00000001;
-	
+
+	public static final int F2FS_CP_PACKS = 2;
+    
 	//
 	public static final int F2FS_ORPHANS_PER_BLOCK = 1020;
 
@@ -78,6 +81,16 @@ public class F2FSConstants {
 	public static final int DEF_ADDRS_PER_INODE = 923;
 	public static final int DEF_NIDS_PER_INODE = 5;
 
+	//
+	public static final int F2FS_INLINE_XATTR       = 0x01;    /* file inline xattr flag */
+	public static final int F2FS_INLINE_DATA        = 0x02;    /* file inline data flag */
+	public static final int F2FS_INLINE_DENTRY      = 0x04;    /* file inline dentry flag */
+	public static final int F2FS_DATA_EXIST         = 0x08;    /* file inline data exist flag */
+	public static final int F2FS_INLINE_DOTS        = 0x10;    /* file having implicit dot dentries */
+	public static final int F2FS_EXTRA_ATTR         = 0x20;    /* file having extra attribute */
+	public static final int F2FS_PIN_FILE           = 0x40;    /* file should not be gced */
+	public static final int F2FS_COMPRESS_RELEASED  = 0x80;    /* file released compressed blocks */
+    
 	//
 	public static final int SIT_VBLOCK_MAP_SIZE = 64;
 
@@ -144,12 +157,12 @@ public class F2FSConstants {
 	
 	//TODO ghidra type enum?
 	public enum F2FSCurSegType {
-		CURSEG_HOT_DATA,  // = 0
-		CURSEG_WARM_DATA,
-		CURSEG_COLD_DATA,
-		CURSEG_HOT_NODE,
-		CURSEG_WARM_NODE,
-		CURSEG_COLD_NODE,
+		CURSEG_HOT_DATA,   // contains dentry blocks
+		CURSEG_WARM_DATA,  // contains data blocks except hot and cold data blocks 
+		CURSEG_COLD_DATA,  // contains multimedia data or migrated data blocks
+		CURSEG_HOT_NODE,   // contains direct node blocks of directories
+		CURSEG_WARM_NODE,  // contains direct node blocks except hot node blocks
+		CURSEG_COLD_NODE,  // contains indirect node blocks
 		NO_CHECK_TYPE;
 		
 		public boolean isDataSeg(int i) {

@@ -8,6 +8,7 @@ import ghidra.program.model.data.ArrayDataType;
 import ghidra.program.model.data.DataType;
 import ghidra.program.model.data.Structure;
 import ghidra.program.model.data.StructureDataType;
+import ghidra.util.Msg;
 import ghidra.util.exception.DuplicateNameException;
 
 public class F2FSCheckpointHeader implements StructConverter {
@@ -51,13 +52,10 @@ public class F2FSCheckpointHeader implements StructConverter {
 		rsvd_segment_count = reader.readNextUnsignedInt();
 		overprov_segment_count = reader.readNextUnsignedInt();
 		free_segment_count = reader.readNextUnsignedInt();
-		assert reader.getPointerIndex() - start_index == 0x24;
 		cur_node_segno = reader.readNextIntArray(F2FSConstants.MAX_ACTIVE_NODE_LOGS);
 		cur_node_blkoff = reader.readNextShortArray(F2FSConstants.MAX_ACTIVE_NODE_LOGS);
-		assert reader.getPointerIndex() - start_index == 0x54;
 		cur_data_segno = reader.readNextIntArray(F2FSConstants.MAX_ACTIVE_DATA_LOGS);
 		cur_data_blkoff = reader.readNextShortArray(F2FSConstants.MAX_ACTIVE_DATA_LOGS);
-		assert reader.getPointerIndex() - start_index == 0x84;
 		ckpt_flags = reader.readNextUnsignedInt();
 		cp_pack_total_block_count = reader.readNextUnsignedInt();
 		cp_pack_start_sum = reader.readNextUnsignedInt();
@@ -67,11 +65,8 @@ public class F2FSCheckpointHeader implements StructConverter {
 		sit_ver_bitmap_bytesize = reader.readNextUnsignedInt();
 		nat_ver_bitmap_bytesize = reader.readNextUnsignedInt();
 		checksum_offset = reader.readNextUnsignedInt();
-		assert reader.getPointerIndex() - start_index == 0xa8;
 		elapsed_time = reader.readNextLong();
-		assert reader.getPointerIndex() - start_index == 0xb0;
 		alloc_type = reader.readNextByteArray(F2FSConstants.MAX_ACTIVE_LOGS);
-		assert reader.getPointerIndex() - start_index == 0xc0;
 		sit_nat_version_bitmap = reader.readNextByteArray(1);
 		end_index = reader.getPointerIndex();
 		assert end_index - start_index == 0xc1;
@@ -79,31 +74,31 @@ public class F2FSCheckpointHeader implements StructConverter {
 	}
 	
 	public void dump() {
-		System.out.println(String.format("Checkpoint (start=0x%x, end=0x%x)", start_index, end_index));
-		System.out.println(String.format("CP version: %08x, pack total %d", checkpoint_ver, cp_pack_total_block_count));
-		System.out.println("\tuser count: "+user_block_count+", valid count: "+valid_block_count+
+		Msg.debug(this, String.format("Checkpoint (start=0x%x, end=0x%x)", start_index, end_index));
+		Msg.debug(this, String.format("CP version: %08x, pack total %d", checkpoint_ver, cp_pack_total_block_count));
+		Msg.debug(this, "\tuser count: "+user_block_count+", valid count: "+valid_block_count+
 				", rsvd: "+rsvd_segment_count+", over: "+overprov_segment_count+", free: "+free_segment_count);
-		System.out.println(String.format("\t%x/%x, %x/%x, %x/%x, %x/%x, %x/%x, %x/%x, %x/%x, %x/%x",
-				cur_node_segno[0], cur_node_blkoff[0],
-				cur_node_segno[1], cur_node_blkoff[1],
-				cur_node_segno[2], cur_node_blkoff[2],
+		Msg.debug(this, String.format("\t%x/%x, %x/%x, %x/%x, %x/%x, %x/%x, %x/%x, %x/%x, %x/%x",
+				cur_node_segno[F2FSConstants.F2FSCurSegType.CURSEG_HOT_NODE.ordinal()], cur_node_blkoff[F2FSConstants.F2FSCurSegType.CURSEG_HOT_NODE.ordinal()],
+				cur_node_segno[F2FSConstants.F2FSCurSegType.CURSEG_WARM_NODE.ordinal()], cur_node_blkoff[F2FSConstants.F2FSCurSegType.CURSEG_WARM_NODE.ordinal()],
+				cur_node_segno[F2FSConstants.F2FSCurSegType.CURSEG_COLD_NODE.ordinal()], cur_node_blkoff[F2FSConstants.F2FSCurSegType.CURSEG_COLD_NODE.ordinal()],
 				cur_node_segno[3], cur_node_blkoff[3],
 				cur_node_segno[4], cur_node_blkoff[4],
 				cur_node_segno[5], cur_node_blkoff[5],
 				cur_node_segno[6], cur_node_blkoff[6],
 				cur_node_segno[7], cur_node_blkoff[7]));
-		System.out.println(String.format("\t%x/%x, %x/%x, %x/%x, %x/%x, %x/%x, %x/%x, %x/%x, %x/%x",
-				cur_data_segno[0], cur_data_blkoff[0],
-				cur_data_segno[1], cur_data_blkoff[1],
-				cur_data_segno[2], cur_data_blkoff[2],
+		Msg.debug(this, String.format("\t%x/%x, %x/%x, %x/%x, %x/%x, %x/%x, %x/%x, %x/%x, %x/%x",
+				cur_data_segno[F2FSConstants.F2FSCurSegType.CURSEG_HOT_DATA.ordinal()], cur_data_blkoff[F2FSConstants.F2FSCurSegType.CURSEG_HOT_DATA.ordinal()],
+				cur_data_segno[F2FSConstants.F2FSCurSegType.CURSEG_WARM_DATA.ordinal()], cur_data_blkoff[F2FSConstants.F2FSCurSegType.CURSEG_WARM_DATA.ordinal()],
+				cur_data_segno[F2FSConstants.F2FSCurSegType.CURSEG_COLD_DATA.ordinal()], cur_data_blkoff[F2FSConstants.F2FSCurSegType.CURSEG_COLD_DATA.ordinal()],
 				cur_data_segno[3], cur_data_blkoff[3],
 				cur_data_segno[4], cur_data_blkoff[4],
 				cur_data_segno[5], cur_data_blkoff[5],
 				cur_data_segno[6], cur_data_blkoff[6],
 				cur_data_segno[7], cur_data_blkoff[7]));
-		System.out.println("ckpt_flags: "+ckpt_flags);
-		System.out.println("checksum offset: "+checksum_offset);
-		System.out.println("elapsed_time: "+elapsed_time);
+		Msg.debug(this, "ckpt_flags: "+ckpt_flags);
+		Msg.debug(this, "checksum offset: "+checksum_offset);
+		Msg.debug(this, "elapsed_time: "+elapsed_time);
 	}
 	
 	public boolean validateCheckpoint() {

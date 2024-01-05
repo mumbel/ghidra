@@ -7,6 +7,7 @@ import ghidra.app.util.bin.StructConverter;
 import ghidra.program.model.data.DataType;
 import ghidra.program.model.data.Structure;
 import ghidra.program.model.data.StructureDataType;
+import ghidra.util.Msg;
 import ghidra.util.exception.DuplicateNameException;
 
 public class F2FSExtentHeader implements StructConverter {
@@ -36,7 +37,7 @@ public class F2FSExtentHeader implements StructConverter {
 	}
 	
 	public void dump() {
-		System.out.println(String.format("F2FSExtentHeader (s=0x%x, e=0x%x) fofs %x, blk_addr %x, len %d",
+		Msg.debug(this, String.format("F2FSExtentHeader (s=0x%x, e=0x%x) fofs %x, blk_addr %x, len %d",
 				start_index, end_index, fofs, blk_addr, len));		
 	}
 

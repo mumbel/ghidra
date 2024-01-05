@@ -8,6 +8,7 @@ import ghidra.program.model.data.ArrayDataType;
 import ghidra.program.model.data.DataType;
 import ghidra.program.model.data.Structure;
 import ghidra.program.model.data.StructureDataType;
+import ghidra.util.Msg;
 import ghidra.util.exception.DuplicateNameException;
 
 public class F2FSDentryBlockHeader implements StructConverter {
@@ -45,7 +46,7 @@ public class F2FSDentryBlockHeader implements StructConverter {
 	}
 	
 	public void dump() {
-		System.out.println(String.format("F2FSDentryBlockHeader (s=0x%x, e=0x%x)", start_index, end_index));
+		Msg.debug(this, String.format("F2FSDentryBlockHeader (s=0x%x, e=0x%x)", start_index, end_index));
 	}
 	
 	public byte[] getDentryBitmap() {

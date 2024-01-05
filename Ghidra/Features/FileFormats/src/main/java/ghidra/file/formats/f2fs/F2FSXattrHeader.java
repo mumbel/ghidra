@@ -5,6 +5,7 @@ import java.io.IOException;
 import ghidra.app.util.bin.BinaryReader;
 import ghidra.app.util.bin.StructConverter;
 import ghidra.program.model.data.DataType;
+import ghidra.util.Msg;
 import ghidra.util.exception.DuplicateNameException;
 
 public class F2FSXattrHeader implements StructConverter {
@@ -34,7 +35,7 @@ public class F2FSXattrHeader implements StructConverter {
 	}
 	
 	public void dump() {
-		System.out.println(String.format("F2FSXattrHeader (s=0x%x, e=0x%x)", start_index, end_index));
+		Msg.debug(this, String.format("F2FSXattrHeader (s=0x%x, e=0x%x)", start_index, end_index));
 	}
 	
 	public long getMagic() {

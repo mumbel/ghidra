@@ -7,6 +7,7 @@ import ghidra.app.util.bin.StructConverter;
 import ghidra.program.model.data.DataType;
 import ghidra.program.model.data.Structure;
 import ghidra.program.model.data.StructureDataType;
+import ghidra.util.Msg;
 import ghidra.util.exception.DuplicateNameException;
 
 public class F2FSNodeFooterHeader implements StructConverter {
@@ -40,7 +41,7 @@ public class F2FSNodeFooterHeader implements StructConverter {
 	}
 
 	public void dump() {
-		System.out.println(String.format("F2FSNodeFooterHeader (s=0x%x, e=0x%x) nid %d, ino %d, flag 0x%x, cp_ver 0x%x, next_blkaddr 0x%x",
+		Msg.debug(this, String.format("F2FSNodeFooterHeader (s=0x%x, e=0x%x) nid %d, ino %d, flag 0x%x, cp_ver 0x%x, next_blkaddr 0x%x",
 				start_index, end_index, nid, ino, flag, cp_ver, next_blkaddr));
 	}
 

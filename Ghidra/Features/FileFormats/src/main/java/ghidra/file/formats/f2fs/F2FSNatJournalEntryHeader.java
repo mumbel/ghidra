@@ -7,6 +7,7 @@ import ghidra.app.util.bin.StructConverter;
 import ghidra.program.model.data.DataType;
 import ghidra.program.model.data.Structure;
 import ghidra.program.model.data.StructureDataType;
+import ghidra.util.Msg;
 import ghidra.util.exception.DuplicateNameException;
 
 public class F2FSNatJournalEntryHeader implements StructConverter {
@@ -32,7 +33,7 @@ public class F2FSNatJournalEntryHeader implements StructConverter {
 	}
 	
 	public void dump() {
-		System.out.println(String.format("F2FSNatJournalEntryHeader (s=0x%x, e=0x%x) nid %d",
+		Msg.debug(this, String.format("F2FSNatJournalEntryHeader (s=0x%x, e=0x%x) nid %d",
 				start_index, end_index, nid));
 	}
 	

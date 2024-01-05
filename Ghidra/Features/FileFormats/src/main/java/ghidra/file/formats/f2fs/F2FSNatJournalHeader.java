@@ -8,6 +8,7 @@ import ghidra.program.model.data.ArrayDataType;
 import ghidra.program.model.data.DataType;
 import ghidra.program.model.data.Structure;
 import ghidra.program.model.data.StructureDataType;
+import ghidra.util.Msg;
 import ghidra.util.exception.DuplicateNameException;
 
 public class F2FSNatJournalHeader implements StructConverter {
@@ -31,13 +32,12 @@ public class F2FSNatJournalHeader implements StructConverter {
 		}
 		reserved = reader.readNextByteArray(F2FSConstants.NAT_JOURNAL_RESERVED);
 		end_index = reader.getPointerIndex();
-		System.out.println(start_index + " " + end_index + " " + 0x1f9);
 		assert end_index - start_index == 0x1f9;
 		dump();
 	}
 	
 	public void dump() {
-		System.out.println(String.format("F2FSNatJournalHeader (s=0x%x, e=0x%x)", start_index, end_index));
+		Msg.debug(this, String.format("F2FSNatJournalHeader (s=0x%x, e=0x%x)", start_index, end_index));
 	}
 	
 	public F2FSNatJournalEntryHeader[] getEntries() {

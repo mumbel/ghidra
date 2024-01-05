@@ -7,6 +7,7 @@ import ghidra.app.util.bin.StructConverter;
 import ghidra.program.model.data.DataType;
 import ghidra.program.model.data.Structure;
 import ghidra.program.model.data.StructureDataType;
+import ghidra.util.Msg;
 import ghidra.util.exception.DuplicateNameException;
 
 public class F2FSSummaryHeader implements StructConverter {
@@ -34,7 +35,7 @@ public class F2FSSummaryHeader implements StructConverter {
 	}
 	
 	public void dump() {
-		System.out.println(String.format("F2FSSummaryHeader (s=0x%x, e=0x%x) nid=%d, version=%d, ofs_in_mode=%d",
+		Msg.debug(this, String.format("F2FSSummaryHeader (s=0x%x, e=0x%x) nid=%d, version=%d, ofs_in_mode=%d",
 				start_index, end_index, nid, version, ofs_in_mode));
 	}
 

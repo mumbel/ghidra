@@ -7,6 +7,7 @@ import ghidra.app.util.bin.StructConverter;
 import ghidra.program.model.data.DataType;
 import ghidra.program.model.data.Structure;
 import ghidra.program.model.data.StructureDataType;
+import ghidra.util.Msg;
 import ghidra.util.exception.DuplicateNameException;
 
 public class F2FSNatEntryHeader implements StructConverter {
@@ -34,8 +35,9 @@ public class F2FSNatEntryHeader implements StructConverter {
 	}
 	
 	public void dump() {
-		System.out.println(String.format("F2FSNatEntryHeader (s=0x%x, e=0x%x), ver %d, ino %d, addr 0x%x",
-				start_index, end_index, version, ino, block_addr));
+		if (version == 0 && ino == 0 && block_addr == 0)
+			return;
+		Msg.debug(this, String.format("F2FSNatEntryHeader (s=0x%x, e=0x%x), ver %d, ino %d, addr 0x%x", start_index, end_index, version, ino, block_addr));
 	}
 	
 	public int getVersion() {

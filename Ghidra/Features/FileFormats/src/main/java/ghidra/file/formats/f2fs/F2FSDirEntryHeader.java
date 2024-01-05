@@ -7,6 +7,7 @@ import ghidra.app.util.bin.StructConverter;
 import ghidra.program.model.data.DataType;
 import ghidra.program.model.data.Structure;
 import ghidra.program.model.data.StructureDataType;
+import ghidra.util.Msg;
 import ghidra.util.exception.DuplicateNameException;
 
 public class F2FSDirEntryHeader implements StructConverter {
@@ -38,7 +39,8 @@ public class F2FSDirEntryHeader implements StructConverter {
 	}
 	
 	public void dump() {
-		System.out.println(String.format("F2FSDirEntryHeader (s=0x%x, e=0x%x)", start_index, end_index));
+		Msg.debug(this, String.format("F2FSDirEntryHeader (s=0x%x, e=0x%x) hash %x ino %d len %d ftype %d",
+				start_index, end_index, hash_code, ino, name_len, file_type));
 	}
 	
 	public long getHashCode() {

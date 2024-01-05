@@ -8,6 +8,7 @@ import ghidra.program.model.data.ArrayDataType;
 import ghidra.program.model.data.DataType;
 import ghidra.program.model.data.Structure;
 import ghidra.program.model.data.StructureDataType;
+import ghidra.util.Msg;
 import ghidra.util.exception.DuplicateNameException;
 
 public class F2FSSitEntryHeader implements StructConverter {
@@ -35,11 +36,7 @@ public class F2FSSitEntryHeader implements StructConverter {
 	}
 	
 	public void dump() {
-		if (vblocks == 0xffff || mtime == -1)
-			return;
-		if (vblocks == 0 && mtime == 0)
-			return;
-		System.out.println(String.format("F2FSSitEntryHeader (s=0x%x, e=0x%x) vblocks %d, mtime %d", start_index, end_index, vblocks, mtime));
+		Msg.debug(this, String.format("F2FSSitEntryHeader (s=0x%x, e=0x%x) vblocks %d, mtime %d", start_index, end_index, vblocks, mtime));
 	}
 	
 	public int getVblocks() {

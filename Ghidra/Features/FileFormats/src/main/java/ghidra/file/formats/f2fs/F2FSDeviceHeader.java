@@ -9,6 +9,7 @@ import ghidra.program.model.data.ArrayDataType;
 import ghidra.program.model.data.DataType;
 import ghidra.program.model.data.Structure;
 import ghidra.program.model.data.StructureDataType;
+import ghidra.util.Msg;
 import ghidra.util.exception.DuplicateNameException;
 
 public class F2FSDeviceHeader implements StructConverter {
@@ -34,7 +35,7 @@ public class F2FSDeviceHeader implements StructConverter {
 	}
 	
 	public void dump() {
-		System.out.println(String.format("total_segments %d, path=%s", total_segments, new String(path, StandardCharsets.UTF_8)));
+		Msg.debug(this, String.format("total_segments %d, path=%s", total_segments, new String(path, StandardCharsets.UTF_8)));
 	}
 	
 	public byte[] getPath() {

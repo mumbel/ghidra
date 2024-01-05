@@ -8,6 +8,7 @@ import ghidra.program.model.data.ArrayDataType;
 import ghidra.program.model.data.DataType;
 import ghidra.program.model.data.Structure;
 import ghidra.program.model.data.StructureDataType;
+import ghidra.util.Msg;
 import ghidra.util.exception.DuplicateNameException;
 
 public class F2FSSummaryBlockHeader implements StructConverter {
@@ -30,9 +31,7 @@ public class F2FSSummaryBlockHeader implements StructConverter {
 		for (int i = 0; i < F2FSConstants.ENTRIES_IN_SUM; i++) {
 			entries[i] = new F2FSSummaryHeader(reader);
 		}
-		assert reader.getPointerIndex() - start_index == 0xe00;
 		journal = new F2FSJournalHeader(reader, F2FSConstants.F2FSJournalType.SIT_JOURNAL);
-		assert reader.getPointerIndex() - start_index == 0xffb;
 		footer = new F2FSSummaryFooterHeader(reader);
 		end_index = reader.getPointerIndex();
 		assert end_index - start_index == F2FSConstants.F2FS_BLKSIZE;
@@ -40,7 +39,7 @@ public class F2FSSummaryBlockHeader implements StructConverter {
 	}
 	
 	public void dump() {
-		System.out.println(String.format("F2FSSummaryBlockHeader (s=0x%x, e=0x%x)", start_index, end_index));
+		Msg.debug(this, String.format("F2FSSummaryBlockHeader (s=0x%x, e=0x%x)", start_index, end_index));
 	}
 	
 	public F2FSSummaryHeader[] getEntries() {

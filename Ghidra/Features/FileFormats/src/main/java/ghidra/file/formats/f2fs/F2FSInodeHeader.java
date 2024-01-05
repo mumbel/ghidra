@@ -9,6 +9,7 @@ import ghidra.program.model.data.ArrayDataType;
 import ghidra.program.model.data.DataType;
 import ghidra.program.model.data.Structure;
 import ghidra.program.model.data.StructureDataType;
+import ghidra.util.Msg;
 import ghidra.util.exception.DuplicateNameException;
 
 public class F2FSInodeHeader implements StructConverter {
@@ -128,15 +129,15 @@ public class F2FSInodeHeader implements StructConverter {
 	}
 	
 	public void dump() {
-		System.out.println(String.format("F2FSInodeHeader (s=0x%x, e=0x%x)", start_index, end_index));
+		Msg.debug(this, String.format("F2FSInodeHeader (s=0x%x, e=0x%x)", start_index, end_index));
 		if (i_mode != 0xffff) {
-			System.out.println(String.format("\tmode=%o, uid=%d, gid=%d, size=0x%x, blocks=%d, name=%s",
+			Msg.debug(this, String.format("\tmode=%o, uid=%d, gid=%d, size=0x%x, blocks=%d, name=%s",
 				i_mode, i_uid, i_gid, i_size, i_blocks,
 				new String(i_name, StandardCharsets.UTF_8)));
-			System.out.println(String.format("gen %x, depth %d, level %d", i_generation, i_current_depth, i_dir_level));
-			System.out.println(String.format("i_addrs [%x, %x, %x, %x, %x,...]",
+			Msg.debug(this, String.format("gen %x, depth %d, level %d", i_generation, i_current_depth, i_dir_level));
+			Msg.debug(this, String.format("i_addrs [%x, %x, %x, %x, %x,...]",
 					i_addr[0], i_addr[1], i_addr[2], i_addr[3], i_addr[4]));
-			System.out.println(String.format("i_nid [%d, %d, %d, %d, %d]",
+			Msg.debug(this, String.format("i_nid [%d, %d, %d, %d, %d]",
 					i_nid[0], i_nid[1], i_nid[2], i_nid[3], i_nid[4]));
 		}
 	}
