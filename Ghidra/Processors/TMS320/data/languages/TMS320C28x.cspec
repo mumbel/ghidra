@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<compiler_spec>
+  <data_organization>
+    <absolute_max_alignment value="0" />
+    <machine_alignment value="1" />
+    <default_alignment value="1" />
+    <default_pointer_alignment value="4" />
+    <pointer_size value="4" />
+    <char_size value="2" />
+    <short_size value="2" />
+    <integer_size value="2" />
+    <long_size value="4" />
+    <long_long_size value="8" />
+    <float_size value="4" />
+    <double_size value="4" />
+    <size_alignment_map>
+      <entry size="1" alignment="1" />
+      <entry size="2" alignment="2" />
+      <entry size="4" alignment="4" />
+      <entry size="8" alignment="4" />
+    </size_alignment_map>
+  </data_organization>
+  <returnaddress>
+    <register name="RPC" />
+  </returnaddress>
+  <stackpointer register="SP" space="ram" />
+  <default_proto>
+    <prototype name="__stdcall" extrapop="0" stackshift="0">
+      <input>
+        <pentry minsize="1" maxsize="4">
+	  <register name="ACC" />
+	</pentry>
+        <pentry minsize="1" maxsize="4">
+	  <register name="XAR4" /> <!-- pointer -->
+	</pentry>
+        <pentry minsize="1" maxsize="4">
+	  <register name="XAR5" /> <!-- pointer -->
+	</pentry>
+      </input>
+      <output>
+        <pentry minsize="1" maxsize="4">
+	  <register name="ACC" />
+	</pentry>        
+      </output>
+      <unaffected>
+        <register name="XAR1" />
+	<register name="XAR2" />
+	<register name="XAR3" />
+      </unaffected>
+      <killedbycall>
+	<register name="XAR0" />
+	<register name="XAR4" />
+	<register name="XAR5" />
+	<register name="XAR6" />
+	<register name="XAR7" />
+	<register name="DP" />
+	<register name="IFR" />
+	<register name="IER" />
+	<register name="DBGIER" />
+	<register name="ST0" />
+	<register name="ST1" />
+	<register name="XT" />
+      </killedbycall>
+    </prototype>
+  </default_proto>
+</compiler_spec>

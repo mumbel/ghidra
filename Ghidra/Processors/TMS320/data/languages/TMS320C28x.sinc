@@ -1,0 +1,2280 @@
+
+define endian=little;
+define alignment=2;
+
+define space ram type=ram_space size=4 default;
+define space register type=register_space size=4;
+
+define register offset=0 size=4 [ XT P ACC ];
+define register offset=0 size=2 [ T TL PH PL AH AL ];
+
+define register offset=0x10 size=4 [ XAR0 XAR1 XAR2 XAR3 XAR4 XAR5 XAR6 XAR7 ];
+define register offset=0x10 size=2 [ AR0H AR0 AR1H AR1 AR2H AR2 AR3H AR3
+                                     AR4H AR4 AR5H AR5 AR6H AR6 AR7H AR7 ];
+
+define register offset=0x40 size=2 [ SP DP ];
+define register offset=0x50 size=2 [ ST0 ST1 ];
+define register offset=0x60 size=2 [ IER DBGIER IFR ];
+
+define register offset=0x70 size=3 [ PC RPC];
+
+
+# ST0 fake register fields
+define register offset=0x100 size=1 [ OVC PM V N Z C TC OVM SXM ];
+
+# ST1 fake register fields (OBJMODE AMODE in context)
+define register offset=0x200 size=1 [ ARP XF M0M1MAP IDLESTAT
+                                      EALLOW VMAP PAGE0 DBGM INTM ];
+
+define register offset=0x1000 size=4 [ contextreg ];
+define context contextreg
+  OBJMODE = ( 0,  0)
+  AMODE = ( 1,  1)
+;
+
+define token opcode (16)
+  op07 = ( 0,  7)
+  op0F = ( 0, 15)
+  op1F = ( 1, 15)
+  op37 = ( 3,  7)
+  op3F = ( 3, 15)
+  op4F = ( 4, 15)
+  op5F = ( 5, 15)
+  op6F = ( 6, 15)
+  op67 = ( 6,  7)
+  op7  = ( 7,  7)
+  op7F = ( 7, 15)
+  op8F = ( 8, 15)
+  op9F = ( 9, 15)
+  opAF = (10, 15)
+  opBF = (11, 15)
+  opCF = (12, 15)
+  AX0 = ( 0,  0)
+  AX4 = ( 4,  4)
+  AX8 = ( 8,  8)
+  shift = ( 0, 3)
+  shift1 = ( 0, 3)
+  shf = ( 8, 10)
+  shft = ( 8, 11)
+  index = ( 8, 11)
+  vector = ( 0,  4)
+  imm3 = ( 0,  2)
+  imm33 = ( 3,  5)
+  imm4 = ( 0,  3)
+  imm84 = ( 8, 11)
+  imm6 = ( 0,  5)
+  imm7 = ( 0,  6)
+  imm8 = ( 0,  7)
+  imm88 = ( 8, 15)
+  imm10 = ( 0,  9)
+  imm16 = ( 0, 15)
+  simm8 = ( 0,  7) signed
+  simm16 = ( 0, 15) signed
+  arn0 = ( 0,  2)
+  arn3 = ( 3,  5)
+  arn0h = ( 0,  2)
+  xarn0 = ( 0,  2)
+  arn8 = ( 8, 10)
+  arn8h = ( 8, 10)
+  xarn8 = ( 8, 10)
+;
+
+define token xopcode (32)
+  xop6F = (22, 31)
+  imm22 = ( 0, 21)
+;
+
+attach values [ shift1 ] [ 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 ];
+
+attach values [ shf ] [ 1 2 3 4 5 6 7 8 ];
+
+attach variables [ AX0 AX4 AX8 ] [ AL AH ];
+
+attach variables [ xarn0 xarn8 ] [ XAR0 XAR1 XAR2 XAR3
+                                   XAR4 XAR5 XAR6 XAR7 ];
+
+attach variables [ arn0 arn3 arn8 ] [ AR0 AR1 AR2 AR3
+                                      AR4 AR5 AR6 AR7 ];
+attach variables [ arn0h arn8h ] [ AR0H AR1H AR2H AR3H
+                                   AR4H AR5H AR6H AR7H ];
+
+#
+# Constructors
+#
+
+soff16: addr is simm16 [ addr = inst_start + simm16; ] { local ea:3 = addr; export ea; }
+
+soff8: addr is simm8 [ addr = inst_start + simm8; ] { local ea:3 = addr; export ea; }
+
+# TODO
+PA: imm16 is imm16 { local tmp:2 = imm16; export tmp; }
+
+# TODO
+intx: imm4 is imm4 { local tmp:1 = imm4; export tmp; }
+
+# TODO
+arpn: imm3 is imm3 { local tmp:1 = imm3; export tmp; }
+
+pma: addr is imm16 [ addr = 0x3f0000 | imm16; ] { local ea:3 = addr; export ea; }
+
+COND0: "NEQ"  is imm4=0x0 { local tmp:1 = (Z == 0); export tmp; }
+COND0: "EQ"   is imm4=0x1 { local tmp:1 = (Z != 0); export tmp; }
+COND0: "GT"   is imm4=0x2 { local tmp:1 = (Z == 0) & (N == 0); export tmp; }
+COND0: "GEQ"  is imm4=0x3 { local tmp:1 = (N == 0); export tmp; }
+COND0: "LT"   is imm4=0x4 { local tmp:1 = (N != 0); export tmp; }
+COND0: "LEQ"  is imm4=0x5 { local tmp:1 = (Z != 0) | (N != 0); export tmp; }
+COND0: "HI"   is imm4=0x6 { local tmp:1 = (C != 0) & (Z == 0); export tmp; }
+COND0: "C"    is imm4=0x7 { local tmp:1 = (C != 0); export tmp; }
+COND0: "NC"   is imm4=0x8 { local tmp:1 = (C == 0); export tmp; }
+COND0: "LOS"  is imm4=0x9 { local tmp:1 = (C == 0) & (Z != 0); export tmp; }
+COND0: "NOV"  is imm4=0xa { local tmp:1 = (V == 0); export tmp; }
+COND0: "OV"   is imm4=0xb { local tmp:1 = (V != 0); export tmp; }
+COND0: "NTC"  is imm4=0xc { local tmp:1 = (TC == 0); export tmp; }
+COND0: "TC"   is imm4=0xd { local tmp:1 = (TC != 0); export tmp; }
+COND0: "NBIO" is imm4=0xe { local tmp:1 = 0; export tmp; } #TODO BIO
+COND0: "UNC"  is imm4=0xf { local tmp:1 = 1; export tmp; }
+
+COND8: "NEQ"  is imm84=0x0 { local tmp:1 = (Z == 0); export tmp; }
+COND8: "EQ"   is imm84=0x1 { local tmp:1 = (Z != 0); export tmp; }
+COND8: "GT"   is imm84=0x2 { local tmp:1 = (Z == 0) & (N == 0); export tmp; }
+COND8: "GEQ"  is imm84=0x3 { local tmp:1 = (N == 0); export tmp; }
+COND8: "LT"   is imm84=0x4 { local tmp:1 = (N != 0); export tmp; }
+COND8: "LEQ"  is imm84=0x5 { local tmp:1 = (Z != 0) | (N != 0); export tmp; }
+COND8: "HI"   is imm84=0x6 { local tmp:1 = (C != 0) & (Z == 0); export tmp; }
+COND8: "C"    is imm84=0x7 { local tmp:1 = (C != 0); export tmp; }
+COND8: "NC"   is imm84=0x8 { local tmp:1 = (C == 0); export tmp; }
+COND8: "LOS"  is imm84=0x9 { local tmp:1 = (C == 0) & (Z != 0); export tmp; }
+COND8: "NOV"  is imm84=0xa { local tmp:1 = (V == 0); export tmp; }
+COND8: "OV"   is imm84=0xb { local tmp:1 = (V != 0); export tmp; }
+COND8: "NTC"  is imm84=0xc { local tmp:1 = (TC == 0); export tmp; }
+COND8: "TC"   is imm84=0xd { local tmp:1 = (TC != 0); export tmp; }
+COND8: "NBIO" is imm84=0xe { local tmp:1 = 0; export tmp; } #TODO BIO
+COND8: "UNC"  is imm84=0xf { local tmp:1 = 1; export tmp; }
+
+
+#
+# addressing modes
+#
+
+# Direct Addressing Modes (DP)
+
+loc16: imm6 is AMODE=0 & imm6 & op67=0x0 { local tmp:4 = imm6; export tmp; }
+loc16: imm7 is AMODE=1 & imm7 & op7=0x0  { local tmp:4 = imm7; export tmp; }
+
+loc32: imm6 is AMODE=0 & imm6 & op67=0x0 { local tmp:4 = imm6; export tmp; }
+loc32: imm7 is AMODE=1 & imm7 & op7=0x0  { local tmp:4 = imm7; export tmp; }
+
+# Stack Addressing Modes (SP)
+loc16: *-SP[imm6] is AMODE=0 & SP & imm6 & op67=0x1 { local ea:4 = zext(SP); ea = ea + imm6; local tmp:4 = *:4 ea; export tmp; }
+loc16: *SP++      is           SP & op07=0xBD       { local ea:4 = zext(SP); local tmp:4 = *:4 ea; SP = SP + 4;   export tmp; }
+loc16: *--SP      is           SP & op07=0xBE       { SP = SP - 4; local ea:4 = zext(SP); local tmp:4 = *:4 ea;   export tmp; }
+
+loc32: *-SP[imm6] is AMODE=0 & SP & imm6 & op67=0x1 { local ea:4 = zext(SP); ea = ea + imm6; local tmp:4 = *:4 ea; export tmp; }
+loc32: *SP++      is           SP & op07=0xBD       { local ea:4 = zext(SP) ; local tmp:4 = *:4 ea; SP = SP + 4;   export tmp; }
+loc32: *--SP      is           SP & op07=0xBE       { SP = SP - 4; local ea:4 = zext(SP) ; local tmp:4 = *:4 ea;   export tmp; }
+
+# Indirect Addressing Modes
+# Indirect Addressing Modes (XAR0 to XAR7)
+
+loc16: *xarn0++       is                   xarn0 & op37=0x10 { local tmp:4 = *:4 xarn0; xarn0 = xarn0 + 4; export tmp; }
+loc16: *--xarn0       is                   xarn0 & op37=0x11 { xarn0 = xarn0 - 4; local tmp:4 = *:4 xarn0; export tmp; }
+loc16: *+xarn0[AR0]   is           AR0   & xarn0 & op37=0x12 { local tmp:4 = *:4 (xarn0 + zext(AR0));      export tmp; }
+loc16: *+xarn0[AR1]   is           AR1   & xarn0 & op37=0x13 { local tmp:4 = *:4 (xarn0 + zext(AR1));      export tmp; }
+loc16: *+xarn0[imm33] is AMODE=0 & imm33 & xarn0 & op37=0x13 { local tmp:4 = *:4 (xarn0 + imm33);          export tmp; }
+
+loc32: *xarn0++       is                   xarn0 & op37=0x10 { local tmp:4 = *:4 xarn0; xarn0 = xarn0 + 4; export tmp; }
+loc32: *--xarn0       is                   xarn0 & op37=0x11 { xarn0 = xarn0 - 4; local tmp:4 = *:4 xarn0; export tmp; }
+loc32: *+xarn0[AR0]   is           AR0   & xarn0 & op37=0x12 { local tmp:4 = *:4 (xarn0 + zext(AR0));      export tmp; }
+loc32: *+xarn0[AR1]   is           AR1   & xarn0 & op37=0x13 { local tmp:4 = *:4 (xarn0 + zext(AR1));      export tmp; }
+loc32: *+xarn0[imm33] is AMODE=0 & imm33 & xarn0 & op37=0x13 { local tmp:4 = *:4 (xarn0 + imm33);          export tmp; }
+
+
+# Indirect Addressing Modes (ARP, XAR0 to XAR7)
+
+# Circular Indirect Addressing Modes (XAR6, XAR1)
+
+# Register Addressing Modes
+# 32-bit Register Addressing Modes
+
+loc16: xarn0 is xarn0 & op37=0x14 { local tmp:4 = xarn0; export tmp; }
+loc16: ACC   is ACC   & op07=0xA9 { local tmp:4 = ACC; export tmp; }
+loc16: P     is P     & op07=0xAB { local tmp:4 = P; export tmp; }
+loc16: XT    is XT    & op07=0xAC { local tmp:4 = XT; export tmp; }
+loc32: xarn0 is xarn0 & op37=0x14 { local tmp:4 = xarn0; export tmp; }
+loc32: ACC   is ACC   & op07=0xA9 { local tmp:4 = ACC; export tmp; }
+loc32: P     is P     & op07=0xAB { local tmp:4 = P; export tmp; }
+loc32: XT    is XT    & op07=0xAC { local tmp:4 = XT; export tmp; }
+
+# 16-bit Register Addressing Modes
+
+# Data/Program/IO Space Immediate Addressing Modes
+
+# Program Space Indirect Addressing Modes
+
+# Byte Addressing Modes
+
+#TODO
+#loc16: imm8 is imm8 { local tmp:4 = imm8; export tmp; }
+#loc32: imm8 is imm8 { local tmp:4 = imm8; export tmp; }
+
+
+#
+# Instructions
+#
+
+
+# ABORTI  Abort Interrupt
+# X ; - ; 0000 0000 0000 0001
+:ABORTI is op0F=0x0001 unimpl
+
+
+# ABS ACC  Absolute Value of Accumulator
+# X ; - ; 1111 1111 0101 0110
+:ABS ACC is op0F=0xff56 & ACC unimpl
+
+
+# ABSTC ACC  Absolute Value of Accumumlator and Load TC
+# 1 ; - ; 0101 0110 0101 1111
+:ABSTC ACC is OBJMODE=1 & op0F=0x565f & ACC unimpl
+
+
+# ADD ACC,#16bit<<#0..15  Add Value to Accumulator
+# X ; - ; 1111 1111 0001 SHFT CCCC CCCC CCCC CCCC
+:ADD ACC,#imm16<<shift is op4F=0xff1 & ACC & shift ; imm16
+{
+	# TODO flags
+	# TODO modes
+	local tmp:4 = imm16 << shift;
+	ACC = ACC + tmp;
+}
+
+
+# ADD ACC,loc16<<T  Add Value to Accumulator
+# 1 ; - ; 0101 0110 0010 0011 0000 0000 LLLL LLLL
+:ADD ACC,loc16<<T is OBJMODE=1 & op0F=0x5623 & ACC & T ; op8F=0x00 & loc16
+{
+	# TODO flags
+	# TODO modes
+	local tmp:4 = loc16 << T;
+	ACC = ACC + tmp;
+}
+
+
+# ADD ACC,loc16<<#0..16  Add Value to Accumulator
+# 1 ; Y ; 1000 0001 LLLL LLLL
+:ADD ACC,loc16<<0 is OBJMODE=1 & op8F=0x81 & ACC & loc16
+{
+	# TODO flags
+	# TODO modes
+	ACC = ACC + loc16;
+}
+# 1 ; Y ; 0101 0110 0000 0100 0000 SHFT LLLL LLLL
+:ADD ACC,loc16<<shft is OBJMODE=1 & op0F=0x5604 & ACC ; opCF=0x0 & shft & loc16
+{
+	# TODO flags
+	# TODO modes
+	local tmp:4 = loc16 << shft;
+	ACC = ACC + tmp;
+}
+# X ; Y ; 0000 0101 LLLL LLLL
+:ADD ACC,loc16<<16 is op8F=0x05 & ACC & loc16
+{
+	# TODO flags
+	# TODO modes
+	local tmp:4 = loc16 << 16;
+	ACC = ACC + tmp;
+}
+# 0 ; - ; 1010 SHFT LLLL LLLL
+:ADD ACC,loc16<<shft is OBJMODE=0 & opCF=0xA & ACC & shft & loc16
+{
+	# TODO flags
+	# TODO modes
+	local tmp:4 = loc16 << shft;
+	ACC = ACC + tmp;
+}
+
+
+# ADD AX,loc16  Add Value to AX
+# X ; - ; 1001 010A LLLL LLLL
+:ADD AX8,loc16 is op9F=0x4A & AX8 & loc16
+{
+	# TODO flags
+	# TODO modes
+	AX8 = AX8 + loc16:2; #TODO
+}
+
+
+# ADD loc16,AX  Add AX to Specified Location
+# X ; - ; 0111 001A LLLL LLLL
+:ADD loc16,AX8 is op9F=0x39 & AX8 & loc16
+{
+	# TODO flags
+	# TODO modes
+	loc16 = loc16 + zext(AX8); #TODO
+}
+
+
+# ADD loc16,#16bitSigned  Add Constant to Specified Location
+# X ; - ; 0000 1000 LLLL LLLL CCCC CCCC CCCC CCCC
+:ADD loc16,simm16 is op8F=0x08 & loc16 ; simm16
+{
+	# TODO flags
+	# TODO modes
+	loc16 = loc16 + simm16; #TODO
+}
+
+
+# ADDB ACC,#8bit  Add 8-bit Constant to Accumulator
+# X ; - ; 0000 1001 CCCC CCCC
+:ADDB ACC,imm8 is op8F=0x09 & ACC & imm8
+{
+	# TODO flags
+	# TODO modes
+	ACC = ACC + imm8;
+}
+
+
+# ADDB AX,#8bitSigned  Add 8-bit Constant to AX
+# X ; - ; 1001 110A CCCC CCCC
+:ADDB AX8,simm8 is op9F=0x4E & AX8 & simm8
+{
+	# TODO flags
+	# TODO modes
+	AX8 = AX8 + simm8;
+}
+
+
+# ADDB SP,#7bit  Add 7-bit Constant to Stack Pointer
+# X ; - ; 1111 1110 0CCC CCCC
+:ADDB SP,imm7 is op7F=0x1FC & SP & imm7
+{
+	# TODO flags
+	# TODO modes
+	SP = SP + imm7;
+}
+
+
+# ADDB XARn,#7bit  Add 7-bit Constant to Auxillary Register
+# X ; - ; 1101 1nnn 0CCC CCCC
+:ADDB xarn8,imm7 is opBF=0x1B & xarn8 & imm7
+{
+	# TODO flags
+	# TODO modes
+	xarn8 = xarn8 + imm7;
+}
+
+
+# ADDCL ACC,loc32  Add  32-bit Value Plus Carry to Accumulator
+# 1 ; - ; 0101 0110 0100 0000 xxxx xxxx LLLL LLLL
+:ADDCL ACC,loc32 is OBJMODE=1 & op0F=0x5640 & ACC ; loc32 unimpl
+
+
+# ADDCU ACC,loc16  Add Unsigned Value Plus Carry to Accumulator
+# X ; - ; 0000 1100 LLLL LLLL
+:ADDCU ACC,loc16 is op8F=0x0C & ACC & loc16 unimpl
+
+
+# ADDL ACC,loc32  Add 32-bit Value to Accumulator
+# X ; Y ; 0000 0111 LLLL LLLL
+:ADDL ACC,loc32 is op8F=0x07 & ACC & loc32
+{
+	# TODO flags
+	# TODO modes
+	ACC = ACC + loc32;
+}
+
+
+# ADDL ACC,P<<PM  Add Shifted P to Accumulator
+# X ; Y ; 0001 0000 1010 1100
+:ADDL ACC,P<<PM is op0F=0x10AC & ACC & P & PM
+{
+	# TODO flags
+	# TODO modes
+	ACC = ACC + (P << PM);
+}
+
+
+# ADDL loc32,ACC  Add Accumulator to Specified Location
+# 1 ; - ; 0101 0110 0000 0001 0000 0000 LLLL LLLL
+:ADDL loc32,ACC is OBJMODE=1 & op0F=0x5601 & ACC ; op8F=0x00 & loc32
+{
+	# TODO flags
+	# TODO modes
+	loc32 = loc32 + ACC;
+}
+
+
+# ADDU ACC,loc16  Add Unsigned Value to Accumulator
+# X ; Y ; 0000 1101 LLLL LLLL
+:ADDU ACC,loc16 is op8F=0x0D & ACC & loc16 unimpl
+
+
+# ADDUL P,loc32  Add 32-bit Unsigned Value to P
+# 1 ; - ; 0101 0110 0101 0111 0000 0000 LLLL LLLL
+:ADDUL P,loc32 is OBJMODE=1 & op0F=0x5657 & P ; op8F=0x00 & loc32 unimpl
+
+
+# ADDUL ACC,loc32  Add 32-bit Unsigned Value to Accumulator
+# 1 ; Y ; 0101 0110 0101 0011 xxxx xxxx LLLL LLLL
+:ADDUL ACC,loc32 is OBJMODE=1 & op0F=0x5653 & ACC ; loc32 unimpl
+
+
+# ADRK #8bit  Add to Current Auxiliary Register
+# X ; - ; 1111 1100 IIII IIII
+:ADRK imm8 is op8F=0xFC & imm8 unimpl
+
+
+# AND ACC,#16bit<<#0..16  Description (lol)
+# 1 ; - ; 0011 1110 0000 SHFT CCCC CCCC CCCC CCCC
+:AND ACC,imm16<<shift is OBJMODE=1 & op4F=0x3E0 & shift & ACC ; imm16 unimpl
+# 1 ; - ; 0101 0110 0000 1000 CCCC CCCC CCCC CCCC
+:AND ACC,imm16<<16 is OBJMODE=1 & op0F=0x5608 & ACC ; imm16 unimpl
+
+
+# AND ACC,loc16  Bitwise AND
+# 1 ; Y ; 1000 1001 LLLL LLLL
+:AND ACC,loc16 is op8F=0x89 & ACC & loc16 unimpl
+
+
+# AND AX,loc16,#16bit  Bitwise AND
+# X ; - ; 1100 110A LLLL LLLL CCCC CCCC CCCC CCCC
+:AND AX8,loc16,imm16 is op9F=0x66 & loc16 & AX8 ; imm16 unimpl
+
+
+# AND IER,#16bit  Bitwise AND to Disable Specified CPU Interrupts
+# X ; - ; 0111 0110 0010 0110 CCCC CCCC CCCC CCCC
+:AND IER,imm16 is op0F=0x7626 & IER ; imm16 unimpl
+
+
+# AND IFR,#16bit  Bitwise AND to Clear Pending CPU Interrupts
+# X ; - ; 0111 0110 0010 1111 CCCC CCCC CCCC CCCC
+:AND IFR,imm16 is op0F=0x762F & IFR ; imm16 unimpl
+
+
+# AND loc16,AX  Bitwsie AND
+# X ; - ; 1100 000A LLLL LLLL
+:AND loc16,AX8 is op9F=0x60 & AX8 & loc16 unimpl
+
+
+# AND AX,loc16  Bitwise AND
+# X ; - ; 1100 111A LLLL LLLL
+:AND AX8,loc16 is op9F=0x67 & AX8 & loc16 unimpl
+
+
+# AND loc16,#16bitSigned  Bitwise AND
+# X ; - ; 0001 1000 LLLL LLLL CCCC CCCC CCCC CCCC
+:AND loc16,simm16 is op8F=0x18 & loc16 ; simm16 unimpl
+
+
+# ANDB AX,#8bit  Bitwise AND 8-bit Value
+# X ; - ; 1001 000A CCCC CCCC
+:ANDB AX8,imm8 is op9F=0x48 & AX8 & imm8 unimpl
+
+
+# ASP  Align Stack Pointer
+# X ; - ; 0111 0110 0001 1011
+:ASP is op0F=0x761B unimpl
+
+
+# ASR AX,#1..16  Arithmetic Shift Right
+# X ; - ; 1111 1111 101A SHFT
+:ASR AX4,shift1 is op5F=0x7FB & AX4 & shift1 unimpl
+
+
+# ASR AX,T  Arithmetic Shift Right
+# X ; - ; 1111 1111 0110 010A
+:ASR AX0,T is op1F=0x7FB2 & AX0 & T unimpl
+
+
+# ASR64 ACC:P,#1..16  Arithmetic Shift Right of 64-bit Value
+# 1 ; - ; 0101 0110 1000 SHFT
+:ASR64 ACC:P,shift1 is OBJMODE=1 & op4F=0x568 & shift1 & ACC & P unimpl
+
+
+# ASR64 ACC:P,T  Arithmetic Shift Right of 64-bit Value
+# 1 ; - ; 0101 0110 0010 1100
+:ASR64 ACC:P,T is OBJMODE=1 & op0F=0x562C & ACC & P & T unimpl
+
+
+# ASRL ACC,T  Arithmetic Shift Right of Accumulator
+# 1 ; - ; 0101 0110 0001 0000
+:ASRL ACC,T is OBJMODE=1 & op0F=0x5610 & ACC & T unimpl
+
+
+# B 16bitOffset,COND  Branch
+# X ; - ; 1111 1111 1110 COND CCCC CCCC CCCC CCCC
+:B soff16,COND0 is op4F=0xFFE & COND0 ; soff16
+{
+	# TODO flags
+	# TODO modes
+	if (!COND0) goto inst_next;
+	goto soff16;
+}
+
+
+# BANZ 16bitOffset,ARn--  Branch if Auxiliary Register Not Equal to Zero
+# X ; - ; 0000 0000 0000 1nnn CCCC CCCC CCCC CCCC
+:BANZ soff16,arn0-- is op3F=0x0001 & arn0 ; soff16
+{
+	# TODO flags
+	# TODO modes
+	local cond = arn0 == 0;
+	arn0 = arn0 - 1;
+	if (cond) goto inst_next;
+	goto soff16;
+}
+
+
+# BAR 16bitOffset,ARn,ARm,EQ/NEQ  Branch on Auxilliary Register Comparison
+# 1 ; - ; 1000 1111 10nn nmmm CCCC CCCC CCCC CCCC
+:BAR soff16,arn3,arn0,^"EQ" is OBJMODE=1 & op6F=0x23E & arn3 & arn0 ; soff16
+{
+	# TODO flags
+	# TODO modes
+	local cond = arn3 != arn0;
+	if (cond) goto inst_next;
+	goto soff16;
+}
+# 1 ; - ; 1000 1111 11nn nmmm CCCC CCCC CCCC CCCC
+:BAR soff16,arn3,arn0,^"NEQ" is OBJMODE=1 & op6F=0x23F & arn3 & arn0 ; soff16
+{
+	# TODO flags
+	# TODO modes
+	local cond = arn3 == arn0;
+	if (cond) goto inst_next;
+	goto soff16;
+}
+
+
+# BF 16bitOffset,COND  Branch Fast
+# 1 ; - ; 0101 0110 1100 COND CCCC CCCC CCCC CCCC
+:BF soff16,COND0 is OBJMODE=1 & op4F=0x56C & COND0 ; soff16
+{
+	# TODO flags
+	# TODO modes
+	if (!COND0) goto inst_next;
+	goto soff16;
+}
+
+
+# C27MAP  Set the M0M1MAP Bit
+# X ; - ; 0101 0110 0011 1111
+:C27MAP is op0F=0x564F unimpl
+
+
+# # C27OBJ  Clear the Objmode Bit
+# # X ; - ; 0101 0110 0011 0110
+# :C27OBJ is op0F=0x5636 unimpl
+
+
+# # C28ADDR  Clear the AMODE Status Bit
+# # X ; - ; 0101 0110 0001 0110
+# :C28ADDR is op0F=0x5616 unimpl
+
+
+# # C28MAP  Set the M0M1MAP Bit
+# # X ; - ; 0101 0110 0001 1010
+# :C28MAP is op0F=0x561A unimpl
+
+
+# # C28OBJ  Set the Objmode Bit
+# # X ; - ; 0101 0110 0001 1111
+# :C28OBJ is op0F=0x561F unimpl
+
+
+# CLRC AMODE  Clear the AMODE Bit
+# X ; - ; 0101 0110 0001 0110
+:CLRC AMODE is op0F=0x5616 & AMODE unimpl
+
+
+# CLRC M0M1MAP  Clear the M0M1MAP Bit
+# X ; - ; 0101 0110 0011 1111
+:CLRC M0M1MAP is op0F=0x563F & M0M1MAP unimpl
+
+
+# CLRC Objmode  Clear the Objmode Bit
+# X ; - ; 0101 0110 0011 0110
+:CLRC OBJMODE is op0F=0x5636 & OBJMODE unimpl
+
+
+# CLRC OVC  Clear Overflow Counter
+# 1 ; - ; 0101 0110 0101 1100
+:CLRC OVC is OBJMODE=1 & op0F=0x565C & OVC unimpl
+
+
+# CLRC XF  Clear XF Status Bit
+# X ; - ; 0101 0110 0001 1011
+:CLRC XF is op0F=0x561B & XF unimpl
+
+
+# 0 ST0 SXM
+# 1 ST0 OVM
+# 2 ST0 TC
+# 3 ST0 C
+# 4 ST1 INTM
+# 5 ST1 DBGM
+# 6 ST1 PAGE0
+# 7 ST1 VMAP
+#TODO
+mode: imm8 is imm8 { local tmp:1 = imm8; export tmp; }
+
+
+# CLRC Mode  Clear Status Bits
+# X ; - ; 0010 1001 CCCC CCCC
+:CLRC mode is op0F=0x29 & mode unimpl
+
+
+# CMP AX,loc16  Compare
+# X ; - ; 0101 010A LLLL LLLL
+:CMP AX8,loc16 is op9F=0x2A & AX8 & loc16 unimpl
+
+
+# CMP loc16,#16bitSigned  Compare
+# X ; - ; 0001 1011 LLLL LLLL CCCC CCCC CCCC CCCC
+:CMP loc16,simm16 is op8F=0x1B & loc16 ; simm16 unimpl
+
+
+# CMP64 ACC:P  Compare 64-bit Value
+# 1 ; - ; 0101 0110 0101 1110
+:CMP64 ACC:P is OBJMODE=1 & op0F=0x565E & ACC & P unimpl
+
+
+# CMPB AX,#8bit  Compare 8-bit Value
+# X ; - ; 0101 001A CCCC CCCC
+:CMPB AX8,imm8 is op9F=0x29 & AX8 & imm8 unimpl
+
+
+# CMPL ACC,loc32  Cmpare 32-bit Value
+# X ; - ; 0000 1111 LLLL LLLL
+:CMPL ACC,loc32 is op8F=0x0F & ACC & loc32 unimpl
+
+
+# CMPL ACC,P<<PM  Compare 32-bit Value
+# X ; - ; 1111 1111 0101 1001
+:CMPL ACC,P<<PM is op0F=0xFF59 & ACC & P & PM unimpl
+
+
+# CMPR 0/1/2/3  Compare Auxilliary Registers
+# 1 ; - ; 0101 0110 0001 1101
+:CMPR 0 is OBJMODE=1 & op0F=0x561D unimpl
+# 1 ; - ; 0101 0110 0001 1001
+:CMPR 1 is OBJMODE=1 & op0F=0x5619 unimpl
+# 1 ; - ; 0101 0110 0001 1000
+:CMPR 2 is OBJMODE=1 & op0F=0x5618 unimpl
+# 1 ; - ; 0101 0110 0001 1100
+:CMPR 3 is OBJMODE=1 & op0F=0x561C unimpl
+
+
+# CSB ACC  Count Sign Bits
+# 1 ; - ; 0101 0110 0011 0101
+:CSB ACC is OBJMODE=1 & op0F=0x5635 & ACC unimpl
+
+
+# DEC loc16  Decrement by 1
+# X ; - ; 0000 1011 LLLL LLLL
+:DEC loc16 is op8F=0x0B & loc16 unimpl
+
+
+# DINT  Disable Maskable Interrupts (Set INTM Bit)
+# X ; - ; 0011 1011 0001 0000
+:DINT is op0F=0x3B10 unimpl
+
+
+# DMAC ACC:P,loc32,*XAR7/++  16-Bit Dual Multiple and Accumulate
+# 1 ; Y ; 0101 0110 0100 1011 1100 0111 LLLL LLLL
+:DMAC ACC:P,loc32,*XAR7 is OBJMODE=1 & op0F=0x564B & ACC & P & XAR7 ; op8F=0xC7 & loc32 unimpl
+# 1 ; Y ; 0101 0110 0100 1011 1000 0111 LLLL LLLL
+:DMAC ACC:P,loc32,*XAR7++ is OBJMODE=1 & op0F=0x564B & ACC & P & XAR7 ; op8F=0x87 & loc32 unimpl
+
+
+# DMOV loc16  Data Move Contents of 16-bit Location
+# 1 ; Y ; 1010 0101 LLLL LLLL
+:DMOV loc16 is OBJMODE=1 & op8F=0xA5 & loc16 unimpl
+
+
+# EALLOW  Enable Write Access to Protected Space
+# X ; - ; 0111 0110 0010 0010
+:EALLOW is op0F=0x7622 unimpl
+
+
+# EDIS  Disable Write Access to Protected Registers
+# X ; - ; 0111 0110 0001 1010
+:EDIS is op0F=0x761A unimpl
+
+
+# EINT  Enable Maskable Interrupts (Clear INTM Bit)
+# X ; - ; 0010 1001 0001 0000
+:EINT is op0F=0x2910 unimpl
+
+
+# ESTOP0  Emulation Stop 0
+# X ; - ; 0111 0110 0010 0101
+:ESTOP0 is op0F=0x7625 unimpl
+
+
+# ESTOP1  Emulation Stop 1
+# X ; - ; 0111 0110 0010 0100
+:ESTOP1 is op0F=0x7624 unimpl
+
+
+# FCC XAR7,22bit  Fast Funciton Call
+# X ; - ; 0000 0000 11CC CCCC CCCC CCCC CCCC CCCC
+:FCC XAR7,imm22 is xop6F=0x003 & XAR7 & imm22
+{
+	# TODO flags
+	# TODO modes
+	local ea:4 = imm22;
+	goto [ea];
+}
+
+
+# FLIP AX  Flip Order of Bits in AX Register
+# 1 ; - ; 0101 0110 0111 000A
+:FLIP AX0 is OBJMODE=1 & op1F=0x2B38 & AX0 unimpl
+
+
+# IACK #16bit  Interrupt Acknowledge
+# X ; - ; 0111 0110 0011 1111 CCCC CCCC CCCC CCCC
+:IACK imm16 is op0F=0x763F ; imm16 unimpl
+
+
+# IDLE  Put Processor in Idle Mode
+# X ; - ; 0111 0110 0010 0001
+:IDLE is op0F=0x7621 unimpl
+
+
+# IMACL P,loc32,*XAR7/++  Signed 32 X 32-Bit Multiple and Accumulate (Lower Half)
+# 1 ; Y ; 0101 0110 0100 1101 1100 0111 LLLL LLLL
+:IMACL P,loc32,*XAR7 is OBJMODE=1 & op0F=0x564D & P & XAR7 ; op8F=0xC7 & loc32 unimpl
+# 1 ; Y ; 0101 0110 0100 1101 1000 0111 LLLL LLLL
+:IMACL P,loc32,*XAR7++ is OBJMODE=1 & op0F=0x564D & P & XAR7 ; op8F=0x87 & loc32 unimpl
+
+
+# IMPYAL P,XT,loc32  Signed 32-Bit Multiply (Lower Half) and Add Previous P
+# 1 ; - ; 0101 0110 0100 1100 0000 0000 LLLL LLLL
+:IMPYAL P,XT,loc32 is op0F=0x564C & P & XT ; op8F=0x00 & loc32 unimpl
+
+
+# IMPYL ACC,XT,loc32  Signed 32 X 32-Bit Multiply (Lower Half)
+# 1 ; - ; 0101 0110 0100 0100 0000 0000 LLLL LLLL
+:IMPYL ACC,XT,loc32 is op0F=0x5644 & ACC & XT ; op8F=0x00 & loc32 unimpl
+
+
+# IMPYL P,XT,loc32  Signed 32 X 32-Bit Multiply (Lower Half)
+# 1 ; - ; 0101 0110 0000 0101 0000 0000 LLLL LLLL
+:IMPYL P,XT,loc32 is op0F=0x5605 & P & XT ; op8F=0x00 & loc32 unimpl
+
+
+# IMPYSL P,XT,loc32  Signed 32-Bit Multiply (Low Half) and Subtract P
+# 1 ; - ; 0101 0110 0100 0011 0000 0000 LLLL LLLL
+:IMPYSL P,XT,loc32 is op0F=0x5643 & P & XT ; op8F=0x00 & loc32 unimpl
+
+
+# IMPYXUL P,XT,loc32  Signed 32 X Unsigned 32-Bit Multiply (Lower Half)
+# 1 ; - ; 0101 0110 0110 0101 0000 0000 LLLL LLLL
+:IMPYXUL P,XT,loc32 is op0F=0x5665 & P & XT ; op8F=0x00 & loc32 unimpl
+
+
+# IN loc16,*(PA)  Input Data From Port
+# 1 ; Y ; 1011 0100 LLLL LLLL CCCC CCCC CCCC CCCC
+:IN loc16,*(PA) is op8F=0xB4 & loc16 ; PA unimpl
+
+
+# INC loc16  Increment by 1
+# X ; - ; 0000 1010 LLLL LLLL
+:INC loc16 is op8F=0x0A & loc16 unimpl
+
+
+# TODO
+# INTR  Emulate Hardware Interrupt
+# X ; - ; 0000 0000 0001 CCCC
+:INTR intx is op4F=0x001 & intx unimpl
+# X ; - ; 0000 0000 0001 CCCC
+#:INTR DLOGINT is op4F=0x001 & intx unimpl
+# X ; - ; 0000 0000 0001 CCCC
+#:INTR RTOSINT is op4F=0x001 & intx unimpl
+# X ; - ; 0111 0110 0001 0110
+#:INTR NMI is op0F=0x7616 unimpl
+# X ; - ; 0111 0110 0001 1100
+#:INTR EMUINT is op0F=0x761C unimpl
+
+
+# IRET  Interrupt Return
+# X ; - ; 0111 0110 0000 0010
+:IRET is op0F=0x7602
+{
+	# TODO flags
+	# TODO modes
+	local addr:4 = zext(SP);
+	local ea:4 = *:4 addr;
+	SP = SP - 4;
+
+	# TODO extra
+
+	return [ea];
+}
+
+
+# LX *XAR7  Long Indirect Branch
+# X ; - ; 0111 0110 0010 0000
+:LX *XAR7 is op0F=0x7620 & XAR7
+{
+	# TODO flags
+	# TODO modes
+	local ea:4 = XAR7;
+	goto [ea];
+}
+
+
+# LB 22bit  Long Branch
+# X ; - ; 0000 0000 01CC CCCC CCCC CCCC CCCC CCCC
+:LB imm22 is xop6F=0x001 & imm22
+{
+	# TODO flags
+	# TODO modes
+	local ea:4 = imm22;
+	goto [ea];
+}
+
+
+# LC *XAR7  Long Indirect Call
+# X ; - ; 0111 0110 0000 0100
+:LC *XAR7 is op0F=0x7604 & XAR7
+{
+	# TODO flags
+	# TODO modes
+	local ea:4 = XAR7;
+	local addr:4 = zext(SP);
+	*:4 addr = inst_next;
+	SP = SP + 4;
+	call [ea];
+}
+
+
+# LC 22bit  Long Call
+# X ; - ; 0000 0000 10CC CCCC CCCC CCCC CCCC CCCC
+:LC imm22 is xop6F=0x002 & imm22
+{
+	# TODO flags
+	# TODO modes
+	local ea:4 = imm22;
+	local addr:4 = zext(SP);
+	*:4 addr = inst_next;
+	SP = SP + 4;
+	call [ea];
+}
+
+
+# LCR #22bit  Long Call Using RPC
+# 1 ; - ; 0111 0110 01CC CCCC CCCC CCCC CCCC CCCC
+:LCR imm22 is OBJMODE=1 & xop6F=0x1D9 & imm22
+{
+	# TODO flags
+	# TODO modes
+	local ea:4 = imm22;
+	local addr:4 = zext(SP);
+	*:4 addr = RPC;
+	SP = SP + 4;
+	RPC = inst_next;
+	call [ea];
+}
+
+# LCR *XARn  Long Indirect Call Using RPC
+# 1 ; - ; 0011 1110 0110 0RRR
+:LCR *xarn0 is OBJMODE=1 & op3F=0x07CC & xarn0
+{
+	# TODO flags
+	# TODO modes
+	local ea:4 = xarn0;
+	local addr:4 = zext(SP);
+	*:4 addr = RPC;
+	SP = SP + 4;
+	RPC = inst_next;
+	call [ea];
+}
+
+
+# LOOPNZ loc16,#16bit  Loop While Not Zero
+# X ; - ; 0010 1110 LLLL LLLL CCCC CCCC CCCC CCCC
+:LOOPNZ loc16,imm16 is op8F=0x2E & loc16 ; imm16 unimpl
+
+
+# LOOPZ loc16,#16bit  Loop While Zero
+# X ; - ; 0010 1100 LLLL LLLL CCCC CCCC CCCC CCCC
+:LOOPZ loc16,imm16 is op8F=0x2C & loc16 ; imm16 unimpl
+
+
+# LPADDR  Set the AMODE Bit
+# X ; - ; 0101 0110 0001 1110
+:LPADDR is op0F=0x561E unimpl
+
+
+# LRET  Long Return
+# X ; - ; 0111 0110 0001 0100
+:LRET is op0F=0x7614
+{
+	# TODO flags
+	# TODO modes
+	local ea:4 = zext(SP);
+	SP = SP - 4;
+	local addr:4 = *:4 ea;
+	goto [addr];
+}
+
+
+# LRETE  Long Return and Enable Interrupts
+# X ; - ; 0111 0110 0001 0000
+:LRETE is op0F=0x7610 unimpl
+
+
+# LRETR  Long Return Using RPC
+# 1 ; - ; 0000 0000 0000 0110
+:LRETR is OBJMODE=1 & op0F=0x0006
+{
+	# TODO flags
+	# TODO modes
+	local ea:4 = zext(SP);
+	SP = SP - 4;
+	local addr:4 = zext(RPC);
+	RPC = *:4 ea;
+	goto [addr];
+}
+
+
+# LSL ACC,#1..16  Logical Shift Left
+# X ; Y ; 1111 1111 0011 SHFT
+:LSL ACC,shift1 is op4F=0xFF3 & ACC & shift1 unimpl
+
+
+# LSL ACC,T  Logical Shift Left by T(3:0)
+# X ; - ; 1111 1111 0101 0000
+:LSL ACC,T is op0F=0xFF50 & ACC & T unimpl
+
+
+# LSL AX,#1..16  Logical Shift Left
+# X ; - ; 1111 1111 100A SHFT
+:LSL AX4,shift1 is op5F=0x7FC & AX4 & shift1 unimpl
+
+
+# LSL AX,T  Logical Shift Left by T(3:0)
+# X ; - ; 1111 1111 0110 011A
+:LSL AX0,T is op1F=0x7FB3 & T & AX0 unimpl
+
+
+# LSL64 ACC:P,#1..16  Logical Shift Left
+# 1 ; - ; 0101 0110 1010 SHFT
+:LSL64 ACC:P,shift1 is OBJMODE=1 & op4F=0x56A & ACC & P & shift1 unimpl
+
+
+# LSL64 ACC:P,T  64-bit Logical Shift Left by T(5:0)
+# 1 ; - ; 0101 0110 0101 0010
+:LSL64 ACC:P,T is OBJMODE=1 & op0F=0x5652 & ACC & P & T unimpl
+
+
+# LSLL ACC,T  Logical Shift Left by T(4:0)
+# 1 ; - ; 0101 0110 0011 1011
+:LSLL ACC,T is OBJMODE=1 & op0F=0x563B & ACC & T unimpl
+
+
+# LSR AX,#1..16  Logical Shift Right
+# X ; - ; 1111 1111 110A SHFT
+:LSR AX4,shift1 is op5F=0x7fE & AX4 & shift1 unimpl
+
+
+# LSR AX,T  Logical Shift Right by T(3:0)
+# X ; - ; 1111 1111 0110 001A
+:LSR AX0,T is op1F=0x7FB1 & AX0 & T unimpl
+
+
+# LSR64 ACC:P,#1..16  64-Bit Logical Shift Right
+# 1 ; - ; 0101 0110 1001 SHFT
+:LSR64 ACC:P,shift1 is OBJMODE=1 & op4F=0x569 & ACC & P & shift1 unimpl
+
+
+# LSR64 ACC:P,T  64-Bit Logical Shift Right by T(5:0)
+# 1 ; - ; 0101 0110 0101 1011
+:LSR64 ACC:P,T is OBJMODE=1 & op0F=0x565B & ACC & P & T unimpl   
+
+
+# LSRL ACC,T  Logical Shift Right by T(4:0)
+# 1 ; - ; 0101 0110 0010 0010
+:LSRL ACC,T is OBJMODE=1 & op0F=0x5622 & ACC & T unimpl
+
+
+# MAC P,loc16,0:pma  Multiply and Accumulate
+# X ; Y ; 0001 0100 LLLL LLLL CCCC CCCC CCCC CCCC
+:MAC P,loc16,0:pma is op8F=0x14 & loc16 & P ; pma unimpl
+
+
+# MAC P,loc16,*XAR7/++  Multiply and Accumulate
+# 1 ; Y ; 0101 0110 0000 0111 1100 0111 LLLL LLLL
+:MAC P,loc16,*XAR7 is OBJMODE=1 & op0F=0x5607 & P & XAR7 ; op8F=0xC7 & loc16 unimpl
+# 1 ; Y ; 0101 0110 0000 0111 1000 0111 LLLL LLLL
+:MAC P,loc16,*XAR7++ is OBJMODE=1 & op0F=0x5607 & P & XAR7 ; op8F=0x87 & loc16 unimpl
+
+
+# MAX AX,loc16  Find the Maximum
+# 1 ; Y ; 0101 0110 0111 001A 0000 0000 LLLL LLLL
+:MAX AX0,loc16 is OBJMODE=1 & op1F=0x2B39 & AX0 ; op8F=0x00 & loc16 unimpl
+
+
+# MAXCUL P,loc32  Conditionally Find the Unsigned Maximum
+# 1 ; - ; 0101 0110 0101 0001 0000 0000 LLLL LLLL
+:MAXCUL P,loc32 is OBJMODE=1 & op0F=0x5651 & P ; op8F=0x00 & loc32 unimpl
+
+
+# MAXL ACC,loc32  Find the 32-bit Maximum
+# 1 ; Y ; 0101 0110 0110 0001 0000 0000 LLLL LLLL
+:MAXL ACC,loc32 is OBJMODE=1 & op0F=0x5661 & ACC ; op8F=0x00 & loc32 unimpl
+
+
+# MIN AX,loc16  Find the Minimum
+# 1 ; Y ; 0101 0110 0111 010A 0000 0000 LLLL LLLL
+:MN AX0,loc16 is OBJMODE=1 & op1F=0x2B7A & AX0 ; op8F=0x00 & loc16 unimpl
+
+
+# MINCUL P,loc32  Conditionally Find the Unsigned Minimum
+# 1 ; - ; 0101 0110 0101 1001 xxxx xxxx LLLL LLLL
+:MUNCUL P,loc32 is OBJMODE=1 & op0F=0x5659 & P ; loc32 unimpl
+
+
+# MINL ACC,loc32  Find the 32-bit Minimum
+# 1 ; Y ; 0101 0110 0101 0000 0000 0000 LLLL LLLL
+:MINL ACC,loc32 is OBJMODE=1 & op0F=0x5650 & ACC ; op8F=0x00 & loc32 unimpl
+
+
+# MOV *(0:16bit),loc16  Move Value
+# X ; Y ; 1111 0100 LLLL LLLL CCCC CCCC CCCC CCCC
+:MOV *(0:imm16),loc16 is op8F=0xF4 & loc16 ; imm16 unimpl
+
+
+# MOV ACC,#16bit<<#0..15  Load Accumulator With Shift
+# X ; - ; 1111 1111 0010 SHFT CCCC CCCC CCCC CCCC
+:MOV ACC,imm16<<shift is op4F=0xFF2 & shift & ACC ; imm16 unimpl
+
+
+# MOV ACC,loc16<<T  Load Accumulator With Shift
+# 1 ; - ; 0101 0110 0000 0110 0000 0000 LLLL LLLL
+:MOV ACC,loc16<<T is OBJMODE=1 & op0F=0x5606 & ACC & T ; op8F=0x00 & loc16 unimpl
+
+
+# MOV ACC,loc16<<#0..16  Load Accumulator With Shift
+# 1 ; - ; 1000 0101 LLLL LLLL
+:MOV ACC,loc16<<0 is OBJMODE=1 & op8F=0x85 & ACC & loc16 unimpl
+# 0 ; - ; 1110 0000 LLLL LLLL
+:MOV ACC,loc16<<0 is OBJMODE=0 & op8F=0xE0 & ACC & loc16 unimpl
+# 1 ; - ; 0101 0110 0000 0011 0000 SHFT LLLL LLLL
+:MOV ACC,loc16<<shft is OBJMODE=1 & op0F=0x5603 & ACC ; opCF=0x0 & shft & loc16 unimpl
+# 0 ; - ; 1110 SHFT LLLL LLLL
+:MOV ACC,loc16<<shft is OBJMODE=0 & opCF=0xE & ACC & shft & loc16 unimpl
+# X ; - ; 0010 0101 LLLL LLLL
+:MOV ACC,loc16<<16 is op8F=0x25 & ACC & loc16 unimpl
+
+
+# MOV AR6/7,loc16  Load Auxilliary Register
+# X ; - ; 0101 1110 LLLL LLLL
+:MOV AR6,loc16 is op8F=0x5E & AR6 & loc16 unimpl
+# X ; - ; 0101 1111 LLLL LLLL
+:MOV AR7,loc16 is op8F=0x5F & AR7 & loc16 unimpl
+
+
+# MOV AX,loc16  Load AX
+# X ; - ; 1001 001A LLLL LLLL
+:MOV AX8,loc16 is op9F=0x49 & AX8 & loc16 unimpl
+
+
+# MOV DP,#10bit  Load Data-Page Pointer
+# X ; - ; 1111 10CC CCCC CCCC
+:MOV DP,imm10 is opAF=0x2C & DP & imm10 unimpl
+
+
+# MOV IER,loc16  Load the Interrupt-Enable Register
+# X ; - ; 0010 0011 LLLL LLLL
+:MOV IER,loc16 is op8F=0x23 & IER & loc16 unimpl
+
+
+# MOV loc16,#16bit  Save 16-bit Constant
+# X ; Y ; 0010 1000 LLLL LLLL CCCC CCCC CCCC CCCC
+:MOV loc16,imm16 is op8F=0x28 & loc16 ; imm16 unimpl
+
+
+# MOV loc16,*(0:16bit)  Move Value
+# X ; Y ; 1111 0101 LLLL LLLL CCCC CCCC CCCC CCCC
+:MOV loc16,*(0:imm16) is op8F=0xF5 & loc16 ; imm16 unimpl
+
+
+# MOV loc16,#0  Clear 16-bit Location
+# X ; Y ; 0010 1011 LLLL LLLL
+:MOV loc16,0 is op8F=0x2B & loc16 unimpl
+
+
+# MOV loc16,ACC<<1..8  Save Low Word of Shifted Accumulator
+# 1 ; Y ; 1011 0001 LLLL LLLL
+:MOV loc16,ACC<<1 is OBJMODE=1 & op8F=0xB1 & ACC & loc16 unimpl
+# 1 ; Y ; 0101 0110 0010 1101 0000 0SHF LLLL LLLL
+:MOV loc16,ACC<shf is OBJMODE=1 & op0F=0x562D & ACC ; opBF=0x00 & shf & loc16 unimpl
+# 0 ; - ; 1011 1SHF LLLL LLLL
+:MOV loc16,ACC<shf is OBJMODE=0 & opCF=0xB & ACC & shf & loc16 unimpl 
+
+
+# MOV loc16,ARn  Store 16-bit Auxilliary Register
+# X ; - ; 0111 1nnn LLLL LLLL
+:MOV loc16,arn8 is opBF=0x0F & arn8 & loc16 unimpl
+
+
+# MOV loc16,AX  Store AX
+# X ; Y ; 1001 011A LLLL LLLL
+:MOV loc16,AX8 is op9F=0x4B & AX8 & loc16 unimpl
+
+
+# MOV loc16,AX,COND  Store AX Register Conditionally
+# 1 ; - ; 0101 0110 0010 101A 0000 COND LLLL LLLL
+:MOV loc16,AX0,COND8 is OBJMODE=1 & op1F=0x2B15 & AX0 ; opCF=0x0 & COND8 & loc16 unimpl
+
+
+# MOV loc16,IER  Store Interrupt-Enable Register
+# X ; - ; 0010 0000 LLLL LLLL
+:MOV loc16,IER is op8F=0x20 & IER & loc16 unimpl
+
+
+# MOV loc16,OVC  Store the Overflow Counter
+# 1 ; - ; 0101 0110 0010 1001 0000 0000 LLLL LLLL
+:MOV loc16,OVC is OBJMODE=1 & op0F=0x5629 & OVC ; op8F=0x00 & loc16 unimpl
+
+
+# MOV loc16,P  Store Lower Half of Shifted P Register
+# X ; Y ; 0011 1111 LLLL LLLL
+:MOV loc16,P is op8F=0x3F & P & loc16 unimpl
+
+
+# MOV loc16,T  Store the T Register
+# X ; - ; 0010 0001 LLLL LLLL
+:MOV loc16,T is op8F=0x21 & T & loc16 unimpl
+
+
+# MOV OVC,loc16  Load the Overflow Counter
+# 1 ; - ; 0101 0110 0000 0010 0000 0000 LLLL LLLL
+:MOV OVC,loc16 is OBJMODE=1 & op0F=0x5602 & OVC ; op8F=0x00 & loc16 unimpl
+
+
+# MOV PH,loc16  Load the High Half of the P Register
+# X ; - ; 0010 1111 LLLL LLLL
+:MOV PH,loc16 is op8F=0x2F & PH & loc16 unimpl
+
+
+# MOV PL,loc16  Load the Low Half of the P Register
+# X ; - ; 0010 0111 LLLL LLLL
+:MOV PL,loc16 is op8F=0x27 & PL & loc16 unimpl
+
+
+# MOV PM,AX  Load Product Shift Mode
+# 1 ; - ; 0101 0110 0011 100A
+:MOV PM,AX0 is OBJMODE=1 & op1F=0x2B1C & PM & AX0 unimpl
+
+
+# MOV T,loc16  Load the Upper Half of the XT Register
+# X ; - ; 0010 1101 LLLL LLLL
+:MOV T,loc16 is op8F=0x2D & T & loc16 unimpl
+
+
+# MOV TL,#0  Clear the Lower Half of the XT Register
+# 1 ; - ; 0101 0110 0101 0110
+:MOV TL,0 is OBJMODE=1 & op0F=0x5656 & TL unimpl
+
+
+# MOV XARn,PC  Save the Current Program Counter
+# 1 ; - ; 0011 1110 0101 1nnn
+:MOV xarn0,PC is OBJMODE=1 & op3F=0x07CB & PC & xarn0 unimpl
+
+
+# MOVA T,loc16  Load T Register and Add Previous Product
+# X ; Y ; 0001 0000 LLLL LLLL
+:MOVA T,loc16 is op8F=0x10 & T & loc16 unimpl
+
+
+# MOVAD T,loc16  Load T Register
+# 1 ; N ; 1010 0111 LLLL LLLL
+:MOVAD T,loc16 is OBJMODE=1 & op8F=0xA7 & T & loc16 unimpl
+
+
+# MOVB ACC,#8bit  Load Accumulator With 8-bit Value
+# 1 ; - ; 0000 0010 CCCC CCCC
+:MOVB ACC,imm8 is OBJMODE=1 & op8F=0x02 & ACC & imm8 unimpl
+
+
+# MOV AR6/7,#8bit  Load Auxilliary Register With an 8-bit Constant
+# X ; - ; 1101 0110 CCCC CCCC
+:MOV AR6,imm8 is op8F=0xD6 & AR6 & imm8 unimpl
+# X ; - ; 1101 0111 CCCC CCCC
+:MOV AR7,imm8 is op8F=0xD7 & AR7 & imm8 unimpl
+
+
+# MOVB AX,#8bit  Load AX With 8-bit Constant
+# X ; - ; 1001 101A CCCC CCCC
+:MOVB AX8,imm8 is op9F=0x4D & AX8 & imm8 unimpl
+
+
+# MOVB AX.LSB,loc16  Load Byte Value
+# X ; - ; 1100 011A LLLL LLLL
+:MOVB AX8^".LSB"^,loc16 is op9F=0x63 & AX8 & loc16 unimpl
+
+
+# MOVB AX.MSB,loc16  Load Byte Value
+# X ; - ; 0011 100A LLLL LLLL
+:MOVB AX8^".MSB"^,loc16 is op9F=0x1C & AX8 & loc16 unimpl
+
+
+# MOVB loc16,#8bit,COND  Conditionally Save 8-bit Constant
+# 1 ; - ; 0101 0110 1011 COND CCCC CCCC LLLL LLLL
+:MOVB loc16,imm88,COND0 is OBJMODE=1 & op4F=0x56B & COND0 ; imm88 & loc16 unimpl
+
+
+# MOVB loc16,AX.LSB  Store LSB of AX Register
+# X ; - ; 0011 110A LLLL LLLL
+:MOVB loc16,AX8^".LSB" is op9F=0x1E & AX8 & loc16 unimpl
+
+
+# MOVB loc16,AX.MSB  Store MSB of AX Register
+# X ; - ; 1100 100A LLLL LLLL
+:MOVB loc16,AX8^".MSG" is op9F=0x64 & AX8 & loc16 unimpl
+
+
+# MOVB XARn,#8bit  Load Auxilliary Register With 8-bit Value
+# X ; - ; 1101 0nnn CCCC CCCC
+:MOVB xarn8,imm8 is opBF=0x1A & xarn8 & imm8 unimpl
+# 1 ; - ; 1011 1110 CCCC CCCC
+:MOVB XAR6,imm8 is OBJMODE=1 & op8F=0xBE & imm8 & XAR6 unimpl
+# 1 ; - ; 1011 0110 CCCC CCCC
+:MOVB XAR7,imm8 is OBJMODE=1 & op8F=0xB6 & imm8 & XAR7 unimpl
+
+
+# MOVDL XT,loc32  Store XT and Load New XT
+# 1 ; Y ; 1010 0110 LLLL LLLL
+:MOVDL XT,loc32 is OBJMODE=1 & op8F=0xA6 & XT & loc32 unimpl
+
+
+# MOVH loc16,ACC<<1..8  Description (lol)
+# 1 ; Y ; 1011 0011 LLLL LLLL
+:MOVH loc16,ACC<<1 is OBJMODE=1 & op8F=0xB3 & ACC & loc16 unimpl
+# 1 ; Y ; 0101 0110 0010 1111 0000 0SHF LLLL LLLL
+:MOVH loc16,ACC<<shf is OBJMODE=1 & op0F=0x562F ; opBF=0x00 & ACC & shf & loc16 unimpl
+# 0 ; - ; 1011 0SHF LLLL LLLL
+:MOVH loc16,ACC<<shf is OBJMODE=0 & opBF=0x16 & ACC & shf & loc16 unimpl
+
+
+# MOVH loc16,P  Save High Word of the P Register
+# X ; Y ; 0101 0111 LLLL LLLL
+:MOVH loc16,P is op8F=0x57 & P & loc16 unimpl
+
+
+# MOVL ACC,loc32  Load Accumulator With 32 Bits
+# X ; - ; 0000 0110 LLLL LLLL
+:MOVL ACC,loc32 is op8F=0x06 & ACC & loc32 unimpl
+
+
+# MOVL ACC,P<<PM  Load the Accumulator With Shifted P
+# X ; - ; 0001 0110 1010 1100
+:MOVL ACC,P<<PM is op0F=0x16AC & ACC & P & PM unimpl
+
+
+# MOVL loc32,ACC  Save 32-bit Accumulator
+# X ; - ; 0001 1110 LLLL LLLL
+:MOVL loc32,ACC is op8F=0x1E & ACC & loc32 unimpl
+
+
+# MOVL loc32,ACC,COND  Conditionally Store the Accumulator
+# X ; - ; 0101 0110 0100 1000 0000 COND LLLL LLLL
+:MOVL loc32,ACC,COND8 is op0F=0x5648 & ACC ; opCF=0x0 & COND8 & loc32 unimpl
+
+
+# MOVL loc32,P  Store the P Register
+# 1 ; - ; 1010 1001 LLLL LLLL
+:MOVL loc32,P is OBJMODE=1 & op8F=0xA9 & P & loc32 unimpl
+
+
+# MOVL loc32,XARn  Store 32-bit Auxilliary Register
+# 1 ; - ; 0011 1010 LLLL LLLL
+:MOVL loc32,XAR0 is OBJMODE=1 & op8F=0x3A & XAR0 & loc32 unimpl
+# 1 ; - ; 1011 0010 LLLL LLLL
+:MOVL loc32,XAR1 is OBJMODE=1 & op8F=0xB2 & XAR1 & loc32 unimpl
+# 1 ; - ; 1010 1010 LLLL LLLL
+:MOVL loc32,XAR2 is OBJMODE=1 & op8F=0xAA & XAR2 & loc32 unimpl
+# 1 ; - ; 1010 0010 LLLL LLLL
+:MOVL loc32,XAR3 is OBJMODE=1 & op8F=0xA2 & XAR3 & loc32 unimpl
+# 1 ; - ; 1010 1000 LLLL LLLL
+:MOVL loc32,XAR4 is OBJMODE=1 & op8F=0xA8 & XAR4 & loc32 unimpl
+# 1 ; - ; 1010 0000 LLLL LLLL
+:MOVL loc32,XAR5 is OBJMODE=1 & op8F=0xA0 & XAR5 & loc32 unimpl
+# X ; - ; 1100 0010 LLLL LLLL
+:MOVL loc32,XAR6 is op8F=0xC2 & XAR6 & loc32 unimpl
+# X ; - ; 1100 0011 LLLL LLLL
+:MOVL loc32,XAR7 is op8F=0xC3 & XAR7 & loc32 unimpl
+
+
+# MOVL loc32,XT  Store the XT Register
+# 1 ; - ;  1010 1011 LLLL LLLL
+:MOVL loc32,XT is OBJMODE=1 & op8F=0xAB & XT & loc32 unimpl
+
+
+# MOVL P,ACC  Load P From the Accumulator
+# X ; - ; 1111 1111 0101 1010
+:MOVL P,ACC is op0F=0xFF5A & P & ACC unimpl
+
+
+# MOVL P,loc32  Load the P Register
+# 1 ; - ; 1010 0011 LLLL LLLL
+:MOVL P,loc32 is OBJMODE=1 & op8F=0xA3 & P & loc32 unimpl
+
+
+# MOVL XARn,loc32  Load 32-bit Auxilliary Register
+# 1 ; - ; 1000 1110 LLLL LLLL
+:MOVL XAR0,loc32 is OBJMODE=1 & op8F=0x8E & XAR0 & loc32 unimpl
+# 1 ; - ; 1000 1110 LLLL LLLL
+:MOVL XAR1,loc32 is OBJMODE=1 & op8F=0x8B & XAR1 & loc32 unimpl
+# 1 ; - ; 1000 0110 LLLL LLLL
+:MOVL XAR2,loc32 is OBJMODE=1 & op8F=0x86 & XAR2 & loc32 unimpl
+# 1 ; - ; 1000 0010 LLLL LLLL
+:MOVL XAR3,loc32 is OBJMODE=1 & op8F=0x82 & XAR3 & loc32 unimpl
+# 1 ; - ; 1000 1010 LLLL LLLL
+:MOVL XAR4,loc32 is OBJMODE=1 & op8F=0x8A & XAR4 & loc32 unimpl
+# 1 ; - ; 1000 1010 LLLL LLLL
+:MOVL XAR5,loc32 is OBJMODE=1 & op8F=0x83 & XAR5 & loc32 unimpl
+# X ; - ; 1100 0100 LLLL LLLL
+:MOVL XAR6,loc32 is op8F=0x84 & XAR6 & loc32 unimpl
+# X ; - ; 1100 0101 LLLL LLLL
+:MOVL XAR7,loc32 is op8F=0xC5 & XAR7 & loc32 unimpl
+
+
+# MOVL XARn,#22bit  Load 32-bit Auxilliary Register With Constant Value
+# 1 ; - ; 1000 1101 00CC CCCC CCCC CCCC CCCC CCCC
+:MOVL XAR0,imm22 is OBJMODE=1 & xop6F=0x234 & XAR0 & imm22 unimpl
+# 1 ; - ; 1000 1101 01CC CCCC CCCC CCCC CCCC CCCC
+:MOVL XAR1,imm22 is OBJMODE=1 & xop6F=0x235 & XAR1 & imm22 unimpl
+# 1 ; - ; 1000 1101 10CC CCCC CCCC CCCC CCCC CCCC
+:MOVL XAR2,imm22 is OBJMODE=1 & xop6F=0x236 & XAR2 & imm22 unimpl
+# 1 ; - ; 1000 1101 11CC CCCC CCCC CCCC CCCC CCCC
+:MOVL XAR3,imm22 is OBJMODE=1 & xop6F=0x237 & XAR3 & imm22 unimpl
+# 1 ; - ; 1000 1111 00CC CCCC CCCC CCCC CCCC CCCC
+:MOVL XAR4,imm22 is OBJMODE=1 & xop6F=0x23C & XAR4 & imm22 unimpl
+# 1 ; - ; 1000 1111 01CC CCCC CCCC CCCC CCCC CCCC
+:MOVL XAR5,imm22 is OBJMODE=1 & xop6F=0x23B & XAR5 & imm22 unimpl
+# X ; - ; 0111 0110 10CC CCCC CCCC CCCC CCCC CCCC
+:MOVL XAR6,imm22 is xop6F=0x1DA & XAR6 & imm22 unimpl
+# X ; - ; 0111 0110 11CC CCCC CCCC CCCC CCCC CCCC
+:MOVL XAR7,imm22 is xop6F=0x1DB & XAR7 & imm22 unimpl
+
+
+# MOVL XT,loc32  Load the XT Register
+# 1 ; - ; 1000 0111 LLLL LLLL
+:MOVL XT,loc32 is OBJMODE=1 & op8F=0x87 & XT & loc32 unimpl
+
+
+# MOVP T,loc16  Load the T Register and Store P in the Accumulator
+# X ; - ; 0001 0110 LLLL LLLL
+:MOVP T,loc16 is op8F=0x16 & T & loc16 unimpl
+
+
+# MOVS T,loc16  Load T and Subtract P From the Accumulator
+# X ; Y ; 0001 0001 LLLL LLLL
+:MOVS T,loc16 is op8F=0x11 & T & loc16 unimpl
+
+
+# MOVU ACC,loc16  Load Accumulator With Unsigned Word
+# X ; - ; 0000 1110 LLLL LLLL
+:MOVU ACC,loc16 is op8F=0x0E & ACC & loc16 unimpl
+
+
+# MOVU loc16,OVC  Store the Unsigned Overflow Counter
+# 1 ; - ; 0101 0110 0010 1000 0000 0000 LLLL LLLL
+:MOVU loc16,OVC is OBJMODE=1 & op0F=0x5628 & OVC ; op8F=0x00 & loc16 unimpl
+
+
+# MOVU OVC,loc16  Load Overflow Counter With Unsigned Value
+# 1 ; - ; 0101 0110 0110 0010 0000 0000 LLLL LLLL
+:MOVU OVC,loc16 is OBJMODE=1 & op0F=0x5662 & OVC ; op8F=0x00 & loc16 unimpl
+
+
+# MOVW DP,#16bit  Load the Entire Data Page
+# X ; - ; 0111 0110 0001 1111 CCCC CCCC CCCC CCCC
+:MOVW DP,imm16 is op0F=0x761F & DP ; imm16 unimpl
+
+
+# MOVX TL,loc16  Load Lower Half of XT With Sign Extension
+# 1 ; - ; 0101 0110 0010 0001 xxxx xxxx LLLL LLLL
+:MOVX TL,loc16 is OBJMODE=1 & op0F=0x5621 & TL ; loc16 unimpl
+
+
+# MOVZ ARn,loc16  Load Lower Half of XARn and Clear Upper Half
+# X ; - ; 0101 1nnn LLLL LLLL
+:MOVZ arn8,loc16 is opBF=0x0B & arn8 & arn8h & loc16 unimpl
+# 1 ; - ; 1000 1000 LLLL LLLL
+:MOVZ AR6,loc16 is OBJMODE=1 & op8F=0x88 & AR6 & loc16 unimpl
+# 1 ; - ; 1000 0000 LLLL LLLL
+:MOVZ AR7,loc16 is OBJMODE=1 & op8F=0x80 & AR7 & loc16 unimpl
+
+
+# MOVZ DP,#10bit  Load Data Page and Clear High Bits
+# 1 ; - ; 1011 10CC CCCC CCCC
+:MOVZ DP,imm10 is OBJMODE=1 & opAF=0x2E & DP & imm10 unimpl
+
+
+# MPY ACC,loc16,#16bit  16 X 16 Multiply
+# x ; - ; 0011 0100 LLLL LLLL CCCC CCCC CCCC CCCC
+:MPY ACC,loc16,imm16 is op8F=0x34 & ACC & loc16 ; imm16 unimpl
+
+
+# MPY ACC,T,loc16  16 X 16-bit Multiply
+# X ; - ; 0001 0010 LLLL LLLL
+:MPY ACC,T,loc16 is op8F=0x12 & ACC & T & loc16 unimpl
+
+
+# MPY P,loc16,#16bit  16 X 16-Bit Multiply
+# 1 ; - ; 1000 1100 LLLL LLLL CCCC CCCC CCCC CCCC
+:MPY P,loc16,imm16 is OBJMODE=1 & op8F=0x8C & P & loc16 ; imm16 unimpl
+
+
+# MPY P,T,loc16  16 X 16 Multiply
+# X ; - ; 0011 0011 LLLL LLLL
+:MPY P,T,loc16 is op8F=0x33 & P & T & loc16 unimpl
+
+
+# MPYA P,loc16,#16bit  16 X 16-Bit Multiply and Add Previous Product
+# X ; - ; 0001 0101 LLLL LLLL CCCC CCCC CCCC CCCC
+:MPYA P,loc16,imm16 is op8F=0x15 & P & loc16 ; imm16 unimpl
+
+
+# MPYA P,T,loc16  16 X 16-bit Multiply and Add Previous Product
+# X ; Y ; 0001 0111 LLLL LLLL
+:MPYA P,T,loc16 is op8F=0x17 & P & T & loc16 unimpl
+
+
+# MPYB ACC,T,#8bit  Multiply by 8-bit Constant
+# X ; - ; 0011 0101 CCCC CCCC
+:MPYB ACC,T,imm8 is op8F=0x35 & ACC & T & imm8 unimpl
+
+
+# MPYB P,T,#8bit  Multiply Signed Value by Unsigned 8-bit Constant
+# X ; - ; 0011 0001 CCCC CCCC
+:MPYB P,T,imm8 is op8F=0x31 & P & T & imm8 unimpl
+
+
+# MPYS P,T,loc16  16 X 16-bit Multiply and Subtract
+# X ; Y ; 0001 0011 LLLL LLLL
+:MPYS P,T,loc16 is op8F=0x13 & P & T & loc16 unimpl
+
+
+# MPYU P,T,loc16  Unsigned 16 X 16 Multiply
+# X ; - ; 0011 0111 LLLL LLLL
+:MPYU P,T,loc16 is op8F=0x37 & P & T & loc16 unimpl
+
+
+# MPYU ACC,T,loc16  16 X 16-bit Unsigned Multiply
+# X ; - ; 0011 0110 LLLL LLLL
+:MPYU ACC,T,loc16 is op8F=0x36 & ACC & T & loc16 unimpl
+
+
+# MPYXU ACC,T,loc16  Multiply Signed Value by Unsigned Value
+# X ; - ; 0011 0000 LLLL LLLL
+:MPYXU ACC,T,loc16 is op8F=0x30 & ACC & T & loc16 unimpl
+
+
+# MPYXU P,T,loc16  Multiply Signed Value by Unsigned Value
+# X ; - ; 0011 0010 LLLL LLLL
+:MPYXU P,T,loc16 is op8F=0x32 & P & T & loc16 unimpl
+
+
+# NASP  Unalign Stack Pointer
+# X ; - ; 0111 0110 0001 0111
+:NASP is op0F=0x7617 unimpl
+
+
+# NEG ACC  Negate Accumulator
+# X ; - ; 1111 1111 0101 0100
+:NEG ACC is op0F=0xFF54 & ACC unimpl
+
+
+# NEG AX  Negate AX Register
+# X ; - ; 1111 1111 0101 110A
+:NEG AX0 is op1F=0x7FAE & AX0 unimpl
+
+
+# NEG64 ACC:P  Negate Accumulator Register and Product Register
+# 1 ; - ; 0101 0110 0101 1000
+:NEG64 ACC:P is OBJMODE=1 & op0F=0x5658 & ACC & P unimpl
+
+
+# NEGTC ACC  If TC is Equivalent to 1, Negate ACC
+# 1 ; - ; 0101 0110 0011 0010
+:NEGTC ACC is OBJMODE=1 & op0F=0x5632 & ACC unimpl
+
+
+# TODO
+# NOP {*ind}{ARPn}  No Operation With Optional Indirect Address Modification
+# X ; Y ; 0111 0111 LLLL LLLL
+:NOP is op8F=0x77 unimpl
+
+
+# NORM ACC,*ind  Normalize ACC and Modify Selected Auxilliary Register
+# 1 ; Y ; 0101 0110 0010 0100
+:NORM ACC,^"*" is op0F=0x5624 & ACC unimpl
+# 1 ; Y ; 0101 0110 0101 1010
+:NORM ACC,^"*++" is op0F=0x565A & ACC unimpl
+# 1 ; Y ; 0101 0110 0010 0000
+:NORM ACC,^"*--" is op0F=0x5620 & ACC unimpl
+# 1 ; Y ; 0101 0110 0111 0111
+:NORM ACC,^"*0++" is op0F=0x5677 & ACC unimpl
+# 1 ; Y ; 0101 0110 0011 0000
+:NORM ACC,^"*0--" is op0F=0x5630 & ACC unimpl
+
+
+# NORM ACC,XARn++/--  Normalize ACC and Modify Selected Auxilliary Register
+# X ; Y ; 1111 1111 0111 1nnn
+:NORM ACC,xarn0++ is op3F=0x1FEF & ACC & xarn0 unimpl
+# X ; Y ; 1111 1111 0111 0nnn
+:NORM ACC,xarn0-- is op3F=0x1FEE & ACC & xarn0 unimpl
+
+
+# NOT ACC  Complement Accumulator
+# X ; - ; 1111 1111 0101 0101
+:NOT ACC is op0F=0xFF55 & ACC unimpl
+
+
+# NOT AX  Complement AX Register
+# X ; - ; 1111 1111 0101 111A
+:NOT AX0 is op1F=0x7FAF & AX0 unimpl
+
+
+# OR ACC,loc16  Bitwise OR
+# 1 ; Y ; 1010 1111 LLLL LLLL
+:OR ACC,loc16 is OBJMODE=1 & op8F=0xAF & ACC & loc16 unimpl
+
+
+# OR ACC,#16bit<<#0..16  Bitwise OR
+# 1 ; - ; 0011 1110 0001 SHFT CCCC CCCC CCCC CCCC
+:OR ACC,imm16,shift is OBJMODE=1 & op4F=0x3E1 & ACC & shift ; imm16 unimpl
+# 1 ; - ; 0101 0110 0100 1010 CCCC CCCC CCCC CCCC
+:OR ACC,imm16<<16 is OBJMODE=1 & op0F=0x564A & ACC ; imm16 unimpl
+
+
+# OR AX,loc16  Bitwise OR
+# X ; - ; 1100 101A LLLL LLLL
+:OR AX8,loc16 is op9F=0x65 & AX8 & loc16 unimpl
+
+
+# OR IER,#16bit  Bitwise OR
+# X ; - ; 0111 0110 0010 0011 CCCC CCCC CCCC CCCC
+:OR IER,imm16 is op0F=0x7623 & IER ; imm16 unimpl
+
+
+# OR IFR,#16bit  Bitwise OR
+# X ; - ; 0111 0110 0010 0111 CCCC CCCC CCCC CCCC
+:OR IFR,imm16 is op0F=0x7627 & IFR ; imm16 unimpl
+
+
+# OR loc16,#16bit  Bitwise OR
+# X ; - ; 0001 1010 LLLL LLLL CCCC CCCC CCCC CCCC
+:OR loc16,imm16 is op8F=0x1A & loc16 ; imm16 unimpl
+
+
+# OR loc16,AX  Bitwise OR
+# X ; - ; 1001 100A LLLL LLLL
+:OR loc16,AX8 is op9F=0x4C & AX8 & loc16 unimpl
+
+
+# ORB AX,#8bit  Bitwise OR 8-bit Value
+# X ; - ; 0101 000A CCCC CCCC
+:ORB AX8,imm8 is op9F=0x28 & AX8 & imm8 unimpl
+
+
+# OUT *(PA),loc16  Output Data to Port
+# 1 ; - ; 1011 1100 LLLL LLLL CCCC CCCC CCCC CCCC
+:OUT *(PA),loc16 is OBJMODE=1 & op8F=0xBC & loc16 ; PA unimpl
+
+
+# POP ACC  Pop Top of Stack of Accumulator
+# X ; - ; 0000 0110 1011 1110
+:POP ACC is op0F=0x06BE & ACC unimpl
+
+
+# POP ARn:ARm  Pop Top of Stack to 16-bit Auxilliary Registers
+# X ; - ; 0111 0110 0000 0111
+:POP AR1:AR0 is op0F=0x7607 & AR1 & AR0 unimpl
+# X ; - ; 0111 0110 0000 0101
+:POP AR3:AR2 is op0F=0x7605 & AR3 & AR2 unimpl
+# X ; - ; 0111 0110 0000 0110
+:POP AR5:AR4 is op0F=0x7606 & AR5 & AR4 unimpl
+
+
+# POP AR1H:AR0H  Pop Top of Stack to Upper Half of Auxilliary Registers
+# X ; - ; 0000 0000 0000 0011
+:POP AR1H:AR0H is op0F=0x0003 & AR1H & AR0H unimpl
+
+
+# POP DBGIER  Pop Top of Stack to DBGIER
+# X ; - ; 0111 0110 0001 0010
+:POP DBGIER is op0F=0x7612 & DBGIER unimpl
+
+
+# POP DP  Pop Top of Stack to the Data Page
+# X ; - ; 0111 0110 0000 0011
+:POP DP is op0F=0x7603 & DP unimpl
+
+
+# POP DP:ST1  Pop Top of Stack of DP and ST1
+# X ; - ; 0111 0110 0000 0001
+:POP DP:ST1 is op0F=0x7601 & DP & ST1 unimpl
+
+
+# POP IFR  Pop Top of Stack to IFR
+# X ; - ; 0000 0000 0000 0010
+:POP IFR is op0F=0x0002 & IFR unimpl
+
+
+# POP loc16  Pop Top of Stack
+# X ; - ; 0010 1010 LLLL LLLL
+:POP loc16 is op8F=0x2A & loc16 unimpl
+
+
+# POP P  Pop top of Stack to P
+# X ; - ; 0111 0110 0001 0001
+:POP P is op0F=0x7611 & P unimpl
+
+
+# POP RPC  Pop RPC Register From Stack
+# X ; - ; 0000 0000 0000 0111
+:POP RPC is op0F=0x0007 & RPC unimpl
+
+
+# POP ST0  Pop Top of Stack to ST0
+# X ; - ; 0111 0110 0001 0011
+:POP ST0 is op0F=0x7613 & ST0 unimpl
+
+
+# POP ST1  Pop Top of Stack to ST1
+# X ; - ; 0111 0110 0000 0000
+:POP ST1 is op0F=0x7600 & ST1 unimpl
+
+
+# POP T:ST0  Pop Top of Stack to T and ST0
+# X ; - ; 0111 0110 0001 0101
+:POP T:ST0 is op0F=0x7615 & T & ST0 unimpl
+
+
+# POP XARn  Pop Top of Stack to 32-bit Auxilliary Register
+# 1 ; - ; 1000 1110 1011 1110
+:POP XAR0 is OBJMODE=1 & op0F=0x8EBE & XAR0 unimpl
+# 1 ; - ; 1000 1011 1011 1110
+:POP XAR1 is OBJMODE=1 & op0F=0x8BBE & XAR1 unimpl
+# 1 ; - ; 1000 0110 1011 1110
+:POP XAR2 is OBJMODE=1 & op0F=0x86BE & XAR2 unimpl
+# 1 ; - ; 1000 0010 1011 1110
+:POP XAR3 is OBJMODE=1 & op0F=0x82BE & XAR3 unimpl
+# 1 ; - ; 1000 1010 1011 1110
+:POP XAR4 is OBJMODE=1 & op0F=0x8ABE & XAR4 unimpl
+# 1 ; - ; 1000 0011 1011 1110
+:POP XAR5 is OBJMODE=1 & op0F=0x83BE & XAR5 unimpl
+# X ; - ; 1100 0100 1011 1110
+:POP XAR6 is op0F=0x84BE & XAR6 unimpl
+# X ; - ; 1100 0101 1011 1110
+:POP XAR7 is op0F=0x85BE & XAR7 unimpl
+
+
+# POP XT  Pop Top of Stack to XT
+# X ; - ; 1000 0111 1011 1110
+:POP XT is op0F=0x87BE & XT unimpl
+
+
+# PREAD loc16,*XAR7  Read From Program Memory
+# X ; Y ; 0010 0100 LLLL LLLL
+:PREAD loc16,*XAR7 is op8F=0x24 & XAR7 & loc16 unimpl
+
+
+# PUSH ACC  Push Accumulator Onto Stack
+# X ; - ; 0001 1110 1011 1101
+:PUSH ACC is op0F=0x1EBD & ACC unimpl
+
+
+# PUSH ARn:ARm  Push 16-bit Auxilliary Registers Onto Stack
+# X ; - ; 0111 0110 0000 1101
+:PUSH AR1:AR0 is op0F=0x760D & AR1 & AR0 unimpl
+# X ; - ; 0111 0110 0000 1111
+:PUSH AR3:AR2 is op0F=0x760F & AR3 & AR2 unimpl
+# X ; - ; 0111 0110 0000 1100
+:PUSH AR5:AR4 is op0F=0x760C & AR5 & AR4 unimpl
+
+
+# PUSH AR1H:AR0H  Push AR1H and AR0H Registers on Stack
+# X ; - ; 0000 0000 0000 0101
+:PUSH AR1H:AR0H is op0F=0x0005 & AR1H & AR0H unimpl
+
+
+# PUSH DBGIER  Push DBGIER Register Onto Stack
+# X ; - ; 0111 0110 0000 1110
+:PUSH DBGIER is op0F=0x760E & DBGIER unimpl
+
+
+# PUSH DP  Push DP Register Onto Stack
+# X ; - ; 0111 0110 0000 1011
+:PUSH DP is op0F=0x760B & DP unimpl
+
+
+# PUSH DP:ST1  Push DP and ST1 Onto Stack
+# X ; - ; 0111 0110 0000 1001
+:PUSH DP:ST1 is op0F=0x7609 & DP & ST1 unimpl
+
+
+# PUSH IFR  Push IFR Onto Stack
+# X ; - ; 0111 0110 0000 1010
+:PUSH IFR is op0F=0x760A & IFR unimpl
+
+
+# PUSH loc16  Push 16-bit Value on Stack
+# X ; - ; 0010 0010 LLLL LLLL
+:PUSH loc16 is op8F=0x22 & loc16 unimpl
+
+
+# PUSH P  Push P Onto Stack
+# X ; - ; 0111 0110 0001 1101
+:PUSH P is op0F=0x761D & P unimpl
+
+
+# PUSH RPC  Push RPC Onto Stack
+# X ; - ; 0000 0000 0000 0100
+:PUSH RPC is op0F=0x0004 & RPC unimpl
+
+
+# PUSH ST0  Push ST0 Onto Stack
+# X ; - ; 0111 0110 0001 1000
+:PUSH ST0 is op0F=0x7618 & ST0 unimpl
+
+
+# PUSH ST1  Push ST1 Onto Stack
+# X ; - ; 0111 0110 0000 1000
+:PUSH ST1 is op0F=0x7608 & ST1 unimpl
+
+
+# PUSH T:ST0  Push T and ST0 Onto Stack
+# X ; - ; 0111 0110 0001 1001
+:PUSH T:ST0 is op0F=0x7619 & T & ST0 unimpl
+
+
+# PUSH XARn  Push 32-bit Auxilliary Register Onto Stack
+# 1 ; - ; 0011 1010 1011 1101
+:PUSH XAR0 is OBJMODE=1 & op0F=0x3ABD & XAR0 unimpl
+# 1 ; - ; 1011 0010 1011 1101
+:PUSH XAR1 is OBJMODE=1 & op0F=0xB2BD & XAR1 unimpl
+# 1 ; - ; 1010 1010 1011 1101
+:PUSH XAR2 is OBJMODE=1 & op0F=0xAABD & XAR2 unimpl
+# 1 ; - ; 1010 0010 1011 1101
+:PUSH XAR3 is OBJMODE=1 & op0F=0xA2BD & XAR3 unimpl
+# 1 ; - ; 1010 1000 1011 1101
+:PUSH XAR4 is OBJMODE=1 & op0F=0xA8BD & XAR4 unimpl
+# 1 ; - ; 1010 0000 1011 1101
+:PUSH XAR5 is OBJMODE=1 & op0F=0xA0BD & XAR5 unimpl
+# X ; - ;  1100 0010 1011 1101
+:PUSH XAR6 is op0F=0xC2BD & XAR6 unimpl
+# X ; - ; 1100 0011 1011 1101
+:PUSH XAR7 is op0F=0xC3BD & XAR7 unimpl
+
+
+# PUSH XT  Push XT Onto Stack
+# X ; - ; 1010 1011 1011 1101
+:PUSH XT is op0F=0xABBD & XT unimpl
+
+
+# PWRITE *XAR7,loc16  Write to Program Memory
+# X ; Y ; 0010 0110 LLLL LLLL
+:PWRITE *XAR7,loc16 is op8F=0x26 & XAR7 & loc16 unimpl
+
+
+# QMACL P,loc32,*XAR7/++  Signed 32 X 32-bit Multiply and Accumulate (Upper Half)
+# 1 ; Y ; 0101 0110 0100 1111 1100 0111 LLLL LLLL
+:QMACL P,loc32,*XAR7 is OBJMODE=1 & op0F=0x564F & P & XAR7 ; op8F=0xC7 & loc32 unimpl
+# 1 ; Y ; 0101 0110 0100 1111 1000 0111 LLLL LLLL
+:QMACL P,loc32,*XAR7++ is OBJMODE=1 & op0F=0x564F & P & XAR7 ; op8F=0x87 & loc32 unimpl
+
+
+# QMPYAL P,XT,loc32  Signed 32-bit Multiply (Upper Half) and Add Previous P
+# 1 ; - ; 0101 0110 0100 0110 0000 0000 LLLL LLLL
+:QMPYAL P,XT,loc32 is OBJMODE=1 & op0F=0x5646 & P & XT ; op8F=0x00 & loc32 unimpl
+
+
+# QMPYL P,XT,loc32  Signed 32 X 32-bit Multiply (Upper Half)
+# 1 ; - ; 0101 0110 0110 0111 0000 0000 LLLL LLLL
+:QMPYL P,XT,loc32 is OBJMODE=1 & op0F=0x5667 & P & XT ; op8F=0x00 & loc32 unimpl
+
+
+# QMPYL ACC,XT,loc32  Signed 32 X 32-bit Multiply (Upper Half)
+# 1 ; - ; 0101 0110 0110 0011 0000 0000 LLLL LLLL
+:QMPYL ACC,XT,loc32 is OBJMODE=1 & op0F=0x5663 & ACC & XT ; op8F=0x00 & loc32 unimpl
+
+
+# QMPYSL P,XT,loc32  Signed 32-bit Multiply (Upper Half) and Subtract Previous P
+# 1 ; - ; 0101 0110 0100 0101 0000 0000 LLLL LLLL
+:QMPYSL P,XT,loc32 is OBJMODE=1 & op0F=0x5645 & P & XT ; op8F=0x00 & loc32 unimpl
+
+
+# QMPYUL P,XT,loc32  Unsigned 32 X 32-bit Multiply (Upper Half)
+# 1 ; - ; 0101 0110 0100 0111 0000 0000 LLLL LLLL
+:QMPYUL P,XT,loc32 is OBJMODE=1 & op0F=0x5647 & P & XT ; op8F=0x00 & loc32 unimpl
+
+
+# QMPYXUL P,XT,loc32  Signed X Unsigned 32-bit Multiply (Upper Half)
+# 1 ; - ; 0101 0110 0100 0010 0000 0000 LLLL LLLL
+:QMPYXUL P,XT,loc32 is OBJMODE=1 & op0F=0x5642 & P & XT ; op8F=0x00 & loc32 unimpl
+
+
+# ROL ACC  Rotate Accumulator Left
+# X ; Y ; 1111 1111 0101 0011
+:ROL ACC is op0F=0xFF53 & ACC unimpl
+
+
+# ROR ACC  Rotate Accumulator Right
+# X ; Y ; 1111 1111 0101 0010
+:ROR ACC is op0F=0xFF52 & ACC unimpl
+
+
+# RPT #8bit/loc16  Repeat Next Instruction
+# X ; - ; 1111 0110 CCCC CCCC
+:RPT imm8 is op8F=0xF6 & imm8 unimpl
+# X ; - ; 1111 0111 LLLL LLLL
+:RPT loc16 is op8F=0xF7 & loc16 unimpl
+
+
+# SAT ACC
+# X ; - ; 1111 1111 0101 0111
+:SAT ACC is op0F=0xFF57 & ACC unimpl
+
+
+# SAT64 ACC:P  Saturate 64-bit Value ACC:P
+# 1 ; - ; 0101 0110 0011 1110
+:SAT64 ACC:P is OBJMODE=1 & op0F=0x563E & ACC & P unimpl
+
+
+# SB 8bitOffset,COND  Need description here (lol)
+# X ; - ; 0110 COND CCCC CCCC
+:SB soff8,COND8 is opCF=0x6 & COND8 & soff8 unimpl
+
+
+# SBBU ACC,loc16  Subtract Unsigned Value Plus Inverse Borrow
+# X ; - ; 0001 1101 LLLL LLLL
+:SBBU ACC,loc16 is op8F=0x1D & ACC & loc16 unimpl
+
+
+# SBF 8bitOffset,EQ/NEQ/TC/INTC  Short Branch Fast
+# 1 ; - ; 1110 1100 CCCC CCCC
+:SBF soff8,^"EQ" is OBJMODE=1 & op8F=0xEC & soff8 unimpl
+# 1 ; - ; 1110 1101 CCCC CCCC
+:SBF soff8,^"NEQ" is OBJMODE=1 & op8F=0xED & soff8 unimpl
+# 1 ; - ; 1110 1110 CCCC CCCC
+:SBF soff8,^"TC" is OBJMODE=1 & op8F=0xEE & soff8 unimpl
+# 1 ; - ; 1110 1111 CCCC CCCC
+:SBF soff8,^"INTC" is OBJMODE=1 & op8F=0xEF & soff8 unimpl
+
+
+# SBRK #8bit  Subtract From Current Auxilliary Register
+# X ; - ; 1111 1101 CCCC CCCC
+:SBRK imm8 is op8F=0xFD & imm8 unimpl
+
+
+# 0 ST0 SXM
+# 1 ST0 OVM
+# 2 ST0 TC
+# 3 ST0 C
+# 4 ST1 INTM
+# 5 ST1 DBGM
+# 6 ST1 PAGE0
+# 7 ST1 VMAP
+
+# SETC Mode  Set Multiple Status Bits
+# X ; - ; 0011 1011 CCCC CCCC
+:SETC mode is op8F=0x3B & mode unimpl
+
+
+# SETC M0M1MAP  Set the M0M1MAP Status Bit
+# X ; - ; 0101 0110 0001 1010
+:SETC M0M1MAP is op0F=0x561A & M0M1MAP unimpl
+
+
+# SETC Objmode  Set the Objmode Status Bit
+# X ; - ; 0101 0110 0001 1111
+:SETC OBJMODE is op0F=0x561F & OBJMODE unimpl
+
+
+# SETC XF  Set XF and Output Signal
+# X ; - ; 0101 0110 0010 0110
+:SETC XF is op0F=0x5626 & XF unimpl
+
+
+# SFR ACC,#1..16  Shift Accumulator Right
+# X ; Y ; 1111 1111 0100 SHFT
+:SFR ACC,shift1 is op4F=0xFF4 & ACC & shift1 unimpl
+
+
+# SFR ACC,T  Shift Accumulator Right
+# X ; - ; 1111 1111 0101 0001
+:SFR ACC,T is op0F=0xFF51 & ACC & T unimpl
+
+
+# SPM shift  Set Product Mode Shift Bits
+# X ; - ; 1111 1111 0110 1000
+:SPM +1 is op0F=0xFF64 unimpl
+# X ; - ; 1111 1111 0110 1001
+:SPM 0 is op0F=0xFF69  unimpl
+# X ; - ; 1111 1111 0110 1010
+:SPM -1 is op0F=0xFF6A  unimpl
+# X ; - ; 1111 1111 0110 1011
+:SPM -2 is op0F=0xFF6B  unimpl
+# X ; - ; 1111 1111 0110 1100
+:SPM -3 is op0F=0xFF6C  unimpl
+# X ; - ; 1111 1111 0110 1101
+:SPM -4 is op0F=0xFF6D  unimpl
+# X ; - ; 1111 1111 0110 1110
+:SPM -5 is op0F=0xFF6E  unimpl
+# X ; - ; 1111 1111 0110 1111
+:SPM -6 is op0F=0xFF6F  unimpl
+
+
+# SQRA loc16  Square Value and Add P to ACC
+# 1 ; Y ; 0101 0110 0001 0101 0000 0000 LLLL LLLL
+:SQRA loc16 is OBJMODE=1 & op0F=0x5615 ; op8F=0x00 & loc16 unimpl
+
+
+# SQRS loc16  Square Value and Subtract P From ACC
+# 1 ; Y ; 0101 0110 0001 0001 xxxx xxxx LLLL LLLL
+:SQRS loc16 is OBJMODE=1 & op0F=0x5611 ; loc16 unimpl
+
+
+# SUB ACC,loc16<<#0..16  Subtract Shifted Value From Accumulator
+# 1 ; Y ; 1010 1110 LLLL LLLL
+:SUB ACC,loc16<<0 is OBJMODE=1 & op8F=0xAE & ACC & loc16 unimpl
+# 0 ; - ; 1000 0000 LLLL LLLL
+:SUB ACC,loc16<<0 is OBJMODE=0 & op8F=0x80 & ACC & loc16 unimpl
+# 1 ; Y ; 0101 0110 0000 0000 0000 SHFT LLLL LLLL
+:SUB ACC,loc16<<shft is OBJMODE=1 & op0F=0x5600 & ACC ; opCF=0x0 & shft & loc16 unimpl
+# 1 ; Y ; 1000 SHFT LLLL LLLL
+:SUB ACC,loc16<<shft is OBJMODE=1 & opCF=0x8 & ACC & shft & loc16 unimpl
+# X ; Y ; 0000 0100 LLLL LLLL
+:SUB ACC,loc16<<16 is op8F=0x04 & ACC & loc16 unimpl
+
+
+# SUB ACC,loc16<<T  Subtract Shifted Value From Accumulator
+# 1 ; Y ; 0101 0110 0010 0111 0000 0000 LLLL LLLL
+:SUB ACC,loc16<<T is OBJMODE=1 & op0F=0x5627 & ACC & T ; op8F=0x00 & loc16 unimpl
+
+
+# SUB ACC,#16bit<<#0..15  Subtract Shifted Value From Accumulator
+# X ; - ; 1111 1111 0000 SHFT CCCC CCCC CCCC CCCC
+:SUB ACC,imm16<<shift is op4F=0xFF0 & ACC & shift ; imm16 unimpl
+
+
+# SUB AX,loc16  Subtract Specified Location From AX
+# X ; - ; 1001 111A LLLL LLLL
+:SUB AX8,loc16 is op9F=0x4F & AX8 & loc16 unimpl
+
+
+# SUB loc16,AX  Reverse-Subtract Specified Location From AX
+# X ; - ; 0111 010A LLLL LLLL
+:SUB loc16,AX8 is op9F=0x3A & AX8 & loc16 unimpl
+
+
+# SUBB ACC,#bit  Subtract 8-bit Value
+# X ; - ; 0001 1001 CCCC CCCC
+:SUBB ACC,imm8 is op8F=0x19 & ACC & imm8 unimpl
+
+
+# SUBB SP,#7bit  Subtract 7-bit Value
+# X ; - ; 1111 1110 1CCC CCCC
+:SUBB SP,imm7 is op7F=0x1FD & SP & imm7 unimpl
+
+
+# SUBB XARn,#7bit  Subtract 7-Bit From Auxilliary Register
+# X ; - ; 1101 1nnn 1CCC CCCC
+:SUBB xarn8,imm7 is opBF=0x1B & xarn8 & op7=1 & imm7 unimpl
+
+
+# SUBBL ACC,loc32  Subtract 32-bit Value Plus Inverse Borrow
+# 1 ; - ; 0101 0110 0101 0100 0000 0000 LLLL LLLL
+:SUBBL ACC,loc32 is OBJMODE=1 & op0F=0x5654 & ACC ; op8F=0x00 & loc32 unimpl
+
+
+# SUBCU ACC,loc16  Subtract Conditonal 16 Bits
+# X ; Y ; 0001 1111 LLLL LLLL
+:SUBCU ACC,loc16 is op8F=0x1F & ACC & loc16 unimpl
+
+
+# SUBCUL ACC,loc32  Subtract Conditional 32 Bits
+# 1 ; Y ; 0101 0110 0001 0111 0000 0000 LLLL LLLL
+:SUBCUL ACC,loc32 is OBJMODE=1 & op0F=0x5617 & ACC ; op8F=0x00 & loc32 unimpl
+
+
+# SUBL ACC,loc32  Subtract 32-bit Value
+# 1 ; - ; 0000 0011 LLLL LLLL
+:SUBL ACC,loc32 is OBJMODE=1 & op8F=0x03 & ACC & loc32 unimpl
+
+
+# SUBL ACC,P<<PM  Subtract 32-bit Value
+# X ; Y ; 0001 0001 1010 1100
+:SUBL ACC,P<<PM is op0F=0x11AC & ACC & P & PM unimpl
+
+
+# SUBL loc32,ACC  Subtract 32-bit Value
+# 1 ; - ; 0101 0110 0100 0001 0000 0000 LLLL LLLL
+:SUBL loc32,ACC is OBJMODE=1 & op0F=0x5641 & ACC ; op8F=0x00 & loc32 unimpl
+
+
+# SUBR loc16,AX  Revese-Subtract Specified Location From AX
+# 1 ; - ; 1110 101A LLLL LLLL
+:SUBR loc16,AX8 is OBJMODE=1 & op9F=0x75 & AX8 & loc16 unimpl
+
+
+# SUBRL loc32,ACC  Reverse-Subtract Specified Location From ACC
+# 1 ; - ; 0101 0110 0100 1001 0000 0000 LLLL LLLL
+:SUBRL loc32,ACC is OBJMODE=1 & op0F=0x5649 & ACC ; op8F=0x00 & loc32 unimpl
+
+
+# SUBU ACC,loc16  Subtract Unsigned 16-bit Value
+# X ; Y ; 0000 0001 LLLL LLLL
+:SUBU ACC,loc16 is op8F=0x01 & ACC & loc16 unimpl
+
+
+# SUBUL ACC,loc32  Subtract Unsgined 32-bit Value
+# 1 ; - ; 0101 0110 0101 0101 0000 0000 LLLL LLLL
+:SUBUL ACC,loc32 is OBJMODE=1 & op0F=0x5655 & ACC ; op8F=0x00 & loc32 unimpl
+
+
+# SUBUL P,loc32  Subtract Unsigned 32-bit Value
+# 1 ; - ; 0101 0110 0101 1101 0000 0000 LLLL LLLL
+:SUBUL P,loc32 is OBJMODE=1 & op0F=0x565D & P ; op8F=0x00 & loc32 unimpl
+
+
+# TBIT loc16,#bit  Test Specified Bit
+# X ; - ; 0100 BBBB LLLL LLLL
+:TBIT loc16,index is opCF=0x4 & index & loc16 unimpl
+
+
+# TBIT loc16,T  Test Bit Specified by Register
+# 1 ; - ; 0101 0110 0010 0101 0000 0000 LLLL LLLL
+:TBIT loc16,T is OBJMODE=1 & op0F=0x5625 & T ; op8F=0x00 & loc16 unimpl
+
+
+# TCLR loc16,#bit  Test and Clear Specified Bit
+# 1 ; - ; 0101 0110 0000 1001 0000 BBBB LLLL LLLL
+:TCLR loc16,index is OBJMODE=1 & op0F=0x5609 ; opCF=0x0 & index & loc16 unimpl
+
+
+# TEST ACC  Test for Accumulator Equal to Zero
+# X ; - ; 1111 1111 0101 1000
+:TEST ACC is op0F=0xFF58 & ACC unimpl
+
+
+# TRAP #VectorNumber  Software Trap
+# X ; - ; 0000 0000 001C CCCC
+:TRAP vector is op5F=0x001 & vector unimpl
+
+
+# TEST loc16,#bit  Test and Set Specified Bit
+# 1 ; - ; 0101 0110 0000 1101 0000 BBBB LLLL LLLL
+:TEST loc16,index is OBJMODE=1 & op0F=0x560D ; opCF=0x0 & index & loc16 unimpl
+
+
+# UOUT *(PA),loc16  Unprotected Output Data to I/O Port
+# 1 ; Y ; 1011 0000 LLLL LLLL CCCC CCCC CCCC CCCC
+:UOUT *(PA),loc16 is OBJMODE=1 & op8F=0xB0 & loc16 ; PA unimpl
+
+
+# XB *AL  C2xLP Source-Compatible Indirect Branch
+# 1 ; - ; 0101 0110 0001 0100
+:XB *AL is OBJMODE=1 & op0F=0x5614 & AL unimpl
+
+
+# XB pma,*,ARPn  C2xLP Source-Compatible Branch with ARP Modification
+# 1 ; - ; 0011 1110 0111 0nnn CCCC CCCC CCCC CCCC
+:XB pma,*,arpn is OBJMODE=1 & op3F=0x07CE & arpn ; pma unimpl
+
+
+# XB pma,COND  C2xLP Source-Compatible Branch
+# 1 ; - ; 0101 0110 1101 COND CCCC CCCC CCCC CCCC
+:XB pma,COND0 is op4F=0x56D & COND0 ; pma unimpl
+
+
+# XBANZ pma,*ind{,ARPn}  C2xLP Source-Compatible Branch If ARn Is Not Zero
+# 1 ; - ; 0101 0110 0000 1100 CCCC CCCC CCCC CCCC
+:XBANZ pma,* is OBJMODE=1 & op0F=0x560C ; pma unimpl
+# 1 ; - ; 0101 0110 0000 1010 CCCC CCCC CCCC CCCC
+:XBANZ pma,^"*++" is OBJMODE=1 & op0F=0x560A ; pma unimpl
+# 1 ; - ; 0101 0110 0000 1011 CCCC CCCC CCCC CCCC
+:XBANZ pma,^"*--" is OBJMODE=1 & op0F=0x560B ; pma unimpl
+# 1 ; - ; 0101 0110 0000 1110 CCCC CCCC CCCC CCCC
+:XBANZ pma,^"*O++" is OBJMODE=1 & op0F=0x560E ; pma unimpl
+# 1 ; - ; 0101 0110 0000 1111 CCCC CCCC CCCC CCCC
+:XBANZ pma,^"*O--" is OBJMODE=1 & op0F=0x560F ; pma unimpl
+# 1 ; - ; 0011 1110 0011 0nnn CCCC CCCC CCCC CCCC
+:XBANZ pma,^"*"^,arpn is OBJMODE=1 & op3F=0x07C6 & arpn ; pma unimpl
+# 1 ; - ; 0011 1110 0011 1nnn CCCC CCCC CCCC CCCC
+:XBANZ pma,^"*++"^,arpn is OBJMODE=1 & op0F=0x07C7 & arpn ; pma unimpl
+# 1 ; - ; 0011 1110 0100 0nnn CCCC CCCC CCCC CCCC
+:XBANZ pma,^"*--"^,arpn is OBJMODE=1 & op0F=0x07C8 & arpn ; pma unimpl
+# 1 ; - ; 0011 1110 0100 1nnn CCCC CCCC CCCC CCCC
+:XBANZ pma,^"*O++"^,arpn is OBJMODE=1 & op0F=0x07C9 & arpn ; pma unimpl
+# 1 ; - ; 0011 1110 0101 0nnn CCCC CCCC CCCC CCCC
+:XBANZ pma,^"*O--"^,arpn is OBJMODE=1 & op0F=0x07CA & arpn ; pma unimpl
+
+
+# XCALL *AL  C2xLP Source-Compatible Function Call
+# 1 ; - ; 0101 0110 0011 0100
+:XCALL *AL is OBJMODE=1 & op0F=0x5634 & AL unimpl
+
+
+# XCALL pma,*,ARPn  C2xLP Source-Compatible Function Call
+# 1 ; - ; 0011 1110 0110 1nnn CCCC CCCC CCCC CCCC
+:XCALL pma,*,arpn is OBJMODE=1 & op3F=0x07CD & arpn ; pma unimpl
+
+
+# XCALL pma,COND  C2xLP Source-Compatible Function Call
+# 1 ; - ; 0101 0110 1110 COND CCCC CCCC CCCC CCCC
+:XCALL pma,COND0 is OBJMODE=1 & op4F=0x56E & COND0 ; pma unimpl
+
+
+# XMAC P,loc16,*(pma)  C2xLP Source-Compatible Multiply and Accumulate
+# 1 ; Y ; 1000 0100 LLLL LLLL CCCC CCCC CCCC CCCC
+:XMAC P,loc16,*(pma) is OBJMODE=1 & op8F=0x84 & P & loc16 ; pma unimpl
+
+
+# XMACD P,loc16,*(pma)  C2xLP Source-Compatible Multiply and Accumulate With Data Move
+# 1 ; Y ; 1010 0100 LLLL LLLL CCCC CCCC CCCC CCCC
+:XMACD P,loc16,*(pma) is OBJMODE=1 & op8F=0xA4 & P & loc16 ; pma unimpl
+
+
+# XOR ACC,loc16  Bitwise Exclusive OR
+# 1 ; Y ; 1011 0111 LLLL LLLL
+:XOR ACC,loc16 is OBJMODE=1 & op8F=0xB7 & ACC & loc16 unimpl
+
+
+# XOR ACC,#16bit<<#0..16  Bitwise Exclusive OR
+# 1 ; - ; 0011 1110 0010 SHFT CCCC CCCC CCCC CCCC
+:XOR ACC,imm16<<shift is OBJMODE=1 & op4F=0x3E2 & ACC & shift ; imm16 unimpl
+# 1 ; - ; 0101 0110 0100 1110 CCCC CCCC CCCC CCCC
+:XOR ACC,imm16<<16 is OBJMODE=1 & op0F=0x564E & ACC ; imm16 unimpl
+
+
+# XOR AX,loc16  Bitwise Exclusive OR
+# X ; - ; 0111 000A LLLL LLLL
+:XOR AX8,loc16 is op9F=0x38 & AX8 & loc16 unimpl
+
+
+# XOR loc16,AX  Bitwise Exclusive OR
+# X ; - ; 1111 001A LLLL LLLL
+:XOR loc16,AX8 is op9F=0x79 & AX8 & loc16 unimpl
+
+
+# XOR loc16,#16bit  Bitwise Exclusive OR
+# X ; - ; 0001 1100 LLLL LLLL CCCC CCCC CCCC CCCC
+:XOR loc16,imm16 is op8F=0x1C & loc16 ; imm16 unimpl
+
+
+# XORB AX,#8bit  Bitwise Exclusive OR 8-bit Value
+# X ; - ; 1111 000A CCCC CCCC
+:XORB AX8,imm8 is op9F=0x78 & AX8 & imm8 unimpl
+
+
+#TODO  This looks wrong
+# XPREAD loc16,*(pma)  C2xLP Source-Compatible Program Read
+# 1 ; Y ; 1010 1100 MMMM MMMM LLLL LLLL LLLL LLLL
+:XPREAD loc16,*(pma) is OBJMODE=1 & op8F=0xAC & loc16 ; pma unimpl
+
+
+# XPREAD loc16,*AL  C2xLP Source-Compatible Program Read
+# 1 ; Y ; 0101 0110 0011 1100 0000 0000 LLLL LLLL
+:XPREAD loc16,*AL is OBJMODE=1 & op0F=0x563C & AL ; op8F=0x00 & loc16 unimpl
+
+
+# XPWRITE *A,loc16  C2xLP Source-Compatible Program Write
+# 1 ; Y ; 0101 0110 0011 1101 0000 0000 LLLL LLLL
+:XPWRITE *AL,loc16 is OBJMODE=1 & op0F=0x563D & AL ; op8F=0x00 & loc16 unimpl
+
+
+#XRET  C2xLP Source-Compatible Return
+# 1 ; - ; 0101 0110 1111 1111
+:XRET is OBJMODE=1 & op0F=0x56FF unimpl
+
+
+# XRETC COND  C2xLP Source-Compatible Conditional Return
+# 1 ; - ; 0101 0110 1111 COND
+:XRETC COND0 is OBJMODE=1 & op4F=0x56F & COND0 unimpl
+
+
+# ZALR ACC,loc16  Zero AL and Load AH With Rounding
+# 1 ; - ; 0101 0110 0001 0011 0000 0000 LLLL LLLL
+:ZALR ACC,loc16 is OBJMODE=1 & op0F=0x5613 & ACC ; op8F=0x00 & loc16 unimpl
+
+
+# # ZAP OVC  Clear Overflow Counter
+# # 1 ; - ; 0101 0110 0101 1100
+# :ZAP OVC is OBJMODE=1 & op0F=0x565C & OVC unimpl
+
+
+# ZAPA  Zero Accumulator and P Register
+# 1 ; - ; 0101 0110 0011 0011
+:ZAPA is OBJMODE=1 & op0F=0x5633 unimpl
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

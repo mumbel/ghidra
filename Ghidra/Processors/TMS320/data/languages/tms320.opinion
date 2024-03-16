@@ -1,0 +1,9 @@
+<opinions>
+  <constraint loader="MS Common Object File Format (COFF)" compilerSpecID="windows">
+    <constraint primary="157" processor="TMS320" variant="C28x" /> <!-- TMS320C2800  -->
+    <constraint primary="152" processor="TMS320" variant="C54x" /> <!-- TMS320C5400  -->
+    <constraint primary="156" processor="TMS320" variant="C54x" /> <!-- TMS320C5500  -->
+    <constraint primary="161" processor="TMS320" variant="C54x" /> <!-- TMS320C5500+ -->
+    <constraint primary="153" processor="TMS320" variant="C64x" /> <!-- TMS320C6000  -->
+  </constraint>
+</opinions>

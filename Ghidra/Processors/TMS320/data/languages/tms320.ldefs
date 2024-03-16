@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<language_definitions>
+  <language processor="TMS320"
+            endian="little"
+            size="16"
+            variant="C28x"
+            version="0.1"
+            slafile="TMS320C28x.sla"
+            processorspec="TMS320C28x.pspec"
+            id="TMS320:LE:32:C28x">
+    <description>TMS320C28x</description>
+    <compiler name="default" spec="TMS320C28x.cspec" id="default"/>
+  </language>
+  <language processor="TMS320"
+            endian="little"
+            size="16"
+            variant="C54x"
+            version="0.1"
+            slafile="TMS320C54x.sla"
+            processorspec="TMS320C54x.pspec"
+	    manualindexfile="../manuals/TMS320C54x.idx"
+            id="TMS320:LE:32:C54x">
+    <description>TMS320C54x</description>
+    <compiler name="default" spec="TMS320C54x.cspec" id="default"/>
+  </language>
+</language_definitions>
