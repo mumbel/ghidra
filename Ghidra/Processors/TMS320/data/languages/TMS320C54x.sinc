@@ -207,11 +207,11 @@ Smem: *arf^"+0%" is op7=1 & op36=0xb & arf { local tmp:2 = 0; export tmp; }
 
 #TODO
 # The sum of ARx and the 16-bit long offset (lk) is used as the data-memory address. ARx is not updated
-# Smem: *arf(lk) is op7=1 & op36=0xc & arf & lk { local tmp:2 = 0; export tmp; }
+Smem: *arf(lk) is op7=1 & op36=0xc & arf ; lk { local tmp:2 = 0; export tmp; }
 # Before its use, the signed 16-bit long offset (lk) is added to ARx and this sum replaces the previous content of ARx; this sum is then used to address the data-memory operand
-# Smem: *+arf(lk) is op7=1 & op36=0xd & arf & lk { local tmp:2 = 0; export tmp; }
+Smem: *+arf(lk) is op7=1 & op36=0xd & arf ;  lk { local tmp:2 = 0; export tmp; }
 # Before its use, the signed 16-bit long offset (lk) is added to ARx using circular addressing and this sum replaces the previous content of ARx; this sum is then used to address the data-memory operand
-# Smem: *+arf(lk)% is op7=1 & op36=0xe & arf & lk { local tmp:2 = 0; export tmp; }
+Smem: *+arf(lk)% is op7=1 & op36=0xe & arf ; lk { local tmp:2 = 0; export tmp; }
 
 #TODO
 # An unsigned 16-bit long offset (lk) is used as the absolute address of data memory (absolute addressing)
@@ -235,6 +235,8 @@ Ymem: *yar^"+0%" is op23=3 & yar { local tmp:2 = 0; export tmp; }
 
 # Memory-Mapped Register Addressing
 mmr: op06 is op7=1 & op06 { local tmp:2 = op06; export tmp; }
+# DAMNIT TODO
+mmr: op06 is op7=0 & op06 { local tmp:2 = op06; export tmp; }
 
 
 #
@@ -244,87 +246,109 @@ mmr: op06 is op7=1 & op06 { local tmp:2 = op06; export tmp; }
 
 # Absolute Distance
 # ABDST Xmem, Ymem
+# 11100011 XXXXYYYY
 :ABDST Xmem, Ymem is op8F=0xE3 & Xmem & Ymem unimpl
 
 # Absolute Value of Accumulator
 # ABS src[,dst]
+# 111101SD 10000101
 :ABS src9,dst8 is opAF=0x3D & op07=0x85 & src9 & dst8 unimpl
 
 
 # Add to Accumulator
 # ADD Smem, src
-:ADD Smem, src8 is op9F=0x00 & Smem & src8 unimpl
+# 1:  0000000S IAAAAAAA
+:ADD Smem, src8 is (op9F=0x00 & src8) ... & Smem unimpl
 
 # ADD Smem,TS,src
-:ADD Smem,TS,src8 is op9F=0x02 & src8 & Smem & TS unimpl
+# 2:  0000010S IAAAAAAA
+:ADD Smem,TS,src8 is (op9F=0x02 & src8) ... & Smem & TS unimpl
 
 # ADD Smem,16,src[,dst]
-:ADD Smem,16,src9,dst8 is opAF=0x0F & src9 & dst8 & Smem unimpl
+# 3:  001111SD IAAAAAAA
+:ADD Smem,16,src9,dst8 is (opAF=0x0F & src9 & dst8) ... & Smem unimpl
 
 # ADD Smem[,SHIFT],src[,dst]
-:ADD Smem,shift,src9,dst8 is op8F=0x6F & Smem ; opAF=0x03 & src9 & dst8 & op57=0x0 & shift unimpl
+# 4:  01101111 IAAAAAAA 000011SD 000SHIFT
+#:ADD Smem,shift,src9,dst8 is (op8F=0x6F) ... & Smem ; (opAF=0x03 & src9 & dst8 & op57=0x0 & shift) unimpl
 
 # ADD Xmem,SHFT,src
+# 5:  1001000S XXXXSHFT
 :ADD Xmem,shft,src8 is op9F=0x48 & src8 & Xmem & shft unimpl
 
 # ADD Xmem,Ymem,dst
+# 6:  1010000D XXXXYYYY
 :ADD Xmem,Ymem,dst8 is op9F=0x50 & dst8 & Xmem & Ymem unimpl
 
 # ADD #lk[,SHFT],src[,dst]
+# 7:  111100SD 0000SHFT xxxxxxxx xxxxxxxx
 :ADD slk,shft,src9,dst8 is opAF=0x3C & src9 & dst8 & op47=0x0 & shft ; slk unimpl
 
 # ADD #lk,16,src[,dst]
+# 8:  111100SD 01100000 xxxxxxxx xxxxxxxx
 :ADD slk,16,src9,dst8 is opAF=0x3C & src9 & dst8 & op07=0x60 ; slk unimpl
 
 # ADD src[,SHIFT][,dst]
+# 9:  111101SD 000SHIFT
 :ADD src9,shift,dst8 is opAF=0x3D & src9 & dst8 & op57=0x0 & shift unimpl
 
 # ADD src,ASM[,dst]
+#10:  111101SD 10000000
 :ADD src9,ASM,dst8 is opAF=0x3D & src9 & dst8 & op07=0x80 & ASM unimpl
 
 
 # Add to Accumulator With Carry
 # ADDC Smem,src
-:ADDC Smem,src8 is op9F=0x03 & src8 & Smem unimpl
+# 0000011S IAAAAAAA
+:ADDC Smem,src8 is (op9F=0x03 & src8) ... & Smem unimpl
 
 
 # Add Long-Immediate Value to Memory
 # ADDM #lk,Smem
-:ADDM slk,Smem is op8F=0x6B & Smem ; slk unimpl
+# 01101011 IAAAAAAA xxxxxxxx xxxxxxxx
+:ADDM slk,Smem is (op8F=0x6B) ... & Smem ; slk unimpl
 
 
 # Add to Accumulator With Sign-Extension Suppressed
 # ADDS Smem,src
-:ADDS Smem,src8 is op9F=0x01 & src8 & Smem unimpl
+# 0000001S IAAAAAAA
+:ADDS Smem,src8 is (op9F=0x01 & src8) ... & Smem unimpl
 
 
 # AND With Accumulator
 # AND Smem,src
-:AND Smem,src8 is op9F=0x0C & src8 & Smem unimpl
+# 1:  0001100S IAAAAAAA
+:AND Smem,src8 is (op9F=0x0C & src8) ... & Smem unimpl
 
 # AND #lk[,SHFT],src[,dst]
+# 2:  111100SD 0011SHFT xxxxxxxx xxxxxxxx
 :AND lk,shft,src9,dst8 is opAF=0x3C & src9 & dst8 & op47=0x3 & shft ; lk unimpl
 
 # AND #lk,16,src[,dst]
+# 3:  111100SD 01100011 xxxxxxxx xxxxxxxx
 :AND lk,16,src9,dst8 is opAF=0x3C & src9 & dst8 & op07=0x63 ; lk unimpl
 
 # AND src[,SHIFT][,dst]
+# 4:  111100SD 100SHIFT
 :AND src9,shift,dst8 is opAF=0x3C & src9 & dst8 & op57=0x4 & shift unimpl
 
 
 # AND Memory With Long Immediate
 # ANDM #lk,Smem
-:ANDM lk,Smem is op8F=0x68 & Smem ; lk unimpl
+# 01101000 IAAAAAAA
+:ANDM lk,Smem is (op8F=0x68) ... & Smem ; lk unimpl
 
 
 # Branch Unconditionally
 # B pmad
+# 11110000 01110011 xxxxxxxx xxxxxxxx
 :B pmad is opAF=0x3C & delay=0 & op8=0 & op07=0x73 ; pmad
 {
 	goto pmad;
 }
 
 # BD pmad
+# 11110010 01110011 xxxxxxxxx xxxxxxxx
 :BD pmad is opAF=0x3C & delay=1 & op8=0 & op07=0x73 ; pmad
 {
 	delayslot(1);
@@ -334,12 +358,14 @@ mmr: op06 is op7=1 & op06 { local tmp:2 = op06; export tmp; }
 
 # Branch to Location Specified by Accumulator
 # BACC src
+# 1111010S 11100010
 :BACC src8 is opAF=0x3D & delay=0 & src8 & op07=0xE2
 {
 	goto [src8];
 }
 
 # BACCD src
+# 1111011S 11100010
 :BACCD src8 is opAF=0x3D & delay=1 & src8 & op07=0xE2
 {
 	delayslot(1);
@@ -349,13 +375,15 @@ mmr: op06 is op7=1 & op06 { local tmp:2 = op06; export tmp; }
 
 # Branch on Auxilliary Register Not Zero
 # BANZ pmad,Sind
-:BANZ pmad,Smem is opAF=0x1B & delay=0 & op8=0 & Smem ; pmad
+# 01101100 IAAAAAAA xxxxxxxx xxxxxxxx
+:BANZ pmad,Smem is (opAF=0x1B & delay=0 & op8=0) ... & Smem ; pmad
 {
 	if (Smem != 0) goto pmad;
 }
 
 # BANZD pmad,Sind
-:BANZD pmad,Smem is opAF=0x1B & delay=1 & op8=0 & Smem ; pmad
+# 01101110 IAAAAAAA xxxxxxxx xxxxxxxx
+:BANZD pmad,Smem is (opAF=0x1B & delay=1 & op8=0) ... & Smem ; pmad
 {
 	delayslot(1);
 	if (Smem != 0) goto pmad;
@@ -365,12 +393,14 @@ mmr: op06 is op7=1 & op06 { local tmp:2 = op06; export tmp; }
 #TODO  This is fucking dumb
 # Branch Conditionally
 # BC pmad,cond[,cond[,cond]]
+# 11111000 CCCCCCCC xxxxxxxx xxxxxxxx
 :BC pmad,CC is opAF=0x3E & delay=0 & op8=0 & CC ; pmad
 {
 	if (CC) goto pmad;
 }
 
 # BCD pmad,cond[,cond[,cond]]
+# 11111010 CCCCCCCC xxxxxxxx xxxxxxxx
 :BCD pmad,CC is opAF=0x3E & delay=1 & op8=0 & CC ; pmad
 {
 	local cond = CC;
@@ -381,21 +411,25 @@ mmr: op06 is op7=1 & op06 { local tmp:2 = op06; export tmp; }
 
 # Test Bit
 # BIT Xmem,BITC
+# 10010110 XXXXBITC
 :BIT Xmem,bitc is op8F=0x96 & Xmem & bitc unimpl
 
 
 # Test Bit Field Specified by Immediate Value
 # BITF Smem,#lk
-:BITF Smem,lk is op8F=0x61 & Smem ; lk unimpl
+# 01100001 IAAAAAAA
+:BITF Smem,lk is (op8F=0x61) ... & Smem ; lk unimpl
 
 
 # Test Bit Specified by T
 # BITT Smem
-:BITT Smem is op8F=0x34 & Smem unimpl
+# 00110100 IAAAAAAA
+:BITT Smem is (op8F=0x34) ... & Smem unimpl
 
 
 # Call Subroutine at Location Specified by Accumulator
 # CALA src
+# 1111010S 11100011
 :CALA src8 is opAF=0x3D & delay=0 & src8 & op07=0xE3
 {
 	#TODO
@@ -403,6 +437,7 @@ mmr: op06 is op7=1 & op06 { local tmp:2 = op06; export tmp; }
 }
 
 # CALAD src
+# 1111011S 11100011
 :CALAD src8 is opAF=0x3D & delay=1 & src8 & op07=0xE3
 {
 	#TODO
@@ -413,6 +448,7 @@ mmr: op06 is op7=1 & op06 { local tmp:2 = op06; export tmp; }
 
 # Call Unconditionally
 # CALL pmad
+# 11110000 01110100 xxxxxxxx xxxxxxxx
 :CALL pmad is opAF=0x3C & delay=0 & op8=0 & op07=0x74 ; pmad
 {
 	#TODO
@@ -420,6 +456,7 @@ mmr: op06 is op7=1 & op06 { local tmp:2 = op06; export tmp; }
 }
 
 # CALLD pmad
+# 11110010 01110100 xxxxxxxx xxxxxxxx
 :CALLD pmad is opAF=0x3C & delay=1 & op8=0 & op07=0x74 ; pmad
 {
 	#TODO
@@ -430,6 +467,7 @@ mmr: op06 is op7=1 & op06 { local tmp:2 = op06; export tmp; }
 
 # Call Conditionally
 # CC pmad,cond[,cond[,cond]]
+# 11111001 CCCCCCCC xxxxxxxx xxxxxxxx
 :CC pmad,CC is opAF=0x3E & delay=0 & op8=1 & CC ; pmad
 {
 	#TODO
@@ -438,6 +476,7 @@ mmr: op06 is op7=1 & op06 { local tmp:2 = op06; export tmp; }
 }
 
 # CCD pmad,cond[,cond[,cond]]
+# 11111011 CCCCCCCC xxxxxxxx xxxxxxxx
 :CCD pmad,CC is opAF=0x3E & delay=1 & op8=1 & CC ; pmad
 {
 	#TODO
@@ -450,6 +489,7 @@ mmr: op06 is op7=1 & op06 { local tmp:2 = op06; export tmp; }
 
 # Complement Accumulator
 # CMPL src[,dst]
+# 111101SD 10010011
 :CMPL src9,dst8 is opAF=0x3D & src9 & dst8 & op07=0x13
 {
 	dst8 = ~src9;
@@ -458,7 +498,8 @@ mmr: op06 is op7=1 & op06 { local tmp:2 = op06; export tmp; }
 
 # Compare Memory With Long Immediate
 # CMPM Smem,#lk
-:CMPM Smem,slk is op8F=0x60 & Smem ; slk
+# 01100000 IAAAAAAA xxxxxxxx xxxxxxxx
+:CMPM Smem,slk is (op8F=0x60) ... & Smem ; slk
 {
 	TC = Smem == slk;
 }
@@ -466,6 +507,7 @@ mmr: op06 is op7=1 & op06 { local tmp:2 = op06; export tmp; }
 
 # Compare Auxilliary Register With AR0
 # CMPR CC,ARx
+# 111101CC 10101ARX
 :CMPR CC2,arx is opAF=0x3D & CC2 & op37=0x15 & arx
 {
 	TC = CC2;
@@ -474,61 +516,73 @@ mmr: op06 is op7=1 & op06 { local tmp:2 = op06; export tmp; }
 
 # Compare, Select and Store Maximum
 # CMPS src,Smem
-:CMPS src8,Smem is op9F=0x47 & src8 & Smem unimpl
+# 1000111S IAAAAAAA
+:CMPS src8,Smem is (op9F=0x47 & src8) ... & Smem unimpl
 
 
 # Double-Precision/Dual 16-Bit Add to Accumulator
 # DADD Lmem,src[,dst]
-:DADD Smem,src9,dst8 is opAF=0x14 & src9 & dst8 & Smem unimpl
+# 010100SD IAAAAAAA
+:DADD Smem,src9,dst8 is (opAF=0x14 & src9 & dst8) ... & Smem unimpl
 
 
 # Double-Prevision Load With T Add/Dual 16-Bit Load With T Add/Subtract
 # DADST Lmem,dst
-:DADST Smem,dst8 is op9F=0x2D & dst8 & Smem unimpl
+# 0101101D IAAAAAAA
+:DADST Smem,dst8 is (op9F=0x2D & dst8) ... & Smem unimpl
 
 
 # Memory Delay
 # DELAY Smem
-:DELAY Smem is op8F=0x4D & Smem unimpl
+# 01001101 IAAAAAAA
+:DELAY Smem is (op8F=0x4D) ... & Smem unimpl
 
 
 # Double-Precision/Dual 16-Bit Long-Word Load to Accumulator
 # DLD Lmem,dst
-:DLD Smem,dst8 is op9F=0x2B & dst8 & Smem unimpl
+# 0101011D IAAAAAAA
+:DLD Smem,dst8 is (op9F=0x2B & dst8) ... & Smem unimpl
 
 
 # Double-Precision/Dual 16-Bit Subtract From Long Word
 # DRSUB Lmem,src
-:DRSUB Smem,src8 is op9F=0x2C & src8 & Smem unimpl
+# 0101100S IAAAAAAA
+:DRSUB Smem,src8 is (op9F=0x2C & src8) ... & Smem unimpl
 
 
 # Long-Word Load With T Add/Dual 16-Bit Load With T Subtract/Add
 # DSADT Lmem,dst
-:DSADT Smem,dst8 is op9F=0x2F & dst8 & Smem unimpl
+# 0101111D IAAAAAAA
+:DSADT Smem,dst8 is (op9F=0x2F & dst8) ... & Smem unimpl
 
 
 # Store Accumulator in Long Word
 # DST src,Lmem
-:DST src8,Smem is op9F=0x27 & src8 & Smem unimpl
+# 0100111S IAAAAAAA
+:DST src8,Smem is (op9F=0x27 & src8) ... & Smem unimpl
 
 
 # Double-Precision/Dual 16-Bit Subtract From Accumulator
 # DSUB Lmem,src
-:DSUB Smem,src8 is op9F=0x2A & src8 & Smem unimpl
+# 0101010S IAAAAAAA
+:DSUB Smem,src8 is (op9F=0x2A & src8) ... & Smem unimpl
 
 
 # Long-Word Load With T Subtract/Dual 16-Bit Load With T Subtract
 # DSUBT Lmem,dst
-:DSUBT Smem,dst8 is op9F=0x2E & dst8 & Smem unimpl
+# 0101110D IAAAAAAA
+:DSUBT Smem,dst8 is (op9F=0x2E & dst8) ... & Smem unimpl
 
 
 # Accumulator Exponent
 # EXP src
+# 1111010S 10001110
 :EXP src8 is op9F=0x7A & src8 & op07=0x8E unimpl
 
 
 # Far Branch Unconditionally
 # FB extpmad
+# 11111000 1ppppppp pppppppp pppppppp 
 :FB extpmad is opAF=0x3E & delay=0 & op78=0x1 & op06 ; op0F & pmad
 [ extpmad = (op06 << 16) | op0F; ]
 {
@@ -538,6 +592,7 @@ mmr: op06 is op7=1 & op06 { local tmp:2 = op06; export tmp; }
 }
 
 # FBD extpmad
+# 11111010 1ppppppp pppppppp pppppppp
 :FBD extpmad is opAF=0x3E & delay=1 & op78=0x1 & op06 ; op0F & pmad
 [ extpmad = (op06 << 16) | op0F; ]
 {
@@ -550,6 +605,7 @@ mmr: op06 is op7=1 & op06 { local tmp:2 = op06; export tmp; }
 
 # Far Branch to Location Specified by Accumulator
 # FBACC src
+# 1111010S 11100110
 :FBACC src8 is opAF=0x3D & delay=0 & src8 & op07=0xE6
 {
 	#TODO
@@ -557,6 +613,7 @@ mmr: op06 is op7=1 & op06 { local tmp:2 = op06; export tmp; }
 }
 
 # FBACCD src
+# 1111011S 11100110
 :FBACCD src8 is opAF=0x3D & delay=1 & src8 & op07=0xE6
 {
 	#TODO
@@ -567,6 +624,7 @@ mmr: op06 is op7=1 & op06 { local tmp:2 = op06; export tmp; }
 
 # Far Call Subroutine at Location Specified by Accumulator
 # FCALA src
+# 1111010S 11100111
 :FCALA src8 is opAF=0x3D & delay=0 & src8 & op07=0xE7
 {
 	#TODO
@@ -574,6 +632,7 @@ mmr: op06 is op7=1 & op06 { local tmp:2 = op06; export tmp; }
 }
 
 # FCALAD src
+# 1111011S 11100111
 :FCALAD src8 is opAF=0x3D & delay=1 & src8 & op07=0xE7
 {
 	#TODO
@@ -584,6 +643,7 @@ mmr: op06 is op7=1 & op06 { local tmp:2 = op06; export tmp; }
 
 # Far Call Unconditionally
 # FCALL extpmad
+# 11111001 1ppppppp pppppppp pppppppp 
 :FCALL extpmad is opAF=0x3E & delay=0 & op78=0x3 & op06 ; op0F & pmad
 [ extpmad = (op06 << 16) | op0F; ]
 {
@@ -593,6 +653,7 @@ mmr: op06 is op7=1 & op06 { local tmp:2 = op06; export tmp; }
 }
 
 # FCALLD extpmad
+# 11111011 1ppppppp pppppppp pppppppp
 :FCALLD extpmad is opAF=0x3E & delay=1 & op78=0x3 & op06 ; op0F & pmad
 [ extpmad = (op06 << 16) | op0F; ]
 {
@@ -605,11 +666,13 @@ mmr: op06 is op7=1 & op06 { local tmp:2 = op06; export tmp; }
 
 # Symmetrical Finite Impulse Response Filter
 # FIRS Xmem,Ymem,pmad
+# 11100000 XXXXYYYY xxxxxxxx xxxxxxxx
 :FIRS Xmem,Ymem,pmad is op8F=0xE0 & Xmem & Ymem ; pmad unimpl
 
 
 # Stack Pointer Immediate Offset
 # FRAME K
+# 11101110 KKKKKKKK
 :FRAME simm8 is op8F=0xEE & simm8
 {
 	SP = SP + simm8;
@@ -618,90 +681,114 @@ mmr: op06 is op7=1 & op06 { local tmp:2 = op06; export tmp; }
 
 # Far Return
 # FRET
+# 11110100 11100100
 :FRET is opAF=0x3D & delay=0 & op8=0 & op07=0xE4 unimpl
 
 # FRETD
+# 11110110 11100100
 :FRETD is opAF=0x3D & delay=1 & op8=0 & op07=0xE4 unimpl
 
 
 # Enable Interrupts and Far Return From Interrupt
 # FRETE
+# 11110100 11100101
 :FRETE is opAF=0x3D & delay=0 & op8=0 & op07=0xE5 unimpl
 
 # FRETED
+# 11110110 11100101
 :FRETED is opAF=0x3D & delay=1 & op8=0 & op07=0xE5 unimpl
 
 
 # Idle Until Interrupt
 # IDLE K
+# 111101NN 11100001
 :IDLE idle is opAF=0x3D & idle & op07=0xE1 unimpl
 
 
 # Software Interrupt
 # INTR K
+# 11110111 110KKKKK
 :INTR vector is op8F=0xF7 & op57=0x6 & vector unimpl
 
 
 # Load Accumulator With Shift
 # LD Smem,dst
-:LD Smem,dst8 is op9F=0x08 & dst8 & Smem unimpl
+# 1:  0001000D IAAAAAAA
+:LD Smem,dst8 is (op9F=0x08 & dst8) ... & Smem unimpl
 
 # LD Smem,TS,dst
-:LD Smem,TS,dst8 is op9F=0x0A & dst8 & Smem & TS unimpl
+# 2:  0001010D IAAAAAAA
+:LD Smem,TS,dst8 is (op9F=0x0A & dst8) ... & Smem & TS unimpl
 
 # LD Smem,16,dst
-:LD Smem,16,dst8 is op9F=0x22 & dst8 & Smem unimpl
+# 3:  0100010D IAAAAAAA
+:LD Smem,16,dst8 is (op9F=0x22 & dst8) ... & Smem unimpl
 
 # LD Smem[,SHIFT],dst
-:LD Smem,shift,dst8 is op8F=0x6F & Smem ; op9F=0x06 & dst8 & op57=0x2 & shift unimpl
+# 4:  01101111 IAAAAAAA 0000110D 010SHIFT
+#:LD Smem,shift,dst8 is (op8F=0x6F) ... & Smem ; ... (op9F=0x06 & dst8 & op57=0x2 & shift) unimpl
 
 # LD Xmem,SHFT,dst
+# 5:  1001010D XXXXSHFT
 :LD Xmem,shft,dst8 is op9F=0x4A & dst8 & Xmem & shft unimpl
 
 # LD #K,dst
+# 6:  1110100D KKKKKKKK
 :LD imm8,dst8 is op9F=0x74 & dst8 & imm8 unimpl
 
 # LD #lk[,SHFT],dst
+# 7:  1111000D 0010SHFT xxxxxxxx xxxxxxxx
 :LD slk,shft,dst8 is op9F=0x78 & dst8 & op47=0x2 & shft ; slk unimpl
 
 # LD #lk,16,dst
+# 8:  1111000D 01100010 xxxxxxxx xxxxxxxx
 :LD slk,16,dst8 is op9F=0x78 & dst8 & op07=0x62 ; slk unimpl
 
 # LD src,ASM[,dst]
+# 9:  111101SD 10000010
 :LD src9,ASM,dst8 is opAF=0x3D & src9 & dst8 & op07=0x82 & ASM unimpl
 
 # LD src[,SHIFT],dst
+#10:  111101SD 010SHIFT
 :LD src9,shift,dst8 is opAF=0x3D & src9 & dst8 & op57=0x2 & shift unimpl
 
 
 # Load T/DP/ASM/ARP
 # LD Smem,T
-:LD Smem,T is op8F=0x30 & Smem & T unimpl
+# 1:  00110000 IAAAAAAA
+:LD Smem,T is (op8F=0x30) ... & Smem & T unimpl
 
 # LD Smem,DP
-:LD Smem,DP is op8F=0x46 & Smem & DP unimpl
+# 2: 01000110 IAAAAAAA
+:LD Smem,DP is (op8F=0x46) ... & Smem & DP unimpl
 
 # LD #k9,DP
+# 3:  1110101K KKKKKKKK
 :LD imm9,DP is op9F=0x75 & imm9 & DP unimpl
 
 # LD #k5,ASM
+# 4:  11101101 000KKKKK
 :LD simm5,ASM is op8F=0xED & op57=0x0 & simm5 & ASM unimpl
 
 # LD #k3,ARP
+# 5:  11110100 10100KKK
 :LD imm3,ARP is op8F=0xF4 & op37=0x14 & imm3 & ARP unimpl
 
 # LD Smem,ASM
-:LD Smem,ASM is op8F=0x32 & Smem & ASM unimpl
+# 6: 00110010 IAAAAAAA
+:LD Smem,ASM is (op8F=0x32) ... & Smem & ASM unimpl
 
 
 # Load Memory-Mapped Register
 # LDM MMR,dst
+# 0100100D IAAAAAAA
 :LDM mmr,dst8 is op9F=0x24 & dst8 & mmr unimpl
 
 
 # Load Accumulator With Parallel Multiply Accumulate With/Without Rounding
 # LD Xmem,dst
 # || MAC[R] Ymem[,dst_]
+# 101010RD XXXXYYYY
 :LD^"||MAC" Xmem,dst8,Ymem,dst_ is opAF=0x2A & rnd9=0 & dst8 & dst_ & Xmem & Ymem unimpl
 :LD^"||MACR" Xmem,dst8,Ymem,dst_ is opAF=0x2A & rnd9=1 & dst8 & dst_ & Xmem & Ymem unimpl
 
@@ -709,104 +796,131 @@ mmr: op06 is op7=1 & op06 { local tmp:2 = op06; export tmp; }
 # Load Accumulator With Parallel Multiply Subtract With/Without Rounding
 # LD Xmem,dst
 # || MAS[R] Ymem[,dst_]
+# 101011RD XXXXYYYY
 :LD^"||MAS" Xmem,dst8,Ymem,dst_ is opAF=0x2B & rnd9=0 & dst8 & dst_ & Xmem & Ymem unimpl
 :LD^"||MASR" Xmem,dst8,Ymem,dst_ is opAF=0x2B & rnd9=1 & dst8 & dst_ & Xmem & Ymem unimpl
 
 
 # Load Memory Value in Accumulator High With Rounding
 # LDR Smem,dst
-:LDR Smem,dst8 is op9F=0x0B & dst8 & Smem unimpl
+# 0001011D IAAAAAAA
+:LDR Smem,dst8 is (op9F=0x0B & dst8) ... & Smem unimpl
 
 
 # Load Unsigned Memory Value
 # LDU Smem,dst
-:LDU Smem,dst8 is op9F=0x09 & dst8 & Smem unimpl
+# 0001001D IAAAAAAA
+:LDU Smem,dst8 is (op9F=0x09 & dst8) ... & Smem unimpl
 
 
 # Least Mean Square
 # LMS Xmem,Ymem
+# 11100001 XXXXYYYY
 :LMS Xmem,Ymem is op8F=0xE1 & Xmem & Ymem unimpl
 
 
 # Load T and Insert Delay
 #LTD Smem
-:LTD Smem is op8F=0x4C & Smem unimpl
+# 01001100 IAAAAAAA
+:LTD Smem is (op8F=0x4C) ... & Smem unimpl
 
 
 # Multiply Accumulate With/Without Rounding
 # MAC Smem,src
-:MAC Smem,src8 is opAF=0x0A & rnd9=0 & src8 & Smem unimpl
+# 1:  0010100S IAAAAAAA
+:MAC Smem,src8 is (opAF=0x0A & rnd9=0 & src8) ... & Smem unimpl
 # MACR Smem,src
-:MACR Smem,src8 is opAF=0x0A & rnd9=1 & src8 & Smem unimpl
+# 1:  0010101S IAAAAAAA
+:MACR Smem,src8 is (opAF=0x0A & rnd9=1 & src8) ... & Smem unimpl
 
 # MAC Xmem,Ymem,src[,dst]
+# 2:  101100SD XXXXYYYY
 :MAC Xmem,Ymem,src9,dst8 is opBF=0x16 & rndA=0 & src9 & dst8 & Xmem & Ymem unimpl
 # MACR Xmem,Ymem,src[,dst]
+# 2:  101101SD XXXXYYYY
 :MACR Xmem,Ymem,src9,dst8 is opBF=0x16 & rndA=1 & src9 & dst8 & Xmem & Ymem unimpl
 
 # MAC #lk,src[,dst]
+# 3:  111100SD 01100111 xxxxxxxx xxxxxxxx
 :MAC slk,src9,dst8 is opAF=0x3C & src9 & dst8 & op07=0x66 ; slk unimpl
 
 # MAC Smem,#lk,src[,dst]
-:MAC Smem,slk,src9,dst8 is opAF=0x19 & src9 & dst8 & Smem ; slk unimpl
+# 4:  011001SD IAAAAAAA xxxxxxxx xxxxxxxx
+:MAC Smem,slk,src9,dst8 is (opAF=0x19 & src9 & dst8) ... & Smem ; slk unimpl
 
 
 # Multiply by Accumulator A and Accumulate With/Without Rounding
 # MACA Smem[,B]
-:MACA Smem,B is opAF=0x0D & rnd9=0 & op8=1 & Smem & B unimpl
+# 1:  00110101 IAAAAAAA
+:MACA Smem,B is (opAF=0x0D & rnd9=0 & op8=1) ... & Smem & B unimpl
 # MACAR Smem[,B]
-:MACAR Smem,B is opAF=0x0D & rnd9=1 & op8=1 & Smem & B unimpl
+# 1:  00110111 IAAAAAAA
+:MACAR Smem,B is (opAF=0x0D & rnd9=1 & op8=1) ... & Smem & B unimpl
 
 # MACA T,src[,dst]
+# 2:  111101SD 10001000
 :MACA T,src9,dst8 is opAF=0x3D & src9 & dst8 & op17=0x44 & rnd0=0 & T unimpl
 # MACAR T,src[,dst]
+# 2:  111101SD 10001001
 :MACAR T,src9,dst8 is opAF=0x3D & src9 & dst8 & op17=0x44 & rnd0=1 & T unimpl
 
 
 # Multiply by Program Memory and Accumulate With Delay
 # MACD Smem,pmad,src
-:MACD Smem,pmad,src8 is op9F=0x3D & src8 & Smem ; pmad unimpl
+# 0111101S IAAAAAAA xxxxxxxx xxxxxxxx
+:MACD Smem,pmad,src8 is (op9F=0x3D & src8) ... & Smem ; pmad unimpl
 
 
 # Multiply by Program Memory and Accumulate
 # MACP Smem,pmad,src
-:MACP Smem,pmad,src8 is op9F=0x3C & src8 & Smem ; pmad unimpl
+# 0111100S IAAAAAAA xxxxxxxx xxxxxxxx
+:MACP Smem,pmad,src8 is (op9F=0x3C & src8) ... & Smem ; pmad unimpl
 
 
 # Multiply Signed by Unsigned and Accumulate
 # MACSU Xmem,Ymem,src
+# 1010011S XXXXYYYY
 :MACSU Xmem,Ymem,src8 is op9F=0x53 & src8 & Xmem & Ymem unimpl
 
 
 # Modify Auxilliary Register
 # MAR Smem
-:MAR Smem is op8F=0x6D & Smem unimpl
+# 01101101 IAAAAAAA
+:MAR Smem is (op8F=0x6D) ... & Smem unimpl
 
 
 # Multiply and Subtract With/Without Rounding
 # MAS Smem,src
-:MAS Smem,src8 is opAF=0x0B & rnd9=0 & src8 & Smem unimpl
+# 1:  0010110S IAAAAAAA
+:MAS Smem,src8 is (opAF=0x0B & rnd9=0 & src8) ... & Smem unimpl
 # MASR Smem,src
-:MASR Smem,src8 is opAF=0x0B & rnd9=1 & src8 & Smem unimpl
+# 1:  0010111S IAAAAAAA
+:MASR Smem,src8 is (opAF=0x0B & rnd9=1 & src8) ... & Smem unimpl
 
 # MAS Xmem,Ymem,src[,dst]
+# 2:  101110SD XXXXYYYY
 :MAS Xmem,Ymem,src9,dst8 is opBF=0x17 & rndA=0 & src9 & dst8 & Xmem & Ymem unimpl
 # MASR Xmem,Ymem,src[,dst]
+# 2:  101111SD XXXXYYYY
 :MASR Xmem,Ymem,src9,dst8 is opBF=0x17 & rndA=1 & src9 & dst8 & Xmem & Ymem unimpl
 
 
 # Multiply by Accumulator A and Subtract With/Without Rounding
 # MASA Smem[,B]
-:MASA Smem,B is op8F=0x33 & Smem & B unimpl
+# 1:  00110011 IAAAAAAA
+:MASA Smem,B is (op8F=0x33) ... & Smem & B unimpl
 
 # MASA T,src[,dst]
+# 2:  111101SD 10001010
 :MASA T,src9,dst8 is opAF=0x3D & src9 & dst8 & op17=0x45 & rnd0=0 & T unimpl
 # MASAR T,src[,dst]
+# 2:  111101SD 10001011
 :MASAR T,src9,dst8 is opAF=0x3D & src9 & dst8 & op17=0x45 & rnd0=1 & T unimpl
 
 
 # Accumulator Maximum
 # MAX dst
+# 1111010D 10000110
 :MAX dst8 is op9F=0x7A & dst8 & op07=0x86
 {
 	C = A <= B;
@@ -816,6 +930,7 @@ mmr: op06 is op7=1 & op06 { local tmp:2 = op06; export tmp; }
 
 # Accumulator Minimum
 # MIN dst
+# 1111010D 10000111
 :MIN dst8 is op9F=0x7A & dst8 & op07=0x87
 {
 	C = A >= B;
@@ -825,31 +940,39 @@ mmr: op06 is op7=1 & op06 { local tmp:2 = op06; export tmp; }
 
 # Multiply With/Without Rounding
 # MPY Smem,dst
-:MPY Smem,dst8 is opAF=0x08 & rnd9=0 & dst8 & Smem unimpl
+# 1:  0010000D IAAAAAAA
+:MPY Smem,dst8 is (opAF=0x08 & rnd9=0 & dst8) ... & Smem unimpl
 # MPYR Smem,dst
-:MPYR Smem,dst8 is opAF=0x08 & rnd9=1 & dst8 & Smem unimpl
+# 1:  0010001D IAAAAAAA
+:MPYR Smem,dst8 is (opAF=0x08 & rnd9=1 & dst8) ... & Smem unimpl
 
 # MPY Xmem,Ymem,dst
+# 2:  1010010D XXXXYYYY
 :MPY Xmem,Ymem,dst8 is op9F=0x52 & dst8 & Xmem & Ymem unimpl
 
 # MPY Smem,#lk,dst
-:MPY Smem,slk,dst8 is op9F=0x31 & dst8 & Smem ; slk unimpl
+# 3:  0110001D IAAAAAAA xxxxxxxx xxxxxxxx
+:MPY Smem,slk,dst8 is (op9F=0x31 & dst8) ... & Smem ; slk unimpl
 
 # MPY #lk,dst
+# 4:  1111000D 01100110 xxxxxxxx xxxxxxxx
 :MPY slk,dst8 is op9F=0x78 & dst8 & op07=0x66 ; slk unimpl
 
 
 # Multiply by Accumulator A
 # MPYA Smem
-:MPYA Smem is op8F=0x31 & Smem unimpl
+# 1:  00110001 IAAAAAAA
+:MPYA Smem is (op8F=0x31) ... & Smem unimpl
 
 # MPYA dst
+# 2:  1111010D 10001100
 :MPYA dst8 is op9F=0x7A & dst8 & op07=0x8C unimpl
 
 
 # Multiply Unsigned
 # MPYU Smem,dst
-:MPYU Smem,dst8 is op9F=0x12 & dst8 & Smem
+# 0010010D IAAAAAAA
+:MPYU Smem,dst8 is (op9F=0x12 & dst8) ... & Smem
 {
 	dst = T * Smem;
 }
@@ -857,6 +980,7 @@ mmr: op06 is op7=1 & op06 { local tmp:2 = op06; export tmp; }
 
 # Move Data From Data Memory to Data Memory With X,Y Addressing
 # MVDD Xmem,Ymem
+# 11100101 XXXXYYYY
 :MVDD Xmem,Ymem is op8F=0xE5 & Xmem & Ymem
 {
 	Ymem = Xmem;
@@ -865,31 +989,37 @@ mmr: op06 is op7=1 & op06 { local tmp:2 = op06; export tmp; }
 
 # Move Data From Data Memory to Data Memory With Destination Addressing
 # MVDK Smem,dmad
-:MVDK Smem,pmad is op8F=0x71 & Smem ; pmad unimpl
+# 01110001 IAAAAAAA xxxxxxxx xxxxxxxx
+:MVDK Smem,pmad is (op8F=0x71) ... & Smem ; pmad unimpl
 
 
 # Move Data From Data Memory to Memory-Mapped Register
 # MVDM dmad,MMR
+# 01110010 IAAAAAAA xxxxxxxx xxxxxxxx
 :MVDM pmad,mmr is op8F=0x72 & mmr ; pmad unimpl
 
 
 # Move Data From Data Memory to Program Memory
 # MVDP Smem,pmad
-:MVDP Smem,pmad is op8F=0x7D & Smem ; pmad unimpl
+# 01111101 IAAAAAAA xxxxxxxx xxxxxxxx
+:MVDP Smem,pmad is (op8F=0x7D) ... & Smem ; pmad unimpl
 
 
 # Move Data From Data Memory to Data Memory With Source Addressing
 # MVKD dmad,Smem
-:MVKD pmad,Smem is op8F=0x70 & Smem ; pmad unimpl
+# 01110000 IAAAAAAA xxxxxxxx xxxxxxxx
+:MVKD pmad,Smem is (op8F=0x70) ... & Smem ; pmad unimpl
 
 
 # Move Data From Memory-Mapped Register to Data Memory
 # MVMD MMR,dmad
+# 01110011 IAAAAAAA xxxxxxxx xxxxxxxx
 :MVMD mmr,pmad is op8F=0x73 & mmr ; pmad unimpl
 
 
 # Move Data From Memory-Mapped Register to Memory-Mapped Register
 # MVMM MMRx,MMRy
+# 11100111 MMRXMMRY
 :MVMM mmrx,mmry is op8F=0xE7 & mmrx & mmry
 {
 	mmry = mmrx;
@@ -898,11 +1028,13 @@ mmr: op06 is op7=1 & op06 { local tmp:2 = op06; export tmp; }
 
 # Move Data From Program Memory to Data Memory
 # MVPD pmad,Smem
-:MVPD pmad,Smem is op8F=0x7C & Smem ; pmad unimpl
+# 01111100 IAAAAAAA xxxxxxxx xxxxxxxx
+:MVPD pmad,Smem is (op8F=0x7C) ... & Smem ; pmad unimpl
 
 
 # Negate Accumulator
 # NEG src[,dst]
+# 111101SD 10000100
 :NEG src9,dst8 is opAF=0x3D & src9 & dst8 & op07=0x84
 {
 	dst8 = -src9;
@@ -911,6 +1043,7 @@ mmr: op06 is op7=1 & op06 { local tmp:2 = op06; export tmp; }
 
 # No Operation
 # NOP
+# 11110100 10010101
 :NOP is op8F=0xF4 & op07=0x95
 {
 	local tmp:1 = 0;
@@ -920,6 +1053,7 @@ mmr: op06 is op7=1 & op06 { local tmp:2 = op06; export tmp; }
 
 # Normalization
 # NORM src[,dst]
+# 111101SD 10001111
 :NORM src9,dst8 is opAF=0x3D & src9 & dst8 & op07=0x8F & TS
 {
 	dst8 = src9 << TS;
@@ -928,102 +1062,125 @@ mmr: op06 is op7=1 & op06 { local tmp:2 = op06; export tmp; }
 
 # OR With Accumulator
 # OR Smem,src
-:OR Smem,src8 is op9F=0x0D & src8 & Smem unimpl
+# 1:  0001101S IAAAAAAA
+:OR Smem,src8 is (op9F=0x0D & src8) ... & Smem unimpl
 
 # OR #lk[,SHFT],src[,dst]
+# 2:  111100SD 0100SHFT xxxxxxxx xxxxxxxx
 :OR lk,shft,src9,dst8 is opAF=0x3C & src9 & dst8 & op47=0x4 & shft ; lk unimpl
 
 # OR #lk,16,src[,dst]
+# 3:  111100SD 01100100 xxxxxxxx xxxxxxxx
 :OR lk,16,src9,dst8 is opAF=0x3C & src9 & dst8 & op07=0x64 ; lk unimpl
 
 # OR src[,SHIFT][,dst]
+# 4:  111100SD 101SHIFT
 :OR src9,shift,dst8 is opAF=0x3C & src9 & dst8 & op57=0x5 & shift unimpl
 
 
 # OR Memory With Constant
 # ORM #lk,Smem
-:ORM lk,Smem is op8F=0x69 & Smem ; lk unimpl
+# 01101001 IAAAAAAA xxxxxxxx xxxxxxxx
+:ORM lk,Smem is (op8F=0x69) ... & Smem ; lk unimpl
 
 
 # Polynominal Evaluation
 # POLY Smem
-:POLY Smem is op8F=0x36 & Smem unimpl
+# 00110110 IAAAAAAA
+:POLY Smem is (op8F=0x36) ... & Smem unimpl
 
 
 # Pop Top of Stack to Data Memory
 # POPD Smem
-:POPD Smem is op8F=0x8B & Smem unimpl
+# 10001011 IAAAAAAA
+:POPD Smem is (op8F=0x8B) ... & Smem unimpl
 
 
 # Pop Top of Stack to Memory-Mapped Register
 # POPM MMR
+# 10001010 IAAAAAAA
 :POPM mmr is op8F=0x8A & mmr unimpl
 
 
 # Read Data From Port
 # PORTR PA,Smem
-:PORTR pmad,Smem is op8F=0x74 & Smem ; pmad unimpl
+# 01110100 IAAAAAAA PPPPPPPP PPPPPPPP
+:PORTR pmad,Smem is (op8F=0x74) ... & Smem ; pmad unimpl
 
 
 # Write Data to Port
 # PORTW Smem,PA
-:PORTW Smem,pmad is op8F=0x75 & Smem ; pmad unimpl
+# 01110101 IAAAAAAA PPPPPPPP PPPPPPPP
+:PORTW Smem,pmad is (op8F=0x75) ... & Smem ; pmad unimpl
 
 
 # Push Data-Memory Value Onto Stack
 # PSHD Smem
-:PSHD Smem is op8F=0x4B & Smem unimpl
+# 01001011 IAAAAAAA
+:PSHD Smem is (op8F=0x4B) ... & Smem unimpl
 
 
 # Push Memory-Mapped Register Onto Stack
 # PSHM MMR
+# 01001010 IAAAAAAA
 :PSHM mmr is op8F=0x4A & mmr unimpl
 
 
 # Return Conditionally
 # RC cond[,cond[,cond]]
+# 11111100 CCCCCCCC
 :RC CC is opAF=0x3F & delay=0 & op8=0 & CC unimpl
 
 # RCD cond[,cond[,cond]]
+# 11111110 CCCCCCCC
 :RCD CC is opAF=0x3F & delay=1 & op8=0 & CC unimpl
 
 
 # Read Program Memory Addressed by Accumulator A and Store in Data Memory
 # READA Smem
-:READA Smem is op8F=0x7E & Smem unimpl
+# 01111110 IAAAAAAA
+:READA Smem is (op8F=0x7E) ... & Smem unimpl
 
 
 # Software Reset
-# RESET 
+# RESET
+# 11110111 11100000
 :RESET is op8F=0xF7 & op07=0xE0 unimpl
 
 
 # Return
 # RET
+# 11111100 00000000
 :RET is opAF=0x3F & delay=0 & op8=0 & op07=0x00 unimpl
 
 # RETD
+# 11111110 00000000
 :RETD is opAF=0x3F & delay=1 & op8=0 & op07=0x00 unimpl
 
 
 # Enalbe Interrupts and Return From Interrupt
 # RETE
+# 11110100 11101011
 :RETE is opAF=0x3D & delay=0 & op8=0 & op07=0xEB unimpl
 
 # RETED
+# 11110110 11101011
 :RETED is opAF=0x3D & delay=1 & op8=0 & op07=0xEB unimpl
 
 
 # Enable Interrupts and Fast Return From Interrupt
 # RETF
+# 11110100 10011011
 :RETF is opAF=0x3D & delay=0 & op8=0 & op07=0x9B unimpl
 
 # RETFD
+# 11110110 10011011
 :RETFD is opAF=0x3D & delay=1 & op8=0 & op07=0x9B unimpl 
 
 
 # Round Accumulator
 # RND src[,dst]
+# 111101SD 10011111
 :RND src9,dst8 is opAF=0x3D & src9 & dst8 & op07=0x9F
 {
 	dst8 = 0x8000 + src9;
@@ -1032,174 +1189,213 @@ mmr: op06 is op7=1 & op06 { local tmp:2 = op06; export tmp; }
 
 # Rotate Accumilator Left
 # ROL src
+# 1111010S 10010001
 :ROL src8 is op9F=0x7A & src8 & op07=0x91 unimpl
 
 
 # Rotate Accumulator Left Using TC
 # ROLTC src
+# 1111010S 10010010
 :RILTC src8 is op9F=0x7A & src8 & op07=0x92 unimpl
 
 
 # Rotate Accumulator Right
 # ROR src
+# 1111010S 10010000
 :ROR src8 is op9F=0x7A & src8 & op07=0x90 unimpl
 
 
 # Repeat Next Instruction
 # RPT Smem
-:RPT Smem is op0F=0x47 & Smem unimpl
+# 1:  01000111 IAAAAAAA
+:RPT Smem is (op8F=0x47) ... & Smem unimpl
 
 # RPT #K
+# 2:  11101100 KKKKKKKK
 :RPT imm8 is op8F=0xEC & imm8 unimpl
 
 # RPT #lk
+# 3:  11110000 01110000 xxxxxxxx xxxxxxxx
 :RPT lk is op8F=0xF0 & op07=0x70 ; lk unimpl
 
 
 # Block Repeat
 # RPTB pmad
+# 11110000 01110010 xxxxxxxx xxxxxxxx
 :RPTB pmad is opAF=0x3C & delay=0 & op8=0 & op07=0x72 ; pmad unimpl
 
 # RPTBD pmad
+# 11110010 01110010 xxxxxxxx xxxxxxxx
 :RPTBD pmad is opAF=0x3C & delay=1 & op8=0 & op07=0x72 ; pmad unimpl
 
 
 # Repeat Next Instruction And Clear Accumulator
 # RPTZ dst,#lk
+# 1111000D 01110001 xxxxxxxx xxxxxxxx
 :RPTZ dst8,lk is op9F=0x78 & dst8 & op07=0x71 ; lk unimpl
 
 
 # Reset Status Register Bit
 # RSBX N,SBIT
+# 111101N0 1011SBIT
 :RSBX nbit,sbit is opAF=0x3D & nbit & op8=0 & op47=0xB & sbit unimpl
 
 
 # Store Accumulator Conditionally
 # SACCD src,Xmem,cond
+# 1001111S XXXXCOND
 :SACCD src8,Xmem,CC4 is op9F=0x4F & src8 & Xmem & CC4 unimpl
 
 
 # Saturate Accumulator
 # SAT src
+# 1111010S 10000011
 :SAT src8 is op9F=0x7A & src8 & op07=0x83 unimpl
 
 
 # Shift Accumulator Arithmetically
 # SFTA src,SHIFT[,dst]
+# 111101SD 011SHIFT
 :SFTA src9,shift,dst8 is opAF=0x3D & src9 & dst8 & op57=0x3 & shift unimpl
 
 
 # Shift Accumulator Conditionally
 # SFTC src
+# 1111010S 10010100
 :SFTC src8 is op9F=0x7A & src8 & op07=0x94 unimpl
 
 
 # Shift Accumulator Logically
 # SFTL src,SHIFT[,dst]
+# 111100SD 111SHIFT
 :SFTL src9,shift,dst8 is opAF=0x3C & src9 & dst8 & op57=0x7 & shift unimpl
 
 
 # Square Distance
 # SQDST Xmem,Ymem
+# 11100010 XXXXYYYY
 :SQDST Xmem,Ymem is op8F=0xE2 & Xmem & Ymem unimpl
 
 
 # Square
 # SQUR Smem,dst
-:SQUR Smem,dst8 is op9F=0x13 & dst8 & Smem unimpl
+# 1:  0010011D IAAAAAAA
+:SQUR Smem,dst8 is (op9F=0x13 & dst8) ... & Smem unimpl
 
 # SQUR A,dst
+# 2:  1111010D 10001101
 :SQUR A,dst8 is op9F=0x7A & dst8 & op07=0x8D & A unimpl
 
 
 # Square and Accumulate
 # SQURA Smem,src
-:SQURA Smem,src8 is op9F=0x1C & src8 & Smem unimpl
+# 0011100S IAAAAAAA
+:SQURA Smem,src8 is (op9F=0x1C & src8) ... & Smem unimpl
 
 
 # Square and Subtract
 # SQURS Smem,src
-:SQURS Smem,src8 is op9F=0x1D & src8 & Smem unimpl
+# 0011101S IAAAAAAA
+:SQURS Smem,src8 is (op9F=0x1D & src8) ... & Smem unimpl
 
 
 # Store Block Repeat Counter Conditionally
 # SRCCD Xmem,cond
+# 10011101 XXXXCOND
 :SRCCD Xmem,CC4 is op8F=0x9D & Xmem & CC4 unimpl
 
 
 # Set Status Register Bit
 # SSBX N,SBIT
+# 111101N1 1011SBIT
 :SSBX nbit,sbit is opAF=0x3D & nbit & op8=1 & op47=0xB & sbit unimpl
 
 
 # Store T,TRN, or Immediate Value Into Memory
 # ST T,Smem
-:ST T,Smem is op8F=0x8C & Smem & T unimpl
+# 1:  10001100 IAAAAAAA
+:ST T,Smem is (op8F=0x8C) ... & Smem & T unimpl
 
 # ST TRN,Smem
-:ST TRN,Smem is op8F=0x8D & Smem & TRN unimpl
+# 2: 10001101 IAAAAAAA
+:ST TRN,Smem is (op8F=0x8D) ... & Smem & TRN unimpl
 
 # ST #lk,Smem
-:ST slk,Smem is op8F=0x76 & Smem ; slk unimpl
+# 3:  01110110 IAAAAAAA xxxxxxxx xxxxxxxx
+:ST slk,Smem is (op8F=0x76) ... & Smem ; slk unimpl
 
 
 # Store Accumulator High Into Memory
 # STH src,Smem
-:STH src8,Smem is op9F=0x41 & src8 & Smem unimpl
+# 1:  1000001S IAAAAAAA
+:STH src8,Smem is (op9F=0x41 & src8) ... & Smem unimpl
 
 # STH src,ASM,Smem
-:STH src8,ASM,Smem is op9F=0x43 & src8 & Smem & ASM unimpl
+# 2:  1000011S IAAAAAAA
+:STH src8,ASM,Smem is (op9F=0x43 & src8) ... & Smem & ASM unimpl
 
 # STH src,SHFT,Xmem
+# 3:  1001101S XXXXSHFT
 :STH src8,shft,Xmem is op9F=0x4D & src8 & Xmem & shft unimpl
 
 # STH src[,SHIFT],Smem
-:STH src8,shift,Smem is op8F=0x6F & Smem ; op9F=0x06 & src8 & op57=0x3 & shift unimpl
+# 4:  01101111 IAAAAAAA 0000110S 011SHIFT
+#:STH src8,shift,Smem is (op8F=0x6F) ... & Smem ; ... (op9F=0x06 & src8 & op57=0x3 & shift) unimpl
 
 
 # Store Accumulator Low Into Memory
 # STL src,Smem
-:STL src8,Smem is op9F=0x40 & src8 & Smem unimpl
+# 1:  1000000S IAAAAAAA
+:STL src8,Smem is (op9F=0x40 & src8) ... & Smem unimpl
 
 # STL src,ASM,Smem
-:STL src8,ASM,Smem is op9F=0x42 & src8 & Smem & ASM unimpl
+# 2:  1000010S IAAAAAAA
+:STL src8,ASM,Smem is (op9F=0x42 & src8) ... & Smem & ASM unimpl
 
 # STL src,SHFT,Xmem
+# 3:  1001100S XXXSHFT
 :STL src8,shft,Xmem is op9F=0x4C & src8 & Xmem & shft unimpl
 
 # STL src[,SHIFT],Smem
-:STL src8,shift,Smem is op8F=0x6F & Smem ; op9F=0x06 & src8 & op57=0x4 & shift unimpl
+# 4:  01101111 IAAAAAAA 0000110S 100SHIFT
+#:STL src8,shift,Smem is (op8F=0x6F) ... & Smem ; ... (op9F=0x06 & src8 & op57=0x4 & shift) unimpl
 
 
 # Store Accumulator Low Into Memory-Mapped Register
 # STLM src,MMR
+# 1000100S IAAAAAAA
 :STLM src8,mmr is op9F=0x44 & src8 & mmr unimpl
 
 
 # Store Immediate Value Into Memory-Mapped Register
 # STM #lk,MMR
+# 01110111 IAAAAAAA xxxxxxxx xxxxxxxx
 :STM slk,mmr is op8F=0x77 & mmr ; slk unimpl
 
 
 # Store Accumulator With Parallel Add
 # ST src,Ymem
 # || ADD Xmem,dst
+# 110000SD XXXXYYYY
 :ST^"||ADD" src9,Ymem,Xmem,dst8 is opAF=0x30 & src9 & dst8 & Xmem & Ymem unimpl
 
 
 # Store Accumulator With Parallel Load
 # ST src,Ymem
 # || LD Xmem,dst
+# 1:  110010SD XXXXYYYY
 :ST^"||LD" src9,Ymem,Xmem,dst8 is opAF=0x32 & src9 & dst8 & Xmem & Ymem unimpl
 
 # ST src,Ymem
 # || LD Xmem,T
+# 2: 111001S0 XXXXYYYY
 :ST^"||LD" src9,Ymem,Xmem,T is opAF=0x39 & src9 & op8=0 & Xmem & Ymem & T unimpl
 
 
 # Store Accumulator With Parallel Multiply Accumulate With/Without Rounding
 # ST src,Ymem
 # || MAC[R] Xmem,dst
+# 11010RSD XXXXYYYY
 :ST^"||MAC" src9,Ymem,Xmem,dst8 is opBF=0x1A & rndA=0 & src9 & dst8 & Xmem & Ymem unimpl
 :ST^"||MACR" src9,Ymem,Xmem,dst8 is opBF=0x1A & rndA=1 & src9 & dst8 & Xmem & Ymem unimpl
 
@@ -1207,6 +1403,7 @@ mmr: op06 is op7=1 & op06 { local tmp:2 = op06; export tmp; }
 # Store Accumulator With Parallel Multiply Subtract With/Without Rounding
 # ST src,Ymem
 # || MAS[R] Xmem,dst
+# 11011RSD XXXXYYYY
 :ST^"||MAS" src9,Ymem,Xmem,dst8 is opBF=0x1B & rndA=0 & src9 & dst8 & Xmem & Ymem unimpl
 :ST^"||MASR" src9,Ymem,Xmem,dst8 is opBF=0x1B & rndA=1 & src9 & dst8 & Xmem & Ymem unimpl
 
@@ -1214,85 +1411,105 @@ mmr: op06 is op7=1 & op06 { local tmp:2 = op06; export tmp; }
 # Store Accumulator With Parallel Multiply
 # ST src,Ymem
 # || MPY Xmem,dst
+# 110011SD XXXXYYYY
 :ST^"||MPY" src9,Ymem,Xmem,dst8 is opAF=0x33 & src9 & dst8 & Xmem & Ymem unimpl
 
 
 # Store Accumulator With Parallel Subtract
 # ST src,Ymem
 # || SUB Xmem,dst
+# 110001SD XXXXYYYY
 :ST^"||SUB" src9,Ymem,Xmem,dst8 is opAF=0x31 & src9 & dst8 & Xmem & Ymem unimpl
 
 
 # Store T Conditionally
 # STRCD Xmem,cond
+# 10011100 XXXXCOND
 :STRCD Xmem,CC4 is op8F=0x9C & Xmem & CC4 unimpl
 
 
 # Subtract From Accumulator
 # SUB Smem,src
-:SUB Smem,src8 is op9F=0x04 & src8 & Smem unimpl
+# 1:  0000100S IAAAAAAA
+:SUB Smem,src8 is (op9F=0x04 & src8) ... & Smem unimpl
 
 # SUB Smem,TS,src
-:SUB Smem,TS,src8 is op9F=0x06 & src8 & Smem & TS unimpl
+# 2:  0000110S IAAAAAAA
+:SUB Smem,TS,src8 is (op9F=0x06 & src8) ... & Smem & TS unimpl
 
 # SUB Smem,16,src[,dst]
-:SUB Smem,16,src9,dst8 is opAF=0x10 & src9 & dst8 & Smem unimpl
+# 3:  010000SD IAAAAAAA
+:SUB Smem,16,src9,dst8 is (opAF=0x10 & src9 & dst8) ... & Smem unimpl
 
 # SUB Smem[,SHIFT],src[,dst]
-:SUB Smem,shift,src9,dst8 is op8F=0x6F & Smem ; opAF=0x03 & src9 & dst8 & op57=0x1 & shift unimpl
+# 4:  01101111 IAAAAAAA 000011SD 001SHIFT
+#:SUB Smem,shift,src9,dst8 is (op8F=0x6F) ... & Smem ; ... (opAF=0x03 & src9 & dst8 & op57=0x1 & shift) unimpl
 
 # SUB Xmem,SHFT,src
+# 5:  1001001S XXXXSHFT
 :SUB Xmem,shft,src8 is op9F=0x49 & src8 & Xmem & shft unimpl
 
 # SUB Xmem,Ymem,dst
+# 6:  1010001D XXXXYYYY
 :SUB Xmem,Ymem,dst8 is op9F=0x51 & dst8 & Xmem & Ymem unimpl
 
 # SUB #lk[,SHFT],src[,dst]
+# 7:  111100SD 0001SHFT xxxxxxxx xxxxxxxx
 :SUB slk,shft,src9,dst8 is opAF=0x3c & src9 & dst8 & op47=0x1 & shft ; slk unimpl 
 
 # SUB #lk,16,src[,dst]
+# 8:  111100SD 01100001 xxxxxxxx xxxxxxxx
 :SUB slk,16,src9,dst8 is opAF=0x3C & src9 & dst8 & op07=0x61 ; slk unimpl
 
 # SUB src[,SHIFT][,dst]
+# 9:  111101SD 001SHIFT
 :SUB src9,shift,dst8 is opAF=0x3D & src9 & dst8 & op57=0x1 & shift unimpl
 
 # SUB src,ASM[,dst]
+#10:  111101SD 10000001
 :SUB src9,ASM,dst8 is opAF=0x3D & src9 & dst8 & op07=0x81 & ASM unimpl
 
 
 # Subtract From Accumulator With Borrow
 # SUBB Smem,src
-:SUBB Smem,src8 is op9F=0x07 & src8 & Smem unimpl
+# 0000111D IAAAAAAA
+:SUBB Smem,src8 is (op9F=0x07 & src8) ... & Smem unimpl
 
 
 # Subtract Conditionally
 # SUBC Smem,src
-:SUBC Smem,src8 is op9F=0x0F & src8 & Smem unimpl
+# 0001111S IAAAAAAA
+:SUBC Smem,src8 is (op9F=0x0F & src8) ... & Smem unimpl
 
 
 # Subtract From Accumulator With Sign Extension Suppressed
 # SUBS Smem,src
-:SUBS Smem,src8 is op9F=0x05 & src8 & Smem unimpl
+# 0000101S IAAAAAAA
+:SUBS Smem,src8 is (op9F=0x05 & src8) ... & Smem unimpl
 
 
 # Software Interrupt
 # TRAP K
+# 11110100 110KKKKK
 :TRAP vector is op8F=0xF4 & op57=0x6 & vector unimpl
 
 
 # Write Data to Program Memory Addressed by Accumulator A
 # WRITA Smem
-:WRITA Smem is op8F=0x7F & Smem unimpl
+# 01111111 IAAAAAAA
+:WRITA Smem is (op8F=0x7F) ... & Smem unimpl
 
 
 #TODO
 # Execute Conditionally
 # XC n,cond[,cond[,cond]]
+# 11111101 CCCCCCCC
 :XC 1,CC is opAF=0x3F & op9=0 & op8=1 & CC
 {
 	if (CC == 0) goto inst_next;
 	delayslot(1);
 }
+# 11111111 CCCCCCCC
 :XC 2,CC is opAF=0x3F & op9=1 & op8=1 & CC
 {
 	if (CC == 0) goto inst_next;
@@ -1303,9 +1520,11 @@ mmr: op06 is op7=1 & op06 { local tmp:2 = op06; export tmp; }
 
 # Exclusive OR With Accumulator
 # XOR Smem,src
-:XOR Smem,src8 is op9F=0x0E & src8 & Smem unimpl
+# 1:  0001110S IAAAAAAA
+:XOR Smem,src8 is (op9F=0x0E & src8) ... & Smem unimpl
 
 # XOR #lk[,SHFT],src[,dst]
+# 2:  111100SD 0101SHFT xxxxxxxx xxxxxxxx
 :XOR lk,shft,src9,dst8 is opAF=0x3C & src9 & dst8 & op47=0x5 & shft ; lk
 {
 	local tmp:4 = lk << shft;
@@ -1313,6 +1532,7 @@ mmr: op06 is op7=1 & op06 { local tmp:2 = op06; export tmp; }
 }
 
 # XOR #lk,16,src[,dst]
+# 3:  111100SD 01100101 xxxxxxxx xxxxxxxx
 :XOR lk,16,src9,dst8 is opAF=0x3C & src9 & dst8 & op07=0x65 ; lk
 {
 	local tmp:4 = lk << 16;
@@ -1320,6 +1540,7 @@ mmr: op06 is op7=1 & op06 { local tmp:2 = op06; export tmp; }
 }
 
 # XOR src[,SHIFT][,dst]
+# 4:  111100SD 110SHIFT
 :XOR src9,shift,dst8 is opAF=0x3C & src9 & dst8 & op57=0x6 & shift
 {
 	local tmp:4 = src9 << shift;
@@ -1329,9 +1550,8 @@ mmr: op06 is op7=1 & op06 { local tmp:2 = op06; export tmp; }
 
 # Exclusive OR Memory With Constant
 # XORM #lk,Smem
-:XORM lk,Smem is op8F=0x6A & Smem ; lk
+# 011010101 IAAAAAAA
+:XORM lk,Smem is (op8F=0x6A) ... & Smem ; lk
 {
 	Smem = lk ^ Smem;
 }
-
-
