@@ -29,6 +29,12 @@
 #define PACKED_STRUCTURE
 #endif
 
+#ifndef HAS_LIBC
+void *memcpy(void *dest, const void *src, size_t n);
+void *memset(void *s, int c, size_t n);
+int memcmp(void *s1, void *s2, size_t n);
+#endif // !HAS_LIBC
+
 typedef i4 (*testFuncPtr)(void);
 
 typedef struct PACKED_STRUCTURE FunctionInfo
@@ -67,6 +73,8 @@ typedef struct PACKED_STRUCTURE GroupInfo
 	char id[8];			/* id constains a "Magic Number" which will allow us to find this in a binary */
 	FunctionInfo *funcTable;	/* Table of test functions in this group */
 } GroupInfo;
+
+extern i4 GLOBAL;
 
 void noteTestMain(const char *file, int line, const char *func);
 void assertI1(const char *file, int line, const char *func, i1 val, i1 expected);

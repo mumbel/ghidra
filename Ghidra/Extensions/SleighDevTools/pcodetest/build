@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 
 import os
 import sys
@@ -51,6 +51,7 @@ parser.add_argument('-f', '--force', action='store_true', default=pcodeTestDefau
 parser.add_argument('-v', '--verbose', action='store_true', help='verbose output where available ')
 parser.add_argument('--toolchain-root', default=pcodeTestDefaults.toolchain_root, help='directory where toolchain directories can be found (*)')
 parser.add_argument('--build-root', default=pcodeTestDefaults.build_root, help='temporary directory to hold build files (*)')
+parser.add_argument('--sysroot', help='Use <directory> as the root directory for headers and libraries.')
 parser.add_argument('--gcc-version', default=pcodeTestDefaults.gcc_version, help='default version of gcc (*)')
 parser.add_argument('--gcc-config', default=pcodeTestDefaults.gcc_version, help='default configuration of gcc (*)')
 
@@ -90,6 +91,7 @@ pcodeTestDefaults.toolchain_root = args.toolchain_root
 pcodeTestDefaults.build_root = args.build_root
 pcodeTestDefaults.gcc_version = args.gcc_version
 pcodeTestDefaults.gcc_config = args.gcc_config
+pcodeTestDefaults.sysroot = args.sysroot
 
 # load the known pcodetests
 from pcode_defs import *

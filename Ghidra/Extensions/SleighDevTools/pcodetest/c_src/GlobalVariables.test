@@ -1,6 +1,6 @@
 #include "pcode_test.h"
 
-extern i4 GLOBAL;
+i4 GLOBAL = 0;
 
 TEST pcode_ModifyGlobal_Main()
 {

@@ -38,7 +38,10 @@ class BuildUtil:
                 cmd += ' 1>%s 2>&1' % (stdout)
             elif not stdout and stderr:
                 cmd += ' 2>%s' % (stderr)
-            if verbose: self.log_info(cmd)
+            if verbose:
+                self.log_info(cmd)
+            print("SHIT")
+            print(cmd)
             os.system(cmd)
         else:
             string = ' '.join(cmd)
@@ -47,8 +50,11 @@ class BuildUtil:
                 string += ' 1>%s 2>&1' % (stdout)
             else:
                 f = subprocess.PIPE
-            if verbose: self.log_info(string)
+            if verbose:
+                self.log_info(string)
             try:
+                print("FUCK")
+                print(cmd)
                 sp = subprocess.Popen(cmd, stdout=f, stderr=subprocess.PIPE)
             except OSError as e:
                 self.log_err("Command: " + string)
@@ -90,20 +96,27 @@ class BuildUtil:
         return os.isatty(sys.stdin.fileno())
 
     def is_readable_file(self, fname):
+        tested_fname = fname
         if not self.isfile(fname):
-            self.log_warn('%s does not exist' % fname)
-            return False
-        if os.stat(fname).st_size == 0:
+            tested_fname = shutil.which(fname)
+            if not tested_fname:
+                self.log_warn('%s does not exist' % fname)
+                return False
+        if os.stat(tested_fname).st_size == 0:
             self.log_warn('%s is empty' % fname)
             return False
-        if os.access(fname, os.R_OK) == 0:
+        if os.access(tested_fname, os.R_OK) == 0:
             self.log_warn('%s is not readable' % fname)
             return False
         return True
 
     def is_executable_file(self, fname):
-        if not self.is_readable_file(fname): return False
-        if os.access(fname, os.X_OK) == 0:
+        tested_fname = fname
+        if not self.is_readable_file(fname):
+            return False
+        if not self.isfile(fname):
+            tested_fname = shutil.which(fname)
+        if os.access(tested_fname, os.X_OK) == 0:
             self.log_warn('%s is not executable' % fname)
             return False
         return True

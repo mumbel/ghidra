@@ -15,7 +15,7 @@
  */
 #include "pcode_test.h"
 
-extern i4 GLOBAL = 0;
+extern i4 GLOBAL;
 
 void pcode_ModifyGlobal(i4 arg1)
 {

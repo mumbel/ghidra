@@ -22,6 +22,12 @@ NOINLINE i4 breakOnPass(void);
 NOINLINE i4 breakOnError(void);
 void nosprintf5() { }			/* sprintf5 function was removed, but java is still looking for it. */
 
+unsigned long __stack_chk_guard;
+
+void __stack_chk_fail(void)
+{
+}
+
 FunctionInfo mainFunctionInfoTable[] = {
 #ifdef HAS_FLOAT
 	{"assertF4", (testFuncPtr) assertF4, 0},

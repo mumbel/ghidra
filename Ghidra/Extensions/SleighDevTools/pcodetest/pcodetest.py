@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 ## ###
 # IP: GHIDRA
 #
@@ -30,12 +31,18 @@ class PCodeTest(BuildUtil):
         super(PCodeTest, self).__init__()
         self.config = Config(pcodeTestDefaults, conf)
         # calculate the toolchain_dir
-        self.config.toolchain_dir = self.config.format('%(toolchain_root)s/%(toolchain)s-gcc-%(gcc_config)s')
-        if not self.isdir(self.config.toolchain_dir):
-            self.config.toolchain_dir = self.config.format('%(toolchain_root)s/%(toolchain)s')
+        if self.config.sysroot:
+            # <path>/<target>/<version>
+            self.config.bintarget = self.config.sysroot.split('/')[-2]
+            pass
+        else:
+            self.config.toolchain_dir = self.config.format('%(toolchain_root)s/%(toolchain)s-gcc-%(gcc_config)s')
+            if not self.isdir(self.config.toolchain_dir):
+                self.config.toolchain_dir = self.config.format('%(toolchain_root)s/%(toolchain)s')
 
-        (self.config.toolchain_family, self.config.install_target) = self.config.toolchain.split('/')
-        if not self.config.target: self.config.target = self.config.install_target
+                (self.config.toolchain_family, self.config.install_target) = self.config.toolchain.split('/')
+        if not self.config.target:
+            self.config.target = self.config.install_target
 
         # can default the Processor directory name, usually the
         # initial string of 'language_id' (otherwise unused).
@@ -79,7 +86,9 @@ class PCodeTestBuild(BuildUtil):
             raise Exception(pcode_test.config.format('Toolchain type %(toolchain_type)s not known'))
 
     def which(self, what):
-        return self.config.format('%(toolchain_dir)s/%(' + what + ')s')
+        if self.config.sysroot:
+            return self.config.format('%(bintarget)s-%(' + what + ')s')
+        return self.config.format('%(toolchain_dir)s/bin/%(' + what + ')s')
 
     def compile(self, input_files, opt_cflag, output_base):
         self.log_err(self.config.format('compile not implemented for %(toolchain_type)s'))
@@ -160,10 +169,10 @@ class PCodeTestBuild(BuildUtil):
             for f_test in glob.glob('*.test'):
                 f_h = re.sub(r'[.]test', '.h', f_test)
                 if self.isfile(f_h) and self.getmtime(f_test) <= self.getmtime(f_h): continue
-                out, err = self.run(['python', tpp_py, f_test])
+                out, err = self.run(['python3', tpp_py, f_test])
                 if err:
                     self.log_err(err)
-            out, err = self.run(['python', tpp_py, '--entry', 'pcode_main.c'])
+            out, err = self.run(['python3', tpp_py, '--entry', 'pcode_main.c'])
             if err:
                 self.log_err(err)
 
@@ -381,11 +390,14 @@ class PCodeBuildGCC(PCodeTestBuild):
         if self.config.has_decimal64: f += ['-DHAS_DECIMAL64=1']
 
         if self.config.gcc_version == 'latest':
-            self.config.gcc_actual_version = os.readlink(self.config.toolchain_dir).split('gcc-')[1]
+            if self.config.sysroot:
+                self.config.gcc_actual_version = self.config.sysroot.split('/')[-1]
+            else:
+                self.config.gcc_actual_version = os.readlink(self.config.toolchain_dir).split('gcc-')[1]
         else:
             self.config.gcc_actual_version = self.config.gcc_version
             
-        if not self.config.gcc_libdir:
+        if not self.config.gcc_libdir and not self.config.sysroot:
             if self.config.gcc_version == 'latest':
                 # latest gcc version needs to point to the right libgcc location
                 toolchain_dir = self.config.format('%(toolchain_root)s/%(toolchain)s-gcc-%(gcc_config)s')
@@ -410,7 +422,10 @@ class PCodeBuildGCC(PCodeTestBuild):
 
         f += [self.config.format(g) for g in self.config.ccflags.split()]
         f += [self.config.format(g) for g in self.config.add_ccflags.split()]
-        f += ['-L ' + self.config.format(self.config.gcc_libdir)]
+        if self.config.sysroot:
+            f += ['--sysroot ' + self.config.format(self.config.sysroot)]
+        else:
+            f += ['-L ' + self.config.format(self.config.gcc_libdir)]
         f += [self.config.format(g) for g in self.config.cclibs.split()]
         f += [self.config.format(g) for g in self.config.add_cclibs.split()]
         
@@ -428,7 +443,10 @@ class PCodeBuildGCC(PCodeTestBuild):
 
         # Construct the compile/link command line and execute it
         cmp = self.which('compile_exe')
-        cmd = [cmp] + input_files + self.cflags(output_file)  + [opt_cflag, '-B', self.dirname(cmp), '-o', output_file]
+        cmd = [cmp] + input_files + self.cflags(output_file)  + [opt_cflag]
+        if not self.config.sysroot:
+            cmd += ['-B', self.dirname(cmp)]
+        cmd += ['-o', output_file]
         out, err = self.run(cmd)
         if out: self.log_info(out)
 
