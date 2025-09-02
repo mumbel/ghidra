@@ -4,9 +4,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,402 +15,654 @@
  */
 #include "pcode_test.h"
 
-u1 u1_complexLogic(u1 a, u1 b, u1 c, u1 d, u1 e, u1 f)
-{
-	u1 ret = 0;
 
-	if (a > b && b > c || d < e && f < e) {
-		ret += 1;
-	}
-	if (a != b || a != c && d != e || f != e) {
-		ret += 2;
-	}
-	if (a && b && c || d && e && f) {
-		ret += 4;
-	}
-	if (a || b || c && d || e || f) {
-		ret += 8;
-	}
-	return ret;
+#define PCODE_COMPLEX_LOGIC(typ)			\
+typ typ##_complexLogic(				\
+			typ a,				\
+			typ b,				\
+			typ c,				\
+			typ d,				\
+			typ e,				\
+			typ f)				\
+{							\
+	typ ret = 0;					\
+							\
+	if (a > b && b > c || d < e && f < e)		\
+		ret += 1;				\
+	if (a != b || a != c && d != e || f != e)	\
+		ret += 2;				\
+	if (a && b && c || d && e && f)		\
+		ret += 4;				\
+	if (a || b || c && d || e || f)		\
+		ret += 8;				\
+	return ret;					\
 }
 
-i1 i1_complexLogic(i1 a, i1 b, i1 c, i1 d, i1 e, i1 f)
-{
-	i1 ret = 0;
-
-	if (a > b && b > c || d < e && f < e) {
-		ret += 1;
-	}
-	if (a != b || a != c && d != e || f != e) {
-		ret += 2;
-	}
-	if (a && b && c || d && e && f) {
-		ret += 4;
-	}
-	if (a || b || c && d || e || f) {
-		ret += 8;
-	}
-	return ret;
+#define PCODE_BIOP_CMP(typ)		\
+typ typ##_compareLogic(		\
+			typ lhs,	\
+			typ rhs)	\
+{					\
+	if (lhs < rhs)			\
+		lhs += 2;		\
+	if (lhs > rhs)			\
+		lhs += 4;		\
+	if (lhs == 0)			\
+		lhs += 8;		\
+	if (lhs != rhs)		\
+		lhs += 16;		\
+	return lhs;			\
 }
 
-u1 u1_compareLogic(u1 lhs, u1 rhs)
-{
-	if (lhs < rhs)
-		lhs += 2;
-	if (lhs > rhs)
-		lhs += 4;
-	if (lhs == 0)
-		lhs += 8;
-	if (lhs != rhs)
-		lhs += 16;
-	return lhs;
+#define PCODE_BIOP_SUB(typ)		\
+typ typ##_subtract(			\
+			typ lhs,	\
+			typ rhs)	\
+{					\
+	typ z;				\
+	z = lhs - rhs;			\
+	return z;			\
 }
 
-i1 i1_compareLogic(i1 lhs, i1 rhs)
-{
-	if (lhs < 0)
-		lhs += 2;
-	if (lhs > 0)
-		lhs += 4;
-	if (lhs == 0)
-		lhs += 8;
-	if (lhs != rhs)
-		lhs += 16;
-	return lhs;
+#define PCODE_BIOP_SUBZERO(typ)		\
+typ typ##_subtractZero(			\
+			typ val)	\
+{					\
+	typ z;				\
+	z = 0 - val;			\
+	return z;			\
+}
+#define PCODE_BIOP_SUBONE(typ)		\
+typ typ##_subtractOne(			\
+			typ val)	\
+{					\
+	typ z;				\
+	z = 1 - val;			\
+	return z;			\
 }
 
-/* Comparison operators */
-u1 u1_greaterThan(u1 lhs, u1 rhs)
-{
-	u1 z;
-
-	z = lhs > rhs;
-	return z;
+#define PCODE_BIOP_ADD(typ)		\
+typ typ##_addition(			\
+			typ lhs,	\
+			typ rhs)	\
+{					\
+	typ z;				\
+	z = lhs + rhs;			\
+	return z;			\
 }
 
-u1 u1_greaterThanEquals(u1 lhs, u1 rhs)
-{
-	u1 z;
-
-	z = lhs >= rhs;
-	return z;
+#define PCODE_BIOP_ADDZERO(typ)		\
+typ typ##_additionZero(			\
+			typ val)	\
+{					\
+	typ z;				\
+	z = 0 + val;			\
+	return z;			\
 }
 
-u1 u1_lessThan(u1 lhs, u1 rhs)
-{
-	u1 z;
-
-	z = lhs < rhs;
-	return z;
+#define PCODE_BIOP_ADDONE(typ)		\
+typ typ##_additionOne(			\
+			typ val)	\
+{					\
+	typ z;				\
+	z = 1 + val;			\
+	return z;			\
 }
 
-u1 u1_lessThanEquals(u1 lhs, u1 rhs)
-{
-	u1 z;
-
-	z = lhs <= rhs;
-	return z;
+#define PCODE_BIOP_AND(typ)		\
+typ typ##_bitwiseAnd(			\
+			typ lhs,	\
+			typ rhs)	\
+{					\
+	typ z;				\
+	z = lhs & rhs;			\
+	return z;			\
 }
 
-u1 u1_equals(u1 lhs, u1 rhs)
-{
-	u1 z;
-
-	z = lhs == rhs;
-	return z;
+#define PCODE_BIOP_ANDZERO(typ)		\
+typ typ##_bitwiseAndZero(			\
+			typ val)	\
+{					\
+	typ z;				\
+	z = 0 & val;			\
+	return z;			\
 }
 
-u1 u1_notEquals(u1 lhs, u1 rhs)
-{
-	u1 z;
-
-	z = lhs != rhs;
-	return z;
+#define PCODE_BIOP_ANDONE(typ)		\
+typ typ##_bitwiseAndOne(			\
+			typ val)	\
+{					\
+	typ z;				\
+	z = 1 & val;			\
+	return z;			\
 }
 
-i1 i1_greaterThan(i1 lhs, i1 rhs)
-{
-	i1 z;
-
-	z = lhs > rhs;
-	return z;
+#define PCODE_BIOP_OR(typ)		\
+typ typ##_bitwiseOr(			\
+			 typ lhs,	\
+			 typ rhs)	\
+{					\
+	typ z;				\
+	z = lhs | rhs;			\
+	return z;			\
 }
 
-i1 i1_greaterThanEquals(i1 lhs, i1 rhs)
-{
-	i1 z;
-
-	z = lhs >= rhs;
-	return z;
+#define PCODE_BIOP_ORZERO(typ)		\
+typ typ##_bitwiseOrZero(			\
+			typ val)	\
+{					\
+	typ z;				\
+	z = 0 | val;			\
+	return z;			\
 }
 
-i1 i1_lessThan(i1 lhs, i1 rhs)
-{
-	i1 z;
-
-	z = lhs < rhs;
-	return z;
-}
-
-i1 i1_lessThanEquals(i1 lhs, i1 rhs)
-{
-	i1 z;
-
-	z = lhs <= rhs;
-	return z;
-}
-
-i1 i1_equals(i1 lhs, i1 rhs)
-{
-	i1 z;
-
-	z = lhs == rhs;
-	return z;
-}
-
-i1 i1_notEquals(i1 lhs, i1 rhs)
-{
-	i1 z;
-
-	z = lhs != rhs;
-	return z;
-}
-
-/* Bitwise operators */
-u1 u1_bitwiseAnd(u1 lhs, u1 rhs)
-{
-	u1 z;
-
-	z = lhs & rhs;
-	return z;
+#define PCODE_BIOP_ORONE(typ)		\
+typ typ##_bitwiseOrOne(			\
+			typ val)	\
+{					\
+	typ z;				\
+	z = 1 | val;			\
+	return z;			\
 }
 
 
-u1 u1_bitwiseOr(u1 lhs, u1 rhs)
-{
-	u1 z;
-
-	z = lhs | rhs;
-	return z;
+#define PCODE_BIOP_LOGIC_AND(typ)	\
+typ typ##_logicalAnd(			\
+			typ lhs,	\
+			typ rhs)	\
+{					\
+	typ z;				\
+	z = lhs && rhs;		\
+	return z;			\
 }
 
-u1 u1_bitwiseXor(u1 lhs, u1 rhs)
-{
-	u1 z;
-
-	z = lhs ^ rhs;
-	return z;
+#define PCODE_BIOP_LOGIC_OR(typ)	\
+typ typ##_logicalOr(			\
+			typ lhs,	\
+			typ rhs)	\
+{					\
+	typ z;				\
+	z = lhs || rhs;		\
+	return z;			\
 }
 
-i1 i1_bitwiseAnd(i1 lhs, i1 rhs)
-{
-	i1 z;
-
-	z = lhs & rhs;
-	return z;
+#define PCODE_BIOP_LE(typ)		\
+typ typ##_lessThanEquals(		\
+			typ lhs,	\
+			typ rhs)	\
+{					\
+	typ z;				\
+	z = lhs <= rhs;		\
+	return z;			\
 }
 
-i1 i1_bitwiseOr(i1 lhs, i1 rhs)
-{
-	i1 z;
-
-	z = lhs | rhs;
-	return z;
+#define PCODE_BIOP_LEZERO(typ)		\
+typ typ##_lessThanEqualsZero(			\
+			typ val)	\
+{					\
+	typ z;				\
+	z = val <= 0;			\
+	return z;			\
 }
 
-i1 i1_bitwiseXor(i1 lhs, i1 rhs)
-{
-	i1 z;
-
-	z = lhs ^ rhs;
-	return z;
+#define PCODE_BIOP_LEONE(typ)		\
+typ typ##_lessThanEqualsOne(			\
+			typ val)	\
+{					\
+	typ z;				\
+	z = val <= 1;			\
+	return z;			\
 }
 
-/* Logical operators */
-u1 u1_logicalAnd(u1 lhs, u1 rhs)
-{
-	u1 z;
-
-	z = lhs && rhs;
-	return z;
+#define PCODE_BIOP_LT(typ)		\
+typ typ##_lessThan(			\
+			typ lhs,	\
+			typ rhs)	\
+{					\
+	typ z;				\
+	z = lhs < rhs;			\
+	return z;			\
 }
 
-u1 u1_logicalOr(u1 lhs, u1 rhs)
-{
-	u1 z;
-
-	z = lhs || rhs;
-	return z;
+#define PCODE_BIOP_LTZERO(typ)		\
+typ typ##_lessThanZero(			\
+			typ val)	\
+{					\
+	typ z;				\
+	z = val < 0;			\
+	return z;			\
 }
 
-u1 u1_logicalNot(u1 lhs)
-{
-	u1 z;
-
-	z = !lhs;
-	return z;
-}
-
-i1 i1_logicalAnd(i1 lhs, i1 rhs)
-{
-	i1 z;
-
-	z = lhs && rhs;
-	return z;
-}
-
-i1 i1_logicalOr(i1 lhs, i1 rhs)
-{
-	i1 z;
-
-	z = lhs || rhs;
-	return z;
-}
-
-i1 i1_logicalNot(i1 lhs)
-{
-	i1 z;
-
-	z = !lhs;
-	return z;
-}
-
-/* Shift operators */
-u1 u1_shiftLeft(u1 lhs, u1 rhs)
-{
-	u1 z;
-
-	z = lhs << rhs;
-	return z;
-}
-
-u1 u1_shiftRight(u1 lhs, u1 rhs)
-{
-	u1 z;
-
-	z = lhs >> rhs;
-	return z;
-}
-
-i1 i1_shiftLeft(i1 lhs, i1 rhs)
-{
-	i1 z;
-
-	z = lhs << rhs;
-	return z;
-}
-
-i1 i1_shiftRight(i1 lhs, i1 rhs)
-{
-	i1 z;
-
-	z = lhs >> rhs;
-	return z;
-}
-
-/* Arithmetic operators */
-u1 u1_unaryPlus(u1 lhs)
-{
-	u1 z;
-
-	z = +lhs;
-	return z;
-}
-
-u1 u1_addition(u1 lhs, u1 rhs)
-{
-	u1 z;
-
-	z = lhs + rhs;
-	return z;
-}
-
-u1 u1_subtract(u1 lhs, u1 rhs)
-{
-	u1 z;
-
-	z = lhs - rhs;
-	return z;
-}
-
-u1 u1_multiply(u1 lhs, u1 rhs)
-{
-	u1 z;
-
-	z = lhs * rhs;
-	return z;
-}
-
-i1 u1_divide(u1 lhs, u1 rhs)
-{
-	i1 z;
-
-	z = lhs / rhs;
-	return z;
-}
-
-u1 u1_remainder(u1 lhs, u1 rhs)
-{
-	u1 z;
-
-	z = lhs % rhs;
-	return z;
-}
-
-i1 i1_unaryMinus(i1 lhs)
-{
-	i1 z;
-
-	z = -lhs;
-	return z;
-}
-
-i1 i1_unaryPlus(i1 lhs)
-{
-	i1 z;
-
-	z = +lhs;
-	return z;
-}
-
-i1 i1_addition(i1 lhs, i1 rhs)
-{
-	i1 z;
-
-	z = lhs + rhs;
-	return z;
-}
-
-i1 i1_subtract(i1 lhs, i1 rhs)
-{
-	i1 z;
-
-	z = lhs - rhs;
-	return z;
-}
-
-i1 i1_multiply(i1 lhs, i1 rhs)
-{
-	i1 z;
-
-	z = lhs * rhs;
-	return z;
-}
-
-i1 i1_divide(i1 lhs, i1 rhs)
-{
-	i1 z;
-
-	z = lhs / rhs;
-	return z;
-}
-
-i1 i1_remainder(i1 lhs, i1 rhs)
-{
-	i1 z;
-
-	z = lhs % rhs;
-	return z;
+#define PCODE_BIOP_LTONE(typ)		\
+typ typ##_lessThanOne(			\
+			typ val)	\
+{					\
+	typ z;				\
+	z = val < 1;			\
+	return z;			\
 }
 
 
+#define PCODE_BIOP_GE(typ)		\
+typ typ##_greaterThanEquals(		\
+			typ lhs,	\
+			typ rhs)	\
+{					\
+	typ z;				\
+	z = lhs >= rhs;		\
+	return z;			\
+}
+
+#define PCODE_BIOP_GEZERO(typ)		\
+typ typ##_greaterThanEqualsZero(			\
+			typ val)	\
+{					\
+	typ z;				\
+	z = 0 <= val;			\
+	return z;			\
+}
+
+#define PCODE_BIOP_GEONE(typ)		\
+typ typ##_greaterThanEqualsOne(			\
+			typ val)	\
+{					\
+	typ z;				\
+	z = 1 <= val;			\
+	return z;			\
+}
+
+#define PCODE_BIOP_GT(typ)		\
+typ typ##_greaterThan(			\
+			typ lhs,	\
+			typ rhs)	\
+{					\
+	typ z;				\
+	z = lhs > rhs;			\
+	return z;			\
+}
+
+#define PCODE_BIOP_GTZERO(typ)		\
+typ typ##_greaterThanZero(			\
+			typ val)	\
+{					\
+	typ z;				\
+	z = 0 < val;			\
+	return z;			\
+}
+
+#define PCODE_BIOP_GTONE(typ)		\
+typ typ##_greaterThanOne(			\
+			typ val)	\
+{					\
+	typ z;				\
+	z = 1 < val;			\
+	return z;			\
+}
+
+#define PCODE_BIOP_EQ(typ)		\
+typ typ##_equals(			\
+			 typ lhs,	\
+			 typ rhs)	\
+{					\
+	typ z;				\
+	z = lhs == rhs;		\
+	return z;			\
+}
+
+#define PCODE_BIOP_EQZERO(typ)		\
+typ typ##_equalsZero(			\
+			typ val)	\
+{					\
+	typ z;				\
+	z = 0 ==  val;			\
+	return z;			\
+}
+
+#define PCODE_BIOP_EQONE(typ)		\
+typ typ##_equalsOne(			\
+			typ val)	\
+{					\
+	typ z;				\
+	z = 1 == val;			\
+	return z;			\
+}
+
+#define PCODE_BIOP_NE(typ)		\
+typ typ##_notEquals(			\
+			 typ lhs,	\
+			 typ rhs)	\
+{					\
+	typ z;				\
+	z = lhs != rhs;		\
+	return z;			\
+}
+
+#define PCODE_BIOP_NEZERO(typ)		\
+typ typ##_notEqualsZero(			\
+			typ val)	\
+{					\
+	typ z;				\
+	z = 0 != val;			\
+	return z;			\
+}
+
+#define PCODE_BIOP_NEONE(typ)		\
+typ typ##_notEqualsOne(			\
+			typ val)	\
+{					\
+	typ z;				\
+	z = 1 != val;			\
+	return z;			\
+}
+
+#define PCODE_BIOP_XOR(typ)		\
+typ typ##_bitwiseXor(			\
+			typ lhs,	\
+			typ rhs)	\
+{					\
+	typ z;				\
+	z = lhs ^ rhs;			\
+	return z;			\
+}
+
+#define PCODE_BIOP_XORZERO(typ)		\
+typ typ##_bitwiseXorZoer(			\
+			typ val)	\
+{					\
+	typ z;				\
+	z = 0 ^ val;			\
+	return z;			\
+}
+
+#define PCODE_BIOP_XORONE(typ)		\
+typ typ##_bitwiseXorOne(			\
+			typ val)	\
+{					\
+	typ z;				\
+	z = 1 ^ val;			\
+	return z;			\
+}
+
+
+#define PCODE_BIOP_SHL(typ)		\
+typ typ##_shiftLeft(			\
+			typ lhs,	\
+			typ rhs)	\
+{					\
+	typ z;				\
+	z = lhs << rhs;		\
+	return z;			\
+}
+
+#define PCODE_BIOP_SHLZERO(typ)		\
+typ typ##_shiftLeftZero(			\
+			typ val)	\
+{					\
+	typ z;				\
+	z = val << 0;			\
+	return z;			\
+}
+
+#define PCODE_BIOP_SHLONE(typ)		\
+typ typ##_shiftLeftOne(			\
+			typ val)	\
+{					\
+	typ z;				\
+	z = val << 1;			\
+	return z;			\
+}
+
+#define PCODE_BIOP_SHR(typ)		\
+typ typ##_shiftRight(			\
+			typ lhs,	\
+			typ rhs)	\
+{					\
+	typ z;				\
+	z = lhs >> rhs;		\
+	return z;			\
+}
+
+#define PCODE_BIOP_SHRZERO(typ)		\
+typ typ##_shiftRightZero(			\
+			typ val)	\
+{					\
+	typ z;				\
+	z = val >> 0;			\
+	return z;			\
+}
+
+#define PCODE_BIOP_SHRONE(typ)		\
+typ typ##_shiftRightOne(			\
+			typ val)	\
+{					\
+	typ z;				\
+	z = val >> 1;			\
+	return z;			\
+}
+
+#define PCODE_UNOP_NOT(typ)		\
+typ typ##_logicalNot(typ lhs)		\
+{					\
+	typ z;				\
+	z = !lhs;			\
+	return z;			\
+}
+
+#define PCODE_UNOP_POS(typ)		\
+typ typ##_unaryPlus(typ lhs)		\
+{					\
+	typ z;				\
+	z = +lhs;			\
+	return z;			\
+}
+
+#define PCODE_UNOP_NEG(typ)		\
+typ typ##_unaryMinus(typ lhs)		\
+{					\
+	typ z;				\
+	z = -lhs;			\
+	return z;			\
+}
+
+#define PCODE_BIOP_DIV(typ)		\
+typ typ##_divide(			\
+			typ lhs,	\
+			typ rhs)	\
+{					\
+	typ z;				\
+	z = lhs / rhs;			\
+	return z;			\
+}
+
+#define PCODE_BIOP_DIVZERO(typ)		\
+typ typ##_diviceZero(			\
+			typ val)	\
+{					\
+	typ z;				\
+	z = 0 / val;			\
+	return z;			\
+}
+
+#define PCODE_BIOP_DIVONE(typ)		\
+typ typ##_divideOne(			\
+			typ val)	\
+{					\
+	typ z;				\
+	z = 1 / val;			\
+	return z;			\
+}
+
+#define PCODE_BIOP_REM(typ)		\
+typ typ##_remainder(			\
+			typ lhs,	\
+			typ rhs)	\
+{					\
+	typ z;				\
+	z = lhs % rhs;			\
+	return z;			\
+}
+
+#define PCODE_BIOP_REMZERO(typ)		\
+typ typ##_remainderZero(			\
+			typ val)	\
+{					\
+	typ z;				\
+	z = 0 % val;			\
+	return z;			\
+}
+
+#define PCODE_BIOP_REMONE(typ)		\
+typ typ##_remainderOne(			\
+			typ val)	\
+{					\
+	typ z;				\
+	z = 1 % val;			\
+	return z;			\
+}
+
+#define PCODE_BIOP_MUL(typ)		\
+typ typ##_multiply(			\
+			typ lhs,	\
+			typ rhs)	\
+{					\
+	typ z;				\
+	z = lhs * rhs;			\
+	return z;			\
+}
+
+#define PCODE_BIOP_MULZERO(typ)		\
+typ typ##_multiplyZero(			\
+			typ val)	\
+{					\
+	typ z;				\
+	z = 0 * val;			\
+	return z;			\
+}
+
+#define PCODE_BIOP_MULONE(typ)		\
+typ typ##_multiplyOne(			\
+			typ val)	\
+{					\
+	typ z;				\
+	z = 1 * val;			\
+	return z;			\
+}
+
+#define PCODE_BIOPS(typ)					\
+  PCODE_BIOP_ADD(typ)					\
+  PCODE_BIOP_ADDZERO(typ)				\
+  PCODE_BIOP_ADDONE(typ)				\
+  PCODE_BIOP_AND(typ)					\
+  PCODE_BIOP_ANDZERO(typ)				\
+  PCODE_BIOP_ANDONE(typ)				\
+  PCODE_BIOP_OR(typ)					\
+  PCODE_BIOP_ORZERO(typ)				\
+  PCODE_BIOP_ORONE(typ)				\
+  PCODE_BIOP_EQ(typ)					\
+  PCODE_BIOP_EQZERO(typ)				\
+  PCODE_BIOP_EQONE(typ)				\
+  PCODE_BIOP_GE(typ)					\
+  PCODE_BIOP_GEZERO(typ)				\
+  PCODE_BIOP_GEONE(typ)				\
+  PCODE_BIOP_GT(typ)					\
+  PCODE_BIOP_GTZERO(typ)				\
+  PCODE_BIOP_GTONE(typ)				\
+  PCODE_BIOP_LE(typ)					\
+  PCODE_BIOP_LEZERO(typ)				\
+  PCODE_BIOP_LEONE(typ)				\
+  PCODE_BIOP_LT(typ)					\
+  PCODE_BIOP_LTZERO(typ)				\
+  PCODE_BIOP_LTONE(typ)				\
+  PCODE_BIOP_NE(typ)					\
+  PCODE_BIOP_NEZERO(typ)				\
+  PCODE_BIOP_NEONE(typ)				\
+  PCODE_BIOP_SHL(typ)					\
+  PCODE_BIOP_SHLZERO(typ)				\
+  PCODE_BIOP_SHLONE(typ)				\
+  PCODE_BIOP_SHR(typ)					\
+  PCODE_BIOP_SHRZERO(typ)				\
+  PCODE_BIOP_SHRONE(typ)				\
+  PCODE_BIOP_SUB(typ)					\
+  PCODE_BIOP_SUBZERO(typ)				\
+  PCODE_BIOP_SUBONE(typ)				\
+  PCODE_BIOP_XOR(typ)					\
+  PCODE_BIOP_XORZERO(typ)				\
+  PCODE_BIOP_XORONE(typ)				\
+  PCODE_UNOP_POS(typ)					\
+  PCODE_UNOP_NOT(typ)					\
+  PCODE_UNOP_NEG(typ)					\
+  PCODE_COMPLEX_LOGIC(typ)				\
+  PCODE_BIOP_LOGIC_OR(typ)				\
+  PCODE_BIOP_LOGIC_AND(typ)				\
+  PCODE_BIOP_CMP(typ)					\
+  PCODE_BIOP_MUL(typ)					\
+  PCODE_BIOP_MULZERO(typ)				\
+  PCODE_BIOP_MULONE(typ)				\
+  PCODE_BIOP_DIV(typ)					\
+  PCODE_BIOP_DIVZERO(typ)				\
+  PCODE_BIOP_DIVONE(typ)				\
+  PCODE_BIOP_REM(typ)					\
+  PCODE_BIOP_REMZERO(typ)				\
+  PCODE_BIOP_REMONE(typ)
+
+
+PCODE_BIOPS(u1)
+PCODE_BIOPS(i1)
+PCODE_BIOPS(u2)
+PCODE_BIOPS(i2)
+PCODE_BIOPS(u4)
+PCODE_BIOPS(i4)
+
+#ifdef HAS_LONGLONG
+PCODE_BIOPS(u8)
+PCODE_BIOPS(i8)
+#endif /* #ifdef HAS_LONGLONG */
+
+
+#define PCODE_BIOPS_FP(typ)					\
+  PCODE_BIOP_ADD(typ)					\
+  PCODE_BIOP_ADDZERO(typ)				\
+  PCODE_BIOP_ADDONE(typ)				\
+  PCODE_BIOP_EQ(typ)					\
+  PCODE_BIOP_EQZERO(typ)				\
+  PCODE_BIOP_EQONE(typ)				\
+  PCODE_BIOP_GE(typ)					\
+  PCODE_BIOP_GEZERO(typ)				\
+  PCODE_BIOP_GEONE(typ)				\
+  PCODE_BIOP_GT(typ)					\
+  PCODE_BIOP_GTZERO(typ)				\
+  PCODE_BIOP_GTONE(typ)				\
+  PCODE_BIOP_LE(typ)					\
+  PCODE_BIOP_LEZERO(typ)				\
+  PCODE_BIOP_LEONE(typ)				\
+  PCODE_BIOP_LT(typ)					\
+  PCODE_BIOP_LTZERO(typ)				\
+  PCODE_BIOP_LTONE(typ)				\
+  PCODE_BIOP_NE(typ)					\
+  PCODE_BIOP_NEZERO(typ)				\
+  PCODE_BIOP_NEONE(typ)				\
+  PCODE_BIOP_SUB(typ)					\
+  PCODE_BIOP_SUBZERO(typ)				\
+  PCODE_BIOP_SUBONE(typ)				\
+  PCODE_UNOP_POS(typ)					\
+  PCODE_UNOP_NOT(typ)					\
+  PCODE_UNOP_NEG(typ)					\
+  PCODE_COMPLEX_LOGIC(typ)				\
+  PCODE_BIOP_LOGIC_OR(typ)				\
+  PCODE_BIOP_LOGIC_AND(typ)				\
+  PCODE_BIOP_CMP(typ)					\
+  PCODE_BIOP_MUL(typ)					\
+  PCODE_BIOP_MULZERO(typ)				\
+  PCODE_BIOP_MULONE(typ)				\
+  PCODE_BIOP_DIV(typ)					\
+  PCODE_BIOP_DIVZERO(typ)				\
+  PCODE_BIOP_DIVONE(typ)				
+
+#ifdef HAS_FLOAT
+PCODE_BIOPS_FP(f4)
+#endif /* #ifdef HAS_FLOAT */
+
+
+#ifdef HAS_DOUBLE
+PCODE_BIOPS_FP(f8)
+#endif /* #ifdef HAS_DOUBLE */

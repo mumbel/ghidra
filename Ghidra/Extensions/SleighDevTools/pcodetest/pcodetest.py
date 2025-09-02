@@ -423,7 +423,9 @@ class PCodeBuildGCC(PCodeTestBuild):
         f += [self.config.format(g) for g in self.config.ccflags.split()]
         f += [self.config.format(g) for g in self.config.add_ccflags.split()]
         if self.config.sysroot:
-            f += ['--sysroot ' + self.config.format(self.config.sysroot)]
+            print(bytes(self.config.sysroot, 'utf8'))
+            print(bytes(self.config.format(self.config.sysroot), 'utf8'))
+            f += ['--sysroot'] + [self.config.format(self.config.sysroot)]
         else:
             f += ['-L ' + self.config.format(self.config.gcc_libdir)]
         f += [self.config.format(g) for g in self.config.cclibs.split()]
@@ -472,8 +474,11 @@ class PCodeBuildGCC(PCodeTestBuild):
         # build a BUILD_EXE version
         if self.config.build_exe:
             cmp = self.which('compile_exe')
-            cmd = [cmp] + input_files + self.cflags(output_file)\
-                + ['-DBUILD_EXE', opt_cflag, '-B', self.dirname(cmp), '-o', '%s.exe' % output_base]
+            cmd = [cmp] + input_files + self.cflags(output_file)
+            cmd += ['-DBUILD_EXE', opt_cflag]
+            if not self.config.sysroot:
+                cmd += ['-B', self.dirname(cmp)]
+            cmd += ['-o', '%s.exe' % output_base]
             out, err = self.run(cmd)
             if err: self.log_warn(err)
             if out: self.log_info(out)

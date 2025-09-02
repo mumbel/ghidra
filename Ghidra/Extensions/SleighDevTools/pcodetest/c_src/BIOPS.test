@@ -43,55 +43,103 @@ TEST i1_compareLogic_Main()
 TEST u1_greaterThan_Main()
 {
 	extern u1 u1_greaterThan(u1 lhs, u1 rhs);
+	extern u1 u1_greaterThanZero(u1 val);
+	extern u1 u1_greaterThanOne(u1 val);
 	ASSERTU1(u1_greaterThan(0x01, 0x01), 0);
 	ASSERTU1(u1_greaterThan(U1_MAX, U1_MAX), 0);
 	ASSERTU1(u1_greaterThan(U1_MAX, 0), 1);
 	ASSERTU1(u1_greaterThan(0, U1_MAX), 0);
+	ASSERTU1(u1_greaterThanZero(0), 0);
+	ASSERTU1(u1_greaterThanZero(1), 1);
+	ASSERTU1(u1_greaterThanZero(U1_MAX), 1);
+	ASSERTU1(u1_greaterThanOne(0), 0);
+	ASSERTU1(u1_greaterThanOne(1), 0);
+	ASSERTU1(u1_greaterThanOne(U1_MAX), 1);
 }
 
 TEST u1_greaterThanEquals_Main()
 {
 	extern u1 u1_greaterThanEquals(u1 lhs, u1 rhs);
+	extern u1 u1_greaterThanEqualsZero(u1 val);
+	extern u1 u1_greaterThanEqualsOne(u1 val);
 	ASSERTU1(u1_greaterThanEquals(0x01, 0x01), 1);
 	ASSERTU1(u1_greaterThanEquals(U1_MAX, U1_MAX), 1);
 	ASSERTU1(u1_greaterThanEquals(U1_MAX, 0), 1);
 	ASSERTU1(u1_greaterThanEquals(0, U1_MAX), 0);
+	ASSERTU1(u1_greaterThanEqualsZero(0), 1);
+	ASSERTU1(u1_greaterThanEqualsZero(1), 1);
+	ASSERTU1(u1_greaterThanEqualsZero(U1_MAX), 1);
+	ASSERTU1(u1_greaterThanEqualsOne(0), 0);
+	ASSERTU1(u1_greaterThanEqualsOne(1), 1);
+	ASSERTU1(u1_greaterThanEqualsOne(U1_MAX), 1);
 }
 
 TEST u1_lessThan_Main()
 {
 	extern u1 u1_lessThan(u1 lhs, u1 rhs);
+	extern u1 u1_lessThanZero(u1 val);
+	extern u1 u1_lessThanOne(u1 val);
 	ASSERTU1(u1_lessThan(0x01, 0x01), 0);
 	ASSERTU1(u1_lessThan(U1_MAX, U1_MAX), 0);
 	ASSERTU1(u1_lessThan(U1_MAX, 0), 0);
+	ASSERTU1(u1_lessThanZero(0), 0);
+	ASSERTU1(u1_lessThanZero(1), 0);
+	ASSERTU1(u1_lessThanZero(U1_MAX), 0);
+	ASSERTU1(u1_lessThanOne(0), 1);
+	ASSERTU1(u1_lessThanOne(1), 0);
+	ASSERTU1(u1_lessThanOne(U1_MAX), 0);
 }
 
 TEST u1_lessThanEquals_Main()
 {
 	extern u1 u1_lessThanEquals(u1 lhs, u1 rhs);
+	extern u1 u1_lessThanEqualsZero(u1 val);
+	extern u1 u1_lessThanEqualsOne(u1 val);
 	ASSERTU1(u1_lessThanEquals(0x01, 0x01), 1);
 	ASSERTU1(u1_lessThanEquals(U1_MAX, U1_MAX), 1);
 	ASSERTU1(u1_lessThanEquals(0, 0), 1);
 	ASSERTU1(u1_lessThanEquals(U1_MAX, 0), 0);
 	ASSERTU1(u1_lessThanEquals(0, U1_MAX), 1);
+	ASSERTU1(u1_lessThanEqualsZero(0), 1);
+	ASSERTU1(u1_lessThanEqualsZero(1), 0);
+	ASSERTU1(u1_lessThanEqualsZero(U1_MAX), 0);
+	ASSERTU1(u1_lessThanEqualsOne(0), 1);
+	ASSERTU1(u1_lessThanEqualsOne(1), 1);
+	ASSERTU1(u1_lessThanEqualsOne(U1_MAX), 0);
 }
 
 TEST u1_equals_Main()
 {
 	extern u1 u1_equals(u1 lhs, u1 rhs);
+	extern u1 u1_equalsZero(u1 val);
+	extern u1 u1_equalsOne(u1 val);
 	ASSERTU1(u1_equals(0x01, 0x01), 1);
 	ASSERTU1(u1_equals(U1_MAX, U1_MAX), 1);
 	ASSERTU1(u1_equals(U1_MAX, 0), 0);
 	ASSERTU1(u1_equals(0, U1_MAX), 0);
+	ASSERTU1(u1_equalsZero(0), 1);
+	ASSERTU1(u1_equalsZero(1), 0);
+	ASSERTU1(u1_equalsZero(U1_MAX), 0);
+	ASSERTU1(u1_equalsOne(0), 0);
+	ASSERTU1(u1_equalsOne(1), 1);
+	ASSERTU1(u1_equalsOne(U1_MAX), 0);
 }
 
 TEST u1_notEquals_Main()
 {
 	extern u1 u1_notEquals(u1 lhs, u1 rhs);
+	extern u1 u1_notEqualsZero(u1 val);
+	extern u1 u1_notEqualsOne(u1 val);
 	ASSERTU1(u1_notEquals(0x01, 0x01), 0);
 	ASSERTU1(u1_notEquals(U1_MAX, U1_MAX), 0);
 	ASSERTU1(u1_notEquals(U1_MAX, 0), 1);
 	ASSERTU1(u1_notEquals(0, U1_MAX), 1);
+	ASSERTU1(u1_notEqualsZero(0), 0);
+	ASSERTU1(u1_notEqualsZero(1), 1);
+	ASSERTU1(u1_notEqualsZero(U1_MAX), 1);
+	ASSERTU1(u1_notEqualsOne(0), 1);
+	ASSERTU1(u1_notEqualsOne(1), 0);
+	ASSERTU1(u1_notEqualsOne(U1_MAX), 1);
 }
 
 TEST i1_greaterThan_Main()

@@ -40,8 +40,6 @@ class BuildUtil:
                 cmd += ' 2>%s' % (stderr)
             if verbose:
                 self.log_info(cmd)
-            print("SHIT")
-            print(cmd)
             os.system(cmd)
         else:
             string = ' '.join(cmd)
@@ -53,8 +51,6 @@ class BuildUtil:
             if verbose:
                 self.log_info(string)
             try:
-                print("FUCK")
-                print(cmd)
                 sp = subprocess.Popen(cmd, stdout=f, stderr=subprocess.PIPE)
             except OSError as e:
                 self.log_err("Command: " + string)
