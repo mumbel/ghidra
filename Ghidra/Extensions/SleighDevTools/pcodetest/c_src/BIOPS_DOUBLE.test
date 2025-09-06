@@ -4,12 +4,12 @@
 TEST f8_compareLogic_Main()
 {
 	extern f8 f8_compareLogic(f8 lhs, f8 rhs);
-	ASSERTF8(f8_compareLogic(0x1, 0x1), 21);
-	ASSERTF8(f8_compareLogic(0x1, 0x2), 21);
-	ASSERTF8(f8_compareLogic(0x2, 0x1), 22);
-	ASSERTF8(f8_compareLogic(-0x1, -0x1), 21);
-	ASSERTF8(f8_compareLogic(-0x1, -0x2), 21);
-	ASSERTF8(f8_compareLogic(-0x2, -0x1), 24);
+	ASSERTF8(f8_compareLogic(0x1, 0x1), 66);
+	ASSERTF8(f8_compareLogic(0x1, 0x2), 38);
+	ASSERTF8(f8_compareLogic(0x2, 0x1), 42);
+	ASSERTF8(f8_compareLogic(-0x1, -0x1), 65);
+	ASSERTF8(f8_compareLogic(-0x1, -0x2), 41);
+	ASSERTF8(f8_compareLogic(-0x2, -0x1), 37);
 }
 #endif
 

@@ -38,20 +38,28 @@ typ typ##_complexLogic(				\
 	return ret;					\
 }
 
+
 #define PCODE_BIOP_CMP(typ)		\
 typ typ##_compareLogic(		\
 			typ lhs,	\
 			typ rhs)	\
 {					\
+        typ z = 0;\
+	if (lhs < 0)			\
+		z += 1;		\
+	if (lhs > 0)			\
+		z += 2;		\
 	if (lhs < rhs)			\
-		lhs += 2;		\
+		z += 4;		\
 	if (lhs > rhs)			\
-		lhs += 4;		\
+		z += 8;		\
 	if (lhs == 0)			\
-		lhs += 8;		\
+		z += 16;		\
 	if (lhs != rhs)		\
-		lhs += 16;		\
-	return lhs;			\
+		z += 32;		\
+	if (lhs == rhs)		\
+		z += 64;		\
+	return z;			\
 }
 
 #define PCODE_BIOP_SUB(typ)		\
@@ -548,6 +556,177 @@ typ typ##_multiplyOne(			\
 	return z;			\
 }
 
+#define PCODE_COND_GT(typ)		\
+u1 typ##_conditionGT(			\
+			typ lhs,	\
+			typ rhs)	\
+{					\
+	u1 z;				\
+	z = (u1)(lhs > rhs);		\
+	return z;			\
+}
+
+#define PCODE_COND_GTZero(typ)			\
+u1 typ##_conditionGTZero(			\
+			typ val)	\
+{					\
+	u1 z;				\
+	z = (u1)(val > 0);		\
+	return z;			\
+}
+
+#define PCODE_COND_GTOne(typ)			\
+u1 typ##_conditionGTOne(			\
+			typ val)	\
+{					\
+	u1 z;				\
+	z = (u1)(val > 1);		\
+	return z;			\
+}
+
+#define PCODE_COND_GE(typ)		\
+u1 typ##_conditionGE(			\
+			typ lhs,	\
+			typ rhs)	\
+{					\
+	u1 z;				\
+	z = (u1)(lhs >= rhs);		\
+	return z;			\
+}
+
+#define PCODE_COND_GEZero(typ)			\
+u1 typ##_conditionGEZero(			\
+			typ val)	\
+{					\
+	u1 z;				\
+	z = (u1)(val >= 0);		\
+	return z;			\
+}
+
+#define PCODE_COND_GEOne(typ)			\
+u1 typ##_conditionGEOne(			\
+			typ val)	\
+{					\
+	u1 z;				\
+	z = (u1)(val >= 1);		\
+	return z;			\
+}
+
+#define PCODE_COND_EQ(typ)		\
+u1 typ##_conditionEQ(			\
+			typ lhs,	\
+			typ rhs)	\
+{					\
+	u1 z;				\
+	z = (u1)(lhs == rhs);		\
+	return z;			\
+}
+
+#define PCODE_COND_EQZero(typ)			\
+u1 typ##_conditionEQZero(			\
+			typ val)	\
+{					\
+	u1 z;				\
+	z = (u1)(val == 0);		\
+	return z;			\
+}
+
+#define PCODE_COND_EQOne(typ)			\
+u1 typ##_conditionEQOne(			\
+			typ val)	\
+{					\
+	u1 z;				\
+	z = (u1)(val == 1);		\
+	return z;			\
+}
+
+#define PCODE_COND_LE(typ)		\
+u1 typ##_conditionLE(			\
+			typ lhs,	\
+			typ rhs)	\
+{					\
+	u1 z;				\
+	z = (u1)(lhs <= rhs);		\
+	return z;			\
+}
+
+#define PCODE_COND_LEZero(typ)			\
+u1 typ##_conditionLEZero(			\
+			typ val)	\
+{					\
+	u1 z;				\
+	z = (u1)(val <= 0);		\
+	return z;			\
+}
+
+#define PCODE_COND_LEOne(typ)			\
+u1 typ##_conditionLEOne(			\
+			typ val)	\
+{					\
+	u1 z;				\
+	z = (u1)(val <= 1);		\
+	return z;			\
+}
+
+#define PCODE_COND_LT(typ)		\
+u1 typ##_conditionLT(			\
+			typ lhs,	\
+			typ rhs)	\
+{					\
+	u1 z;				\
+	z = (u1)(lhs < rhs);		\
+	return z;			\
+}
+
+#define PCODE_COND_LTZero(typ)			\
+u1 typ##_conditionLTZero(			\
+			typ val)	\
+{					\
+	u1 z;				\
+	z = (u1)(val < 0);		\
+	return z;			\
+}
+
+#define PCODE_COND_LTOne(typ)		\
+u1 typ##_conditionLTOne(			\
+			typ val)	\
+{					\
+	u1 z;				\
+	z = (u1)(val < 1);		\
+	return z;			\
+}
+
+#define PCODE_COND_NE(typ)		\
+u1 typ##_conditionNE(			\
+			typ lhs,	\
+			typ rhs)	\
+{					\
+	u1 z;				\
+	z = (u1)(lhs != rhs);		\
+	return z;			\
+}
+
+#define PCODE_COND_NEZero(typ)			\
+u1 typ##_conditionNEZero(			\
+			typ val)	\
+{					\
+	u1 z;				\
+	z = (u1)(val != 0);		\
+	return z;			\
+}
+
+#define PCODE_COND_NEOne(typ)			\
+u1 typ##_conditionNEOne(			\
+			typ val)	\
+{					\
+	u1 z;				\
+	z = (u1)(val != 1);		\
+	return z;			\
+}
+
+
+
+
 #define PCODE_BIOPS(typ)					\
   PCODE_BIOP_ADD(typ)					\
   PCODE_BIOP_ADDZERO(typ)				\
@@ -603,7 +782,26 @@ typ typ##_multiplyOne(			\
   PCODE_BIOP_DIVONE(typ)				\
   PCODE_BIOP_REM(typ)					\
   PCODE_BIOP_REMZERO(typ)				\
-  PCODE_BIOP_REMONE(typ)
+  PCODE_BIOP_REMONE(typ)				\
+  PCODE_COND_GT(typ)					\
+  PCODE_COND_GTZero(typ)				\
+  PCODE_COND_GTOne(typ)					\
+  PCODE_COND_GE(typ)					\
+  PCODE_COND_GEZero(typ)				\
+  PCODE_COND_GEOne(typ)					\
+  PCODE_COND_EQ(typ)					\
+  PCODE_COND_EQZero(typ)				\
+  PCODE_COND_EQOne(typ)					\
+  PCODE_COND_LE(typ)					\
+  PCODE_COND_LEZero(typ)				\
+  PCODE_COND_LEOne(typ)					\
+  PCODE_COND_LT(typ)					\
+  PCODE_COND_LTZero(typ)				\
+  PCODE_COND_LTOne(typ)					\
+  PCODE_COND_NE(typ)					\
+  PCODE_COND_NEZero(typ)				\
+  PCODE_COND_NEOne(typ)
+
 
 
 PCODE_BIOPS(u1)
@@ -656,7 +854,7 @@ PCODE_BIOPS(i8)
   PCODE_BIOP_MULONE(typ)				\
   PCODE_BIOP_DIV(typ)					\
   PCODE_BIOP_DIVZERO(typ)				\
-  PCODE_BIOP_DIVONE(typ)
+  PCODE_BIOP_DIVONE(typ)				
 
 #ifdef HAS_FLOAT
 PCODE_BIOPS_FP(f4)

@@ -31,7 +31,7 @@ public class PPC_O3_EmulatorTest extends ProcessorEmulatorTestAdapter {
 
 	@Override
 	protected String getProcessorDesignator() {
-		return "powerpc32_GCC_O3";
+		return "powerpc_GCC_O3";
 	}
 
 	public static Test suite() {

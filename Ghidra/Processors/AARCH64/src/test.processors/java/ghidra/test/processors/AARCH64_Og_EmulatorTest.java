@@ -18,23 +18,23 @@ package ghidra.test.processors;
 import ghidra.test.processors.support.ProcessorEmulatorTestAdapter;
 import junit.framework.Test;
 
-public class PPC_O0_EmulatorTest extends ProcessorEmulatorTestAdapter {
+public class AARCH64_Og_EmulatorTest extends ProcessorEmulatorTestAdapter {
 
-	private static final String LANGUAGE_ID = "PowerPC:BE:32:default";
+	private static final String LANGUAGE_ID = "AARCH64:LE:64:v8A";
 	private static final String COMPILER_SPEC_ID = "default";
 
 	private static final String[] REG_DUMP_SET = new String[] {};
 
-	public PPC_O0_EmulatorTest(String name) throws Exception {
+	public AARCH64_Og_EmulatorTest(String name) throws Exception {
 		super(name, LANGUAGE_ID, COMPILER_SPEC_ID, REG_DUMP_SET);
 	}
 
 	@Override
 	protected String getProcessorDesignator() {
-		return "powerpc_GCC_O0";
+		return "AARCH64_GCC_Og";
 	}
 
 	public static Test suite() {
-		return ProcessorEmulatorTestAdapter.buildEmulatorTestSuite(PPC_O0_EmulatorTest.class);
+		return ProcessorEmulatorTestAdapter.buildEmulatorTestSuite(AARCH64_Og_EmulatorTest.class);
 	}
 }

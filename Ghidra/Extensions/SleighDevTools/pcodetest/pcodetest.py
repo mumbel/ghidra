@@ -417,6 +417,7 @@ class PCodeBuildGCC(PCodeTestBuild):
         # This helps to alleviate undefined main, etc
         f += ['--entry', 'main']
         f += ['-static', '-Wno-unused-macros', '-nodefaultlibs', '-nostartfiles', '-fno-builtin']
+        f += ['-fno-tree-vectorize', '-fno-tree-slp-vectorize'] # does any processor really support vectors for emulation?
         # can pass this if weak symbols aren't defined
         # f += ['-Xlinker', '--unresolved-symbols=ignore-all']
 
