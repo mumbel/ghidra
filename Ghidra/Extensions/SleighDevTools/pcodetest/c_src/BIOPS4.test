@@ -209,6 +209,46 @@ TEST u4_unaryPositive_Main()
 	ASSERTU4(u4_unaryPositive(0), 0);
 }
 
+TEST u4_unaryComp_Main()
+{
+	extern u4 u4_unaryComp(u4 val);
+	ASSERTU4(u4_unaryComp(0), U4_MAX);
+	ASSERTU4(u4_unaryComp(1), U4_MAX-1);
+	ASSERTU4(u4_unaryComp(U4_MAX), 0);
+}
+
+TEST u4_unaryIncPost_Main()
+{
+	extern u4 u4_unaryIncPost(u4 val);
+	ASSERTU4(u4_unaryIncPost(0), 0);
+	ASSERTU4(u4_unaryIncPost(1), 1);
+	ASSERTU4(u4_unaryIncPost(U4_MAX), U4_MAX);
+}
+
+TEST u4_unaryIncPre_Main()
+{
+	extern u4 u4_unaryIncPre(u4 val);
+	ASSERTU4(u4_unaryIncPre(0), 1);
+	ASSERTU4(u4_unaryIncPre(1), 2);
+	ASSERTU4(u4_unaryIncPre(U4_MAX), 0);
+}
+
+TEST u4_unaryDecPost_Main()
+{
+	extern u4 u4_unaryDecPost(u4 val);
+	ASSERTU4(u4_unaryDecPost(0), 0);
+	ASSERTU4(u4_unaryDecPost(1), 1);
+	ASSERTU4(u4_unaryDecPost(U4_MAX), U4_MAX);
+}
+
+TEST u4_unaryDecPre_Main()
+{
+	extern u4 u4_unaryDecPre(u4 val);
+	ASSERTU4(u4_unaryDecPre(0), U4_MAX);
+	ASSERTU4(u4_unaryDecPre(1), 0);
+	ASSERTU4(u4_unaryDecPre(U4_MAX), U4_MAX-1);
+}
+
 TEST u4_addition_Main()
 {
 	extern u4 u4_addition(u4 lhs, u4 rhs);
@@ -282,6 +322,56 @@ TEST i4_unaryPositive_Main()
 	ASSERTI4(i4_unaryPositive(I4_MAX), 2147483647);
 	ASSERTI4(i4_unaryPositive(I4_MIN), -2147483648);
 	ASSERTI4(i4_unaryPositive(0), 0);
+}
+
+TEST i4_unaryComp_Main()
+{
+	extern i4 i4_unaryComp(i4 val);
+	ASSERTI4(i4_unaryComp(0), -1);
+	ASSERTI4(i4_unaryComp(1), -2);
+	ASSERTI4(i4_unaryComp(-1), 0);
+	ASSERTI4(i4_unaryComp(I4_MAX), I4_MIN);
+	ASSERTI4(i4_unaryComp(I4_MIN), I4_MAX);
+}
+
+TEST i4_unaryIncPost_Main()
+{
+	extern i4 i4_unaryIncPost(i4 val);
+	ASSERTI4(i4_unaryIncPost(0), 0);
+	ASSERTI4(i4_unaryIncPost(1), 1);
+	ASSERTI4(i4_unaryIncPost(-1), -1);
+	ASSERTI4(i4_unaryIncPost(I4_MAX), I4_MAX);
+	ASSERTI4(i4_unaryIncPost(I4_MIN), I4_MIN);
+}
+
+TEST i4_unaryIncPre_Main()
+{
+	extern i4 i4_unaryIncPre(i4 val);
+	ASSERTI4(i4_unaryIncPre(0), 1);
+	ASSERTI4(i4_unaryIncPre(1), 2);
+	ASSERTI4(i4_unaryIncPre(-1), 0);
+	ASSERTI4(i4_unaryIncPre(I4_MAX), I4_MIN);
+	ASSERTI4(i4_unaryIncPre(I4_MIN), I4_MIN+1);
+}
+
+TEST i4_unaryDecPost_Main()
+{
+	extern i4 i4_unaryDecPost(i4 val);
+	ASSERTI4(i4_unaryDecPost(0), 0);
+	ASSERTI4(i4_unaryDecPost(1), 1);
+	ASSERTI4(i4_unaryDecPost(-1), -1);
+	ASSERTI4(i4_unaryDecPost(I4_MAX), I4_MAX);
+	ASSERTI4(i4_unaryDecPost(I4_MIN), I4_MIN);
+}
+
+TEST i4_unaryDecPre_Main()
+{
+	extern i4 i4_unaryDecPre(i4 val);
+	ASSERTI4(i4_unaryDecPre(0), -1);
+	ASSERTI4(i4_unaryDecPre(1), 0);
+	ASSERTI4(i4_unaryDecPre(-1), -2);
+	ASSERTI4(i4_unaryDecPre(I4_MAX), I4_MAX-1);
+	ASSERTI4(i4_unaryDecPre(I4_MIN), I4_MAX);
 }
 
 TEST i4_addition_Main()

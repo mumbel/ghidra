@@ -246,6 +246,48 @@ TEST u8_unaryPositive_Main()
 #endif
 
 #ifdef HAS_LONGLONG
+TEST u8_unaryComp_Main()
+{
+	extern u8 u8_unaryComp(u8 val);
+	ASSERTU8(u8_unaryComp(0), U8_MAX);
+	ASSERTU8(u8_unaryComp(1), U8_MAX-1);
+	ASSERTU8(u8_unaryComp(U8_MAX), 0);
+}
+
+TEST u8_unaryIncPost_Main()
+{
+	extern u8 u8_unaryIncPost(u8 val);
+	ASSERTU8(u8_unaryIncPost(0), 0);
+	ASSERTU8(u8_unaryIncPost(1), 1);
+	ASSERTU8(u8_unaryIncPost(U8_MAX), U8_MAX);
+}
+
+TEST u8_unaryIncPre_Main()
+{
+	extern u8 u8_unaryIncPre(u8 val);
+	ASSERTU8(u8_unaryIncPre(0), 1);
+	ASSERTU8(u8_unaryIncPre(1), 2);
+	ASSERTU8(u8_unaryIncPre(U8_MAX), 0);
+}
+
+TEST u8_unaryDecPost_Main()
+{
+	extern u8 u8_unaryDecPost(u8 val);
+	ASSERTU8(u8_unaryDecPost(0), 0);
+	ASSERTU8(u8_unaryDecPost(1), 1);
+	ASSERTU8(u8_unaryDecPost(U8_MAX), U8_MAX);
+}
+
+TEST u8_unaryDecPre_Main()
+{
+	extern u8 u8_unaryDecPre(u8 val);
+	ASSERTU8(u8_unaryDecPre(0), U8_MAX);
+	ASSERTU8(u8_unaryDecPre(1), 0);
+	ASSERTU8(u8_unaryDecPre(U8_MAX), U8_MAX-1);
+}
+#endif
+
+#ifdef HAS_LONGLONG
 TEST u8_addition_Main()
 {
 	extern u8 u8_addition(u8 lhs, u8 rhs);
@@ -314,6 +356,58 @@ TEST i8_unaryPositive_Main()
 	ASSERTI8(i8_unaryPositive(I8_MAX), I8_MAX);
 	ASSERTI8(i8_unaryPositive(I8_MIN), I8_MIN);
 	ASSERTI8(i8_unaryPositive(0), 0);
+}
+#endif
+
+#ifdef HAS_LONGLONG
+TEST i8_unaryComp_Main()
+{
+	extern i8 i8_unaryComp(i8 val);
+	ASSERTI8(i8_unaryComp(0), -1);
+	ASSERTI8(i8_unaryComp(1), -2);
+	ASSERTI8(i8_unaryComp(-1), 0);
+	ASSERTI8(i8_unaryComp(I8_MAX), I8_MIN);
+	ASSERTI8(i8_unaryComp(I8_MIN), I8_MAX);
+}
+
+TEST i8_unaryIncPost_Main()
+{
+	extern i8 i8_unaryIncPost(i8 val);
+	ASSERTI8(i8_unaryIncPost(0), 0);
+	ASSERTI8(i8_unaryIncPost(1), 1);
+	ASSERTI8(i8_unaryIncPost(-1), -1);
+	ASSERTI8(i8_unaryIncPost(I8_MAX), I8_MAX);
+	ASSERTI8(i8_unaryIncPost(I8_MIN), I8_MIN);
+}
+
+TEST i8_unaryIncPre_Main()
+{
+	extern i8 i8_unaryIncPre(i8 val);
+	ASSERTI8(i8_unaryIncPre(0), 1);
+	ASSERTI8(i8_unaryIncPre(1), 2);
+	ASSERTI8(i8_unaryIncPre(-1), 0);
+	ASSERTI8(i8_unaryIncPre(I8_MAX), I8_MIN);
+	ASSERTI8(i8_unaryIncPre(I8_MIN), I8_MIN+1);
+}
+
+TEST i8_unaryDecPost_Main()
+{
+	extern i8 i8_unaryDecPost(i8 val);
+	ASSERTI8(i8_unaryDecPost(0), 0);
+	ASSERTI8(i8_unaryDecPost(1), 1);
+	ASSERTI8(i8_unaryDecPost(-1), -1);
+	ASSERTI8(i8_unaryDecPost(I8_MAX), I8_MAX);
+	ASSERTI8(i8_unaryDecPost(I8_MIN), I8_MIN);
+}
+
+TEST i8_unaryDecPre_Main()
+{
+	extern i8 i8_unaryDecPre(i8 val);
+	ASSERTI8(i8_unaryDecPre(0), -1);
+	ASSERTI8(i8_unaryDecPre(1), 0);
+	ASSERTI8(i8_unaryDecPre(-1), -2);
+	ASSERTI8(i8_unaryDecPre(I8_MAX), I8_MAX-1);
+	ASSERTI8(i8_unaryDecPre(I8_MIN), I8_MAX);
 }
 #endif
 

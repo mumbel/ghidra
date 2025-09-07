@@ -220,6 +220,46 @@ TEST u2_unaryPositive_Main()
 	ASSERTU2(u2_unaryPositive(0), 0);
 }
 
+TEST u2_unaryComp_Main()
+{
+	extern u2 u2_unaryComp(u2 val);
+	ASSERTU2(u2_unaryComp(0), U2_MAX);
+	ASSERTU2(u2_unaryComp(1), U2_MAX-1);
+	ASSERTU2(u2_unaryComp(U2_MAX), 0);
+}
+
+TEST u2_unaryIncPost_Main()
+{
+	extern u2 u2_unaryIncPost(u2 val);
+	ASSERTU2(u2_unaryIncPost(0), 0);
+	ASSERTU2(u2_unaryIncPost(1), 1);
+	ASSERTU2(u2_unaryIncPost(U2_MAX), U2_MAX);
+}
+
+TEST u2_unaryIncPre_Main()
+{
+	extern u2 u2_unaryIncPre(u2 val);
+	ASSERTU2(u2_unaryIncPre(0), 1);
+	ASSERTU2(u2_unaryIncPre(1), 2);
+	ASSERTU2(u2_unaryIncPre(U2_MAX), 0);
+}
+
+TEST u2_unaryDecPost_Main()
+{
+	extern u2 u2_unaryDecPost(u2 val);
+	ASSERTU2(u2_unaryDecPost(0), 0);
+	ASSERTU2(u2_unaryDecPost(1), 1);
+	ASSERTU2(u2_unaryDecPost(U2_MAX), U2_MAX);
+}
+
+TEST u2_unaryDecPre_Main()
+{
+	extern u2 u2_unaryDecPre(u2 val);
+	ASSERTU2(u2_unaryDecPre(0), U2_MAX);
+	ASSERTU2(u2_unaryDecPre(1), 0);
+	ASSERTU2(u2_unaryDecPre(U2_MAX), U2_MAX-1);
+}
+
 TEST u2_addition_Main()
 {
 	extern u2 u2_addition(u2 lhs, u2 rhs);
@@ -282,6 +322,56 @@ TEST i2_unaryPositive_Main()
 	ASSERTI2(i2_unaryPositive(I2_MAX), 32767);
 	ASSERTI2(i2_unaryPositive(I2_MIN), -32768);
 	ASSERTI2(i2_unaryPositive(0), 0);
+}
+
+TEST i2_unaryComp_Main()
+{
+	extern i2 i2_unaryComp(i2 val);
+	ASSERTI2(i2_unaryComp(0), -1);
+	ASSERTI2(i2_unaryComp(1), -2);
+	ASSERTI2(i2_unaryComp(-1), 0);
+	ASSERTI2(i2_unaryComp(I2_MAX), I2_MIN);
+	ASSERTI2(i2_unaryComp(I2_MIN), I2_MAX);
+}
+
+TEST i2_unaryIncPost_Main()
+{
+	extern i2 i2_unaryIncPost(i2 val);
+	ASSERTI2(i2_unaryIncPost(0), 0);
+	ASSERTI2(i2_unaryIncPost(1), 1);
+	ASSERTI2(i2_unaryIncPost(-1), -1);
+	ASSERTI2(i2_unaryIncPost(I2_MAX), I2_MAX);
+	ASSERTI2(i2_unaryIncPost(I2_MIN), I2_MIN);
+}
+
+TEST i2_unaryIncPre_Main()
+{
+	extern i2 i2_unaryIncPre(i2 val);
+	ASSERTI2(i2_unaryIncPre(0), 1);
+	ASSERTI2(i2_unaryIncPre(1), 2);
+	ASSERTI2(i2_unaryIncPre(-1), 0);
+	ASSERTI2(i2_unaryIncPre(I2_MAX), I2_MIN);
+	ASSERTI2(i2_unaryIncPre(I2_MIN), I2_MIN+1);
+}
+
+TEST i2_unaryDecPost_Main()
+{
+	extern i2 i2_unaryDecPost(i2 val);
+	ASSERTI2(i2_unaryDecPost(0), 0);
+	ASSERTI2(i2_unaryDecPost(1), 1);
+	ASSERTI2(i2_unaryDecPost(-1), -1);
+	ASSERTI2(i2_unaryDecPost(I2_MAX), I2_MAX);
+	ASSERTI2(i2_unaryDecPost(I2_MIN), I2_MIN);
+}
+
+TEST i2_unaryDecPre_Main()
+{
+	extern i2 i2_unaryDecPre(i2 val);
+	ASSERTI2(i2_unaryDecPre(0), -1);
+	ASSERTI2(i2_unaryDecPre(1), 0);
+	ASSERTI2(i2_unaryDecPre(-1), -2);
+	ASSERTI2(i2_unaryDecPre(I2_MAX), I2_MAX-1);
+	ASSERTI2(i2_unaryDecPre(I2_MIN), I2_MAX);
 }
 
 TEST i2_addition_Main()

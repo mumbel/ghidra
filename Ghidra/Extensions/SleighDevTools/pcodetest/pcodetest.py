@@ -418,6 +418,10 @@ class PCodeBuildGCC(PCodeTestBuild):
         f += ['--entry', 'main']
         f += ['-static', '-Wno-unused-macros', '-nodefaultlibs', '-nostartfiles', '-fno-builtin']
         f += ['-fno-tree-vectorize', '-fno-tree-slp-vectorize'] # does any processor really support vectors for emulation?
+
+        # Would really like this to remove any created .part<N>
+        # f += ['-fno-ipa-fnsplit'] # some functions/register usage could get optimized
+
         # can pass this if weak symbols aren't defined
         # f += ['-Xlinker', '--unresolved-symbols=ignore-all']
 

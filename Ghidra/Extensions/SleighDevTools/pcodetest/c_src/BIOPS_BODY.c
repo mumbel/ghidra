@@ -287,6 +287,14 @@ typ typ##_logicalNot(typ lhs)		\
 	return z;			\
 }
 
+#define PCODE_UNOP_COMP(typ)	       	\
+typ typ##_unaryComp(typ lhs) \
+{						\
+    typ z;					\
+    z = ~lhs;					\
+    return z;					\
+}
+
 #define PCODE_UNOP_POSITIVE(typ)		\
 typ typ##_unaryPositive(typ lhs)		\
 {					\
@@ -301,6 +309,38 @@ typ typ##_unaryNegative(typ lhs)		\
 	typ z;				\
 	z = -lhs;			\
 	return z;			\
+}
+
+#define PCODE_UNOP_INCPRE(typ)			\
+typ typ##_unaryIncPre(typ lhs) \
+{						\
+    typ z;					\
+    z = ++lhs;					\
+    return z;					\
+}
+
+#define PCODE_UNOP_INCPOST(typ)			\
+typ typ##_unaryIncPost(typ lhs) \
+{						\
+    typ z;					\
+    z = lhs++;       				\
+    return z;					\
+}
+
+#define PCODE_UNOP_DECPRE(typ)			\
+typ typ##_unaryDecPre(typ lhs) \
+{						\
+    typ z;					\
+    z = --lhs;					\
+    return z;					\
+}
+
+#define PCODE_UNOP_DECPOST(typ)			\
+typ typ##_unaryDecPost(typ lhs) \
+{						\
+    typ z;					\
+    z = lhs--;       				\
+    return z;					\
 }
 
 #define PCODE_BIOP_DIV(typ)		\
@@ -583,7 +623,12 @@ u1 typ##_conditionNEOne(			\
   PCODE_UNOP_POSITIVE(typ)					\
   PCODE_UNOP_NOT(typ)					\
   PCODE_UNOP_NEGATIVE(typ)					\
-  PCODE_COMPLEX_LOGIC(typ)				\
+  PCODE_UNOP_COMP(typ)						\
+  PCODE_UNOP_INCPRE(typ)					\
+  PCODE_UNOP_INCPOST(typ)					\
+  PCODE_UNOP_DECPRE(typ)					\
+  PCODE_UNOP_DECPOST(typ)					\
+  PCODE_COMPLEX_LOGIC(typ)					\
   PCODE_BIOP_LOGIC_OR(typ)				\
   PCODE_BIOP_LOGIC_AND(typ)				\
   PCODE_BIOP_CMP(typ)					\
