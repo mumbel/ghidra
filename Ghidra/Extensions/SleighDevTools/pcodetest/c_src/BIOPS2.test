@@ -37,133 +37,6 @@ TEST i2_compareLogic_Main()
 	ASSERTI2(i2_compareLogic(-0x2, -0x1), 37);
 }
 
-/* Comparison operators */
-TEST u2_greaterThan_Main()
-{
-	extern u2 u2_greaterThan(u2 lhs, u2 rhs);
-	ASSERTU2(u2_greaterThan(2, 1), 1);
-	ASSERTU2(u2_greaterThan(U2_MAX, U2_MAX), 0);
-	ASSERTU2(u2_greaterThan(U2_MAX, 0), 1);
-	ASSERTU2(u2_greaterThan(0, U2_MAX), 0);
-}
-
-TEST u2_greaterThanEquals_Main()
-{
-	extern u2 u2_greaterThanEquals(u2 lhs, u2 rhs);
-	ASSERTU2(u2_greaterThanEquals(2, 1), 1);
-	ASSERTU2(u2_greaterThanEquals(U2_MAX, U2_MAX), 1);
-	ASSERTU2(u2_greaterThanEquals(1, 1), 1);
-	ASSERTU2(u2_greaterThanEquals(1, 2), 0);
-}
-
-TEST u2_lessThan_Main()
-{
-	extern u2 u2_lessThan(u2 lhs, u2 rhs);
-	ASSERTU2(u2_lessThan(2, 1), 0);
-	ASSERTU2(u2_lessThan(2, 1), 0);
-	ASSERTU2(u2_lessThan(U2_MAX, U2_MAX), 0);
-	ASSERTU2(u2_lessThan(0, 0), 0);
-	ASSERTU2(u2_lessThan(1, 2), 1);
-}
-
-TEST u2_lessThanEquals_Main()
-{
-	extern u2 u2_lessThanEquals(u2 lhs, u2 rhs);
-	ASSERTU2(u2_lessThanEquals(2, 1), 0);
-	ASSERTU2(u2_lessThanEquals(U2_MAX, U2_MAX), 1);
-	ASSERTU2(u2_lessThanEquals(U2_MIN, U2_MIN), 1);
-	ASSERTU2(u2_lessThanEquals(1, 2), 1);
-}
-
-TEST u2_equals_Main()
-{
-	extern u2 u2_equals(u2 lhs, u2 rhs);
-	ASSERTU2(u2_equals(2, 1), 0);
-	ASSERTU2(u2_equals(U2_MAX, U2_MAX), 1);
-	ASSERTU2(u2_equals(U2_MIN, U2_MIN), 1);
-	ASSERTU2(u2_equals(0, 0), 1);
-}
-
-TEST u2_notEquals_Main()
-{
-	extern u2 u2_notEquals(u2 lhs, u2 rhs);
-	ASSERTU2(u2_notEquals(2, 1), 1);
-	ASSERTU2(u2_notEquals(U2_MAX, U2_MAX), 0);
-	ASSERTU2(u2_notEquals(0, 0), 0);
-}
-
-TEST i2_greaterThan_Main()
-{
-	extern i2 i2_greaterThan(i2 lhs, i2 rhs);
-	ASSERTI2(i2_greaterThan(0x0101, 0x0101), 0);
-	ASSERTI2(i2_greaterThan(0x0101, 0x0100), 1);
-	ASSERTI2(i2_greaterThan(0x0101, -0x0101), 1);
-	ASSERTI2(i2_greaterThan(2, 1), 1);
-	ASSERTI2(i2_greaterThan(I1_MAX, I1_MAX), 0);
-	ASSERTI2(i2_greaterThan(I1_MIN, I1_MIN), 0);
-	ASSERTI2(i2_greaterThan(I1_MAX-1, I1_MAX), 0);
-	ASSERTI2(i2_greaterThan(I1_MAX, I1_MAX-1), 1);
-}
-
-TEST i2_greaterThanEquals_Main()
-{
-	extern i2 i2_greaterThanEquals(i2 lhs, i2 rhs);
-	ASSERTI2(i2_greaterThanEquals(2, 1), 1);
-	ASSERTI2(i2_greaterThanEquals(I2_MAX, I2_MAX), 1);
-	ASSERTI2(i2_greaterThanEquals(I2_MIN, I2_MIN), 1);
-	ASSERTI2(i2_greaterThanEquals(I2_MAX, I2_MIN), 1);
-	ASSERTI2(i2_greaterThanEquals(I2_MIN, I2_MAX), 0);
-}
-
-TEST i2_lessThan_Main()
-{
-	extern i2 i2_lessThan(i2 lhs, i2 rhs);
-	ASSERTI2(i2_lessThan(2, 1), 0);
-	ASSERTI2(i2_lessThan(0x0101, 0x0101), 0);
-	ASSERTI2(i2_lessThan(0x0101, -0x0101), 0);
-	ASSERTI2(i2_lessThan(0x0101, -0x0101), 0);
-	ASSERTI2(i2_lessThan(I2_MAX, I2_MAX), 0);
-	ASSERTI2(i2_lessThan(I2_MAX, I2_MIN), 0);
-	ASSERTI2(i2_lessThan(I2_MAX, 0), 0);
-	ASSERTI2(i2_lessThan(0, I2_MAX), 1);
-}
-
-TEST i2_lessThanEquals_Main()
-{
-	extern i2 i2_lessThanEquals(i2 lhs, i2 rhs);
-	ASSERTI2(i2_lessThanEquals(2, 1), 0);
-	ASSERTI2(i2_lessThanEquals(0x0101, 0x0101), 1);
-	ASSERTI2(i2_lessThanEquals(0x0101, 0x0100), 0);
-	ASSERTI2(i2_lessThanEquals(0x0101, -0x0101), 0);
-	ASSERTI2(i2_lessThanEquals(I2_MAX, I2_MAX), 1);
-	ASSERTI2(i2_lessThanEquals(I2_MAX, I2_MIN), 0);
-	ASSERTI2(i2_lessThanEquals(I2_MIN, I2_MAX), 1);
-	ASSERTI2(i2_lessThanEquals(I2_MAX, 0), 0);
-}
-
-TEST i2_equals_Main()
-{
-	extern i2 i2_equals(i2 lhs, i2 rhs);
-	ASSERTI2(i2_equals(2, 1), 0);
-	ASSERTI2(i2_equals(0x0101, 0x0101), 1);
-	ASSERTI2(i2_equals(0x0101, 0x0100), 0);
-	ASSERTI2(i2_equals(0x0101, -0x0101), 0);
-	ASSERTI2(i2_equals(I2_MAX, I2_MAX), 1);
-	ASSERTI2(i2_equals(I2_MIN, I2_MIN), 1);
-	ASSERTI2(i2_equals(I2_MAX-1, I2_MAX), 0);
-}
-
-TEST i2_notEquals_Main()
-{
-	extern i2 i2_notEquals(i2 lhs, i2 rhs);
-	ASSERTI2(i2_notEquals(2, 1), 1);
-	ASSERTI2(i2_notEquals(0x0101, 0x0101), 0);
-	ASSERTI2(i2_notEquals(0x0101, 0x0100), 1);
-	ASSERTI2(i2_notEquals(0x0101, -0x0101), 1);
-	ASSERTI2(i2_notEquals(I2_MAX, I2_MAX), 0);
-	ASSERTI2(i2_notEquals(I2_MAX, I2_MIN), 1);
-	ASSERTI2(i2_notEquals(I2_MIN, I2_MAX), 1);
-}
 
 /* Bitwise operators */
 TEST u2_bitwiseAnd_Main()
@@ -339,12 +212,12 @@ TEST i2_shiftRight_Main()
 }
 
 /* Arithmetic operators */
-TEST u2_unaryPlus_Main()
+TEST u2_unaryPositive_Main()
 {
-	extern u2 u2_unaryPlus(u2 lhs);
-	ASSERTU2(u2_unaryPlus(2), 2);
-	ASSERTU2(u2_unaryPlus(U2_MAX), 65535);
-	ASSERTU2(u2_unaryPlus(0), 0);
+	extern u2 u2_unaryPositive(u2 lhs);
+	ASSERTU2(u2_unaryPositive(2), 2);
+	ASSERTU2(u2_unaryPositive(U2_MAX), 65535);
+	ASSERTU2(u2_unaryPositive(0), 0);
 }
 
 TEST u2_addition_Main()
@@ -390,25 +263,25 @@ TEST u2_remainder_Main()
 	ASSERTU2(u2_remainder(U2_MAX, U2_MAX), 0x0);
 }
 
-TEST i2_unaryMinus_Main()
+TEST i2_unaryNegative_Main()
 {
-	extern i2 i2_unaryMinus(i2 lhs);
-	ASSERTI2(i2_unaryMinus(0x0101), -0x0101);
-	ASSERTI2(i2_unaryMinus(-0x0101), 0x0101);
-	ASSERTI2(i2_unaryMinus(I2_MAX), -32767);
-	ASSERTI2(i2_unaryMinus(I2_MIN), I2_MIN);
-	ASSERTI2(i2_unaryMinus(0), 0);
+	extern i2 i2_unaryNegative(i2 lhs);
+	ASSERTI2(i2_unaryNegative(0x0101), -0x0101);
+	ASSERTI2(i2_unaryNegative(-0x0101), 0x0101);
+	ASSERTI2(i2_unaryNegative(I2_MAX), -32767);
+	ASSERTI2(i2_unaryNegative(I2_MIN), I2_MIN);
+	ASSERTI2(i2_unaryNegative(0), 0);
 }
 
-TEST i2_unaryPlus_Main()
+TEST i2_unaryPositive_Main()
 {
-	extern i2 i2_unaryPlus(i2 lhs);
-	ASSERTI2(i2_unaryPlus(0x0101), 0x0101);
-	ASSERTI2(i2_unaryPlus(-0x0101), -0x0101);
-	ASSERTI2(i2_unaryPlus(2), 2);
-	ASSERTI2(i2_unaryPlus(I2_MAX), 32767);
-	ASSERTI2(i2_unaryPlus(I2_MIN), -32768);
-	ASSERTI2(i2_unaryPlus(0), 0);
+	extern i2 i2_unaryPositive(i2 lhs);
+	ASSERTI2(i2_unaryPositive(0x0101), 0x0101);
+	ASSERTI2(i2_unaryPositive(-0x0101), -0x0101);
+	ASSERTI2(i2_unaryPositive(2), 2);
+	ASSERTI2(i2_unaryPositive(I2_MAX), 32767);
+	ASSERTI2(i2_unaryPositive(I2_MIN), -32768);
+	ASSERTI2(i2_unaryPositive(0), 0);
 }
 
 TEST i2_addition_Main()

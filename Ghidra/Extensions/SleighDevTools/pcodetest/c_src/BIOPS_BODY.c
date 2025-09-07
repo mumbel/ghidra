@@ -194,175 +194,6 @@ typ typ##_logicalOr(			\
 	return z;			\
 }
 
-#define PCODE_BIOP_LE(typ)		\
-typ typ##_lessThanEquals(		\
-			typ lhs,	\
-			typ rhs)	\
-{					\
-	typ z;				\
-	z = lhs <= rhs;		\
-	return z;			\
-}
-
-#define PCODE_BIOP_LEZERO(typ)		\
-typ typ##_lessThanEqualsZero(			\
-			typ val)	\
-{					\
-	typ z;				\
-	z = val <= 0;			\
-	return z;			\
-}
-
-#define PCODE_BIOP_LEONE(typ)		\
-typ typ##_lessThanEqualsOne(			\
-			typ val)	\
-{					\
-	typ z;				\
-	z = val <= 1;			\
-	return z;			\
-}
-
-#define PCODE_BIOP_LT(typ)		\
-typ typ##_lessThan(			\
-			typ lhs,	\
-			typ rhs)	\
-{					\
-	typ z;				\
-	z = lhs < rhs;			\
-	return z;			\
-}
-
-#define PCODE_BIOP_LTZERO(typ)		\
-typ typ##_lessThanZero(			\
-			typ val)	\
-{					\
-	typ z;				\
-	z = val < 0;			\
-	return z;			\
-}
-
-#define PCODE_BIOP_LTONE(typ)		\
-typ typ##_lessThanOne(			\
-			typ val)	\
-{					\
-	typ z;				\
-	z = val < 1;			\
-	return z;			\
-}
-
-
-#define PCODE_BIOP_GE(typ)		\
-typ typ##_greaterThanEquals(		\
-			typ lhs,	\
-			typ rhs)	\
-{					\
-	typ z;				\
-	z = lhs >= rhs;		\
-	return z;			\
-}
-
-#define PCODE_BIOP_GEZERO(typ)		\
-typ typ##_greaterThanEqualsZero(			\
-			typ val)	\
-{					\
-	typ z;				\
-	z = 0 <= val;			\
-	return z;			\
-}
-
-#define PCODE_BIOP_GEONE(typ)		\
-typ typ##_greaterThanEqualsOne(			\
-			typ val)	\
-{					\
-	typ z;				\
-	z = 1 <= val;			\
-	return z;			\
-}
-
-#define PCODE_BIOP_GT(typ)		\
-typ typ##_greaterThan(			\
-			typ lhs,	\
-			typ rhs)	\
-{					\
-	typ z;				\
-	z = lhs > rhs;			\
-	return z;			\
-}
-
-#define PCODE_BIOP_GTZERO(typ)		\
-typ typ##_greaterThanZero(			\
-			typ val)	\
-{					\
-	typ z;				\
-	z = 0 < val;			\
-	return z;			\
-}
-
-#define PCODE_BIOP_GTONE(typ)		\
-typ typ##_greaterThanOne(			\
-			typ val)	\
-{					\
-	typ z;				\
-	z = 1 < val;			\
-	return z;			\
-}
-
-#define PCODE_BIOP_EQ(typ)		\
-typ typ##_equals(			\
-			 typ lhs,	\
-			 typ rhs)	\
-{					\
-	typ z;				\
-	z = lhs == rhs;		\
-	return z;			\
-}
-
-#define PCODE_BIOP_EQZERO(typ)		\
-typ typ##_equalsZero(			\
-			typ val)	\
-{					\
-	typ z;				\
-	z = 0 ==  val;			\
-	return z;			\
-}
-
-#define PCODE_BIOP_EQONE(typ)		\
-typ typ##_equalsOne(			\
-			typ val)	\
-{					\
-	typ z;				\
-	z = 1 == val;			\
-	return z;			\
-}
-
-#define PCODE_BIOP_NE(typ)		\
-typ typ##_notEquals(			\
-			 typ lhs,	\
-			 typ rhs)	\
-{					\
-	typ z;				\
-	z = lhs != rhs;		\
-	return z;			\
-}
-
-#define PCODE_BIOP_NEZERO(typ)		\
-typ typ##_notEqualsZero(			\
-			typ val)	\
-{					\
-	typ z;				\
-	z = 0 != val;			\
-	return z;			\
-}
-
-#define PCODE_BIOP_NEONE(typ)		\
-typ typ##_notEqualsOne(			\
-			typ val)	\
-{					\
-	typ z;				\
-	z = 1 != val;			\
-	return z;			\
-}
-
 #define PCODE_BIOP_XOR(typ)		\
 typ typ##_bitwiseXor(			\
 			typ lhs,	\
@@ -456,16 +287,16 @@ typ typ##_logicalNot(typ lhs)		\
 	return z;			\
 }
 
-#define PCODE_UNOP_POS(typ)		\
-typ typ##_unaryPlus(typ lhs)		\
+#define PCODE_UNOP_POSITIVE(typ)		\
+typ typ##_unaryPositive(typ lhs)		\
 {					\
 	typ z;				\
 	z = +lhs;			\
 	return z;			\
 }
 
-#define PCODE_UNOP_NEG(typ)		\
-typ typ##_unaryMinus(typ lhs)		\
+#define PCODE_UNOP_NEGATIVE(typ)		\
+typ typ##_unaryNegative(typ lhs)		\
 {					\
 	typ z;				\
 	z = -lhs;			\
@@ -737,24 +568,6 @@ u1 typ##_conditionNEOne(			\
   PCODE_BIOP_OR(typ)					\
   PCODE_BIOP_ORZERO(typ)				\
   PCODE_BIOP_ORONE(typ)				\
-  PCODE_BIOP_EQ(typ)					\
-  PCODE_BIOP_EQZERO(typ)				\
-  PCODE_BIOP_EQONE(typ)				\
-  PCODE_BIOP_GE(typ)					\
-  PCODE_BIOP_GEZERO(typ)				\
-  PCODE_BIOP_GEONE(typ)				\
-  PCODE_BIOP_GT(typ)					\
-  PCODE_BIOP_GTZERO(typ)				\
-  PCODE_BIOP_GTONE(typ)				\
-  PCODE_BIOP_LE(typ)					\
-  PCODE_BIOP_LEZERO(typ)				\
-  PCODE_BIOP_LEONE(typ)				\
-  PCODE_BIOP_LT(typ)					\
-  PCODE_BIOP_LTZERO(typ)				\
-  PCODE_BIOP_LTONE(typ)				\
-  PCODE_BIOP_NE(typ)					\
-  PCODE_BIOP_NEZERO(typ)				\
-  PCODE_BIOP_NEONE(typ)				\
   PCODE_BIOP_SHL(typ)					\
   PCODE_BIOP_SHLZERO(typ)				\
   PCODE_BIOP_SHLONE(typ)				\
@@ -767,9 +580,9 @@ u1 typ##_conditionNEOne(			\
   PCODE_BIOP_XOR(typ)					\
   PCODE_BIOP_XORZERO(typ)				\
   PCODE_BIOP_XORONE(typ)				\
-  PCODE_UNOP_POS(typ)					\
+  PCODE_UNOP_POSITIVE(typ)					\
   PCODE_UNOP_NOT(typ)					\
-  PCODE_UNOP_NEG(typ)					\
+  PCODE_UNOP_NEGATIVE(typ)					\
   PCODE_COMPLEX_LOGIC(typ)				\
   PCODE_BIOP_LOGIC_OR(typ)				\
   PCODE_BIOP_LOGIC_AND(typ)				\
@@ -821,30 +634,12 @@ PCODE_BIOPS(i8)
   PCODE_BIOP_ADD(typ)					\
   PCODE_BIOP_ADDZERO(typ)				\
   PCODE_BIOP_ADDONE(typ)				\
-  PCODE_BIOP_EQ(typ)					\
-  PCODE_BIOP_EQZERO(typ)				\
-  PCODE_BIOP_EQONE(typ)				\
-  PCODE_BIOP_GE(typ)					\
-  PCODE_BIOP_GEZERO(typ)				\
-  PCODE_BIOP_GEONE(typ)				\
-  PCODE_BIOP_GT(typ)					\
-  PCODE_BIOP_GTZERO(typ)				\
-  PCODE_BIOP_GTONE(typ)				\
-  PCODE_BIOP_LE(typ)					\
-  PCODE_BIOP_LEZERO(typ)				\
-  PCODE_BIOP_LEONE(typ)				\
-  PCODE_BIOP_LT(typ)					\
-  PCODE_BIOP_LTZERO(typ)				\
-  PCODE_BIOP_LTONE(typ)				\
-  PCODE_BIOP_NE(typ)					\
-  PCODE_BIOP_NEZERO(typ)				\
-  PCODE_BIOP_NEONE(typ)				\
   PCODE_BIOP_SUB(typ)					\
   PCODE_BIOP_SUBZERO(typ)				\
   PCODE_BIOP_SUBONE(typ)				\
-  PCODE_UNOP_POS(typ)					\
+  PCODE_UNOP_POSITIVE(typ)					\
   PCODE_UNOP_NOT(typ)					\
-  PCODE_UNOP_NEG(typ)					\
+  PCODE_UNOP_NEGATIVE(typ)					\
   PCODE_COMPLEX_LOGIC(typ)				\
   PCODE_BIOP_LOGIC_OR(typ)				\
   PCODE_BIOP_LOGIC_AND(typ)				\
@@ -854,7 +649,26 @@ PCODE_BIOPS(i8)
   PCODE_BIOP_MULONE(typ)				\
   PCODE_BIOP_DIV(typ)					\
   PCODE_BIOP_DIVZERO(typ)				\
-  PCODE_BIOP_DIVONE(typ)				
+  PCODE_BIOP_DIVONE(typ)				\
+  PCODE_COND_GT(typ)					\
+  PCODE_COND_GTZero(typ)				\
+  PCODE_COND_GTOne(typ)					\
+  PCODE_COND_GE(typ)					\
+  PCODE_COND_GEZero(typ)				\
+  PCODE_COND_GEOne(typ)					\
+  PCODE_COND_EQ(typ)					\
+  PCODE_COND_EQZero(typ)				\
+  PCODE_COND_EQOne(typ)					\
+  PCODE_COND_LE(typ)					\
+  PCODE_COND_LEZero(typ)				\
+  PCODE_COND_LEOne(typ)					\
+  PCODE_COND_LT(typ)					\
+  PCODE_COND_LTZero(typ)				\
+  PCODE_COND_LTOne(typ)					\
+  PCODE_COND_NE(typ)					\
+  PCODE_COND_NEZero(typ)				\
+  PCODE_COND_NEOne(typ)
+  
 
 #ifdef HAS_FLOAT
 PCODE_BIOPS_FP(f4)

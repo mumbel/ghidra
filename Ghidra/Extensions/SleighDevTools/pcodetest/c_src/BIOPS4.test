@@ -37,134 +37,6 @@ TEST i4_compareLogic_Main()
 	ASSERTI4(i4_compareLogic(-0x2, -0x1), 37);
 }
 
-/* Comparison operators */
-TEST u4_greaterThan_Main()
-{
-	extern u4 u4_greaterThan(u4 lhs, u4 rhs);
-	ASSERTU4(u4_greaterThan(0x01010101, 0x01010101), 0);
-	ASSERTU4(u4_greaterThan(2, 1), 1);
-	ASSERTU4(u4_greaterThan(U4_MAX, U4_MAX), 0);
-	ASSERTU4(u4_greaterThan(U4_MAX, 0), 1);
-	ASSERTU4(u4_greaterThan(0, U4_MAX), 0);
-}
-
-TEST u4_greaterThanEquals_Main()
-{
-	extern u4 u4_greaterThanEquals(u4 lhs, u4 rhs);
-	ASSERTU4(u4_greaterThanEquals(2, 1), 1);
-	ASSERTU4(u4_greaterThanEquals(U4_MAX, U4_MAX), 1);
-	ASSERTU4(u4_greaterThanEquals(U4_MAX, 0), 1);
-	ASSERTU4(u4_greaterThanEquals(0, U4_MAX), 0);
-}
-
-TEST u4_lessThan_Main()
-{
-	extern u4 u4_lessThan(u4 lhs, u4 rhs);
-	ASSERTU4(u4_lessThan(0x01010101, 0x01010101), 0);
-	ASSERTU4(u4_lessThan(2, 1), 0);
-	ASSERTU4(u4_lessThan(U4_MAX, U4_MAX), 0);
-	ASSERTU4(u4_lessThan(U4_MAX, 0), 0);
-	ASSERTU4(u4_lessThan(0, U4_MAX), 1);
-}
-
-TEST u4_lessThanEquals_Main()
-{
-	extern u4 u4_lessThanEquals(u4 lhs, u4 rhs);
-	ASSERTU4(u4_lessThanEquals(0x01010101, 0x01010101), 1);
-	ASSERTU4(u4_lessThanEquals(2, 1), 0);
-	ASSERTU4(u4_lessThanEquals(U4_MAX, U4_MAX), 1);
-	ASSERTU4(u4_lessThanEquals(U4_MAX, 0), 0);
-	ASSERTU4(u4_lessThanEquals(0, U4_MAX), 1);
-}
-
-TEST u4_equals_Main()
-{
-	extern u4 u4_equals(u4 lhs, u4 rhs);
-	ASSERTU4(u4_equals(0x01010101, 0x01010101), 1);
-	ASSERTU4(u4_equals(2, 1), 0);
-	ASSERTU4(u4_equals(U4_MAX, U4_MAX), 1);
-	ASSERTU4(u4_equals(U4_MAX, 0), 0);
-	ASSERTU4(u4_equals(0, U4_MAX), 0);
-}
-
-TEST u4_notEquals_Main()
-{
-	extern u4 u4_notEquals(u4 lhs, u4 rhs);
-	ASSERTU4(u4_notEquals(0x01010101, 0x01010101), 0);
-	ASSERTU4(u4_notEquals(2, 1), 1);
-	ASSERTU4(u4_notEquals(U4_MAX, U4_MAX), 0);
-	ASSERTU4(u4_notEquals(U4_MAX, 0), 1);
-	ASSERTU4(u4_notEquals(0, U4_MAX), 1);
-}
-
-TEST i4_greaterThan_Main()
-{
-	extern i4 i4_greaterThan(i4 lhs, i4 rhs);
-	ASSERTI4(i4_greaterThan(2, 1), 1);
-	ASSERTI4(i4_greaterThan(0x01010101, 0x01010101), 0);
-	ASSERTI4(i4_greaterThan(0x01000101, 0x01010101), 0);
-	ASSERTI4(i4_greaterThan(0x01010101, -0x01010101), 1);
-	ASSERTI4(i4_greaterThan(I4_MAX, I4_MAX), 0);
-	ASSERTI4(i4_greaterThan(I4_MAX, I4_MIN), 1);
-	ASSERTI4(i4_greaterThan(I4_MIN, I4_MAX), 0);
-}
-
-TEST i4_greaterThanEquals_Main()
-{
-	extern i4 i4_greaterThanEquals(i4 lhs, i4 rhs);
-	ASSERTI4(i4_greaterThanEquals(2, 1), 1);
-	ASSERTI4(i4_greaterThanEquals(-2, 1), 0);
-	ASSERTI4(i4_greaterThanEquals(0x01010101, 0x01010100), 1);
-	ASSERTI4(i4_greaterThanEquals(I4_MAX, I4_MAX), 1);
-	ASSERTI4(i4_greaterThanEquals(I4_MAX, I4_MIN), 1);
-	ASSERTI4(i4_greaterThanEquals(I4_MIN, I4_MAX), 0);
-}
-
-TEST i4_lessThan_Main()
-{
-	extern i4 i4_lessThan(i4 lhs, i4 rhs);
-	ASSERTI4(i4_lessThan(2, 1), 0);
-	ASSERTI4(i4_lessThan(0x01010101, 0x01010101), 0);
-	ASSERTI4(i4_lessThan(0x01000101, 0x01010101), 1);
-	ASSERTI4(i4_lessThan(0x01010101, -0x01010101), 0);
-}
-
-
-TEST i4_lessThanEquals_Main()
-{
-	extern i4 i4_lessThanEquals(i4 lhs, i4 rhs);
-	ASSERTI4(i4_lessThanEquals(2, 1), 0);
-	ASSERTI4(i4_lessThanEquals(0x01010101, 0x01010101), 1);
-	ASSERTI4(i4_lessThanEquals(0x01000101, 0x01010101), 1);
-	ASSERTI4(i4_lessThanEquals(0x01010101, -0x01010101), 0);
-	ASSERTI4(i4_lessThanEquals(I4_MAX, I4_MAX), 1);
-	ASSERTI4(i4_lessThanEquals(I4_MAX, I4_MIN), 0);
-	ASSERTI4(i4_lessThanEquals(I4_MIN, I4_MAX), 1);
-}
-
-TEST i4_equals_Main()
-{
-	extern i4 i4_equals(i4 lhs, i4 rhs);
-	ASSERTI4(i4_equals(0x01010101, -0x01010101), 0);
-	ASSERTI4(i4_equals(2, 1), 0);
-	ASSERTI4(i4_equals(0x01010101, 0x01010101), 1);
-	ASSERTI4(i4_equals(0x01000101, 0x01010101), 0);
-	ASSERTI4(i4_equals(I4_MAX, I4_MAX), 1);
-	ASSERTI4(i4_equals(I4_MAX, I4_MIN), 0);
-	ASSERTI4(i4_equals(I4_MIN, I4_MAX), 0);
-}
-
-TEST i4_notEquals_Main()
-{
-	extern i4 i4_notEquals(i4 lhs, i4 rhs);
-	ASSERTI4(i4_notEquals(0x01010101, 0x01010101), 0);
-	ASSERTI4(i4_notEquals(0x01000101, 0x01010101), 1);
-	ASSERTI4(i4_notEquals(0x01000101, -0x01010101), 1);
-	ASSERTI4(i4_notEquals(2, 1), 1);
-	ASSERTI4(i4_notEquals(I4_MAX, I4_MAX), 0);
-	ASSERTI4(i4_notEquals(I4_MAX, I4_MIN), 1);
-	ASSERTI4(i4_notEquals(I4_MIN, I4_MAX), 1);
-}
 
 /* Bitwise operators */
 TEST u4_bitwiseAnd_Main()
@@ -327,14 +199,14 @@ TEST i4_shiftRight_Main()
 }
 
 /* Arithmetic operators */
-TEST u4_unaryPlus_Main()
+TEST u4_unaryPositive_Main()
 {
-	extern u4 u4_unaryPlus(u4 lhs);
-	ASSERTU4(u4_unaryPlus(0x01010101), 0x01010101);
-	ASSERTU4(u4_unaryPlus(2), 2);
-	ASSERTU4(u4_unaryPlus(U4_MAX), -1);
-	ASSERTU4(u4_unaryPlus(~1000), 4294966295);
-	ASSERTU4(u4_unaryPlus(0), 0);
+	extern u4 u4_unaryPositive(u4 lhs);
+	ASSERTU4(u4_unaryPositive(0x01010101), 0x01010101);
+	ASSERTU4(u4_unaryPositive(2), 2);
+	ASSERTU4(u4_unaryPositive(U4_MAX), -1);
+	ASSERTU4(u4_unaryPositive(~1000), 4294966295);
+	ASSERTU4(u4_unaryPositive(0), 0);
 }
 
 TEST u4_addition_Main()
@@ -391,25 +263,25 @@ TEST u4_remainder_Main()
 	ASSERTU4(u4_remainder(0, U4_MAX), 0);
 }
 
-TEST i4_unaryMinus_Main()
+TEST i4_unaryNegative_Main()
 {
-	extern i4 i4_unaryMinus(i4 lhs);
-	ASSERTI4(i4_unaryMinus(0x01010101), -0x01010101);
-	ASSERTI4(i4_unaryMinus(-0x01010101), 0x01010101);
-	ASSERTI4(i4_unaryMinus(I4_MAX), -I4_MAX);
-	ASSERTI4(i4_unaryMinus(I4_MIN), I4_MIN);
-	ASSERTI4(i4_unaryMinus(0), 0);
+	extern i4 i4_unaryNegative(i4 lhs);
+	ASSERTI4(i4_unaryNegative(0x01010101), -0x01010101);
+	ASSERTI4(i4_unaryNegative(-0x01010101), 0x01010101);
+	ASSERTI4(i4_unaryNegative(I4_MAX), -I4_MAX);
+	ASSERTI4(i4_unaryNegative(I4_MIN), I4_MIN);
+	ASSERTI4(i4_unaryNegative(0), 0);
 }
 
-TEST i4_unaryPlus_Main()
+TEST i4_unaryPositive_Main()
 {
-	extern i4 i4_unaryPlus(i4 lhs);
-	ASSERTI4(i4_unaryPlus(0x01010101), 0x01010101);
-	ASSERTI4(i4_unaryPlus(-0x01010101), -0x01010101);
-	ASSERTI4(i4_unaryPlus(2), 2);
-	ASSERTI4(i4_unaryPlus(I4_MAX), 2147483647);
-	ASSERTI4(i4_unaryPlus(I4_MIN), -2147483648);
-	ASSERTI4(i4_unaryPlus(0), 0);
+	extern i4 i4_unaryPositive(i4 lhs);
+	ASSERTI4(i4_unaryPositive(0x01010101), 0x01010101);
+	ASSERTI4(i4_unaryPositive(-0x01010101), -0x01010101);
+	ASSERTI4(i4_unaryPositive(2), 2);
+	ASSERTI4(i4_unaryPositive(I4_MAX), 2147483647);
+	ASSERTI4(i4_unaryPositive(I4_MIN), -2147483648);
+	ASSERTI4(i4_unaryPositive(0), 0);
 }
 
 TEST i4_addition_Main()
