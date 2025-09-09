@@ -436,6 +436,7 @@ TEST i4_remainder_Main()
 TEST u4_conditionGT_Main()
 {
 	extern u1 u4_conditionGT(u4 lhs, u4 rhs);
+	extern u1 u4_conditionGTUnused(u4 val, u4 lhs, u4 rhs);
 	extern u1 u4_conditionGTZero(u4 val);
 	extern u1 u4_conditionGTOne(u4 val);
 
@@ -449,6 +450,16 @@ TEST u4_conditionGT_Main()
 	ASSERTU1(u4_conditionGT(U4_MAX, 1), 1);
 	ASSERTU1(u4_conditionGT(U4_MAX, U4_MAX), 0);
 
+	ASSERTU1(u4_conditionGTUnused(0, 0, 0), 0);
+	ASSERTU1(u4_conditionGTUnused(0, 0, 1), 0);
+	ASSERTU1(u4_conditionGTUnused(0, 0, U4_MAX), 0);
+	ASSERTU1(u4_conditionGTUnused(0, 1, 0), 1);
+	ASSERTU1(u4_conditionGTUnused(0, 1, 1), 0);
+	ASSERTU1(u4_conditionGTUnused(0, 1, U4_MAX), 0);
+	ASSERTU1(u4_conditionGTUnused(0, U4_MAX, 0), 1);
+	ASSERTU1(u4_conditionGTUnused(0, U4_MAX, 1), 1);
+	ASSERTU1(u4_conditionGTUnused(0, U4_MAX, U4_MAX), 0);
+
 	ASSERTU1(u4_conditionGTZero(0), 0);
 	ASSERTU1(u4_conditionGTZero(1), 1);
 	ASSERTU1(u4_conditionGTZero(U4_MAX), 1);
@@ -461,6 +472,7 @@ TEST u4_conditionGT_Main()
 TEST u4_conditionGE_Main()
 {
 	extern u1 u4_conditionGE(u4 lhs, u4 rhs);
+	extern u1 u4_conditionGEUnused(u4 val, u4 lhs, u4 rhs);
 	extern u1 u4_conditionGEZero(u4 val);
 	extern u1 u4_conditionGEOne(u4 val);
 
@@ -474,6 +486,16 @@ TEST u4_conditionGE_Main()
 	ASSERTU1(u4_conditionGE(U4_MAX, 1), 1);
 	ASSERTU1(u4_conditionGE(U4_MAX, U4_MAX), 1);
 
+	ASSERTU1(u4_conditionGEUnused(0, 0, 0), 1);
+	ASSERTU1(u4_conditionGEUnused(0, 0, 1), 0);
+	ASSERTU1(u4_conditionGEUnused(0, 0, U4_MAX), 0);
+	ASSERTU1(u4_conditionGEUnused(0, 1, 0), 1);
+	ASSERTU1(u4_conditionGEUnused(0, 1, 1), 1);
+	ASSERTU1(u4_conditionGEUnused(0, 1, U4_MAX), 0);
+	ASSERTU1(u4_conditionGEUnused(0, U4_MAX, 0), 1);
+	ASSERTU1(u4_conditionGEUnused(0, U4_MAX, 1), 1);
+	ASSERTU1(u4_conditionGEUnused(0, U4_MAX, U4_MAX), 1);
+
 	ASSERTU1(u4_conditionGEZero(0), 1);
 	ASSERTU1(u4_conditionGEZero(1), 1);
 	ASSERTU1(u4_conditionGEZero(U4_MAX), 1);
@@ -486,6 +508,7 @@ TEST u4_conditionGE_Main()
 TEST u4_conditionEQ_Main()
 {
 	extern u1 u4_conditionEQ(u4 lhs, u4 rhs);
+	extern u1 u4_conditionEQUnused(u4 val, u4 lhs, u4 rhs);
 	extern u1 u4_conditionEQZero(u4 val);
 	extern u1 u4_conditionEQOne(u4 val);
 
@@ -499,6 +522,16 @@ TEST u4_conditionEQ_Main()
 	ASSERTU1(u4_conditionEQ(U4_MAX, 1), 0);
 	ASSERTU1(u4_conditionEQ(U4_MAX, U4_MAX), 1);
 
+	ASSERTU1(u4_conditionEQUnused(0, 0, 0), 1);
+	ASSERTU1(u4_conditionEQUnused(0, 0, 1), 0);
+	ASSERTU1(u4_conditionEQUnused(0, 0, U4_MAX), 0);
+	ASSERTU1(u4_conditionEQUnused(0, 1, 0), 0);
+	ASSERTU1(u4_conditionEQUnused(0, 1, 1), 1);
+	ASSERTU1(u4_conditionEQUnused(0, 1, U4_MAX), 0);
+	ASSERTU1(u4_conditionEQUnused(0, U4_MAX, 0), 0);
+	ASSERTU1(u4_conditionEQUnused(0, U4_MAX, 1), 0);
+	ASSERTU1(u4_conditionEQUnused(0, U4_MAX, U4_MAX), 1);
+
 	ASSERTU1(u4_conditionEQZero(0), 1);
 	ASSERTU1(u4_conditionEQZero(1), 0);
 	ASSERTU1(u4_conditionEQZero(U4_MAX), 0);
@@ -511,6 +544,7 @@ TEST u4_conditionEQ_Main()
 TEST u4_conditionLE_Main()
 {
 	extern u1 u4_conditionLE(u4 lhs, u4 rhs);
+	extern u1 u4_conditionLEUnused(u4 val, u4 lhs, u4 rhs);
 	extern u1 u4_conditionLEZero(u4 val);
 	extern u1 u4_conditionLEOne(u4 val);
 
@@ -524,6 +558,16 @@ TEST u4_conditionLE_Main()
 	ASSERTU1(u4_conditionLE(U4_MAX, 1), 0);
 	ASSERTU1(u4_conditionLE(U4_MAX, U4_MAX), 1);
 
+	ASSERTU1(u4_conditionLEUnused(0, 0, 0), 1);
+	ASSERTU1(u4_conditionLEUnused(0, 0, 1), 1);
+	ASSERTU1(u4_conditionLEUnused(0, 0, U4_MAX), 1);
+	ASSERTU1(u4_conditionLEUnused(0, 1, 0), 0);
+	ASSERTU1(u4_conditionLEUnused(0, 1, 1), 1);
+	ASSERTU1(u4_conditionLEUnused(0, 1, U4_MAX), 1);
+	ASSERTU1(u4_conditionLEUnused(0, U4_MAX, 0), 0);
+	ASSERTU1(u4_conditionLEUnused(0, U4_MAX, 1), 0);
+	ASSERTU1(u4_conditionLEUnused(0, U4_MAX, U4_MAX), 1);
+
 	ASSERTU1(u4_conditionLEZero(0), 1);
 	ASSERTU1(u4_conditionLEZero(1), 0);
 	ASSERTU1(u4_conditionLEZero(U4_MAX), 0);
@@ -536,6 +580,7 @@ TEST u4_conditionLE_Main()
 TEST u4_conditionLT_Main()
 {
 	extern u1 u4_conditionLT(u4 lhs, u4 rhs);
+	extern u1 u4_conditionLTUnused(u4 val, u4 lhs, u4 rhs);
 	extern u1 u4_conditionLTZero(u4 val);
 	extern u1 u4_conditionLTOne(u4 val);
 
@@ -549,6 +594,16 @@ TEST u4_conditionLT_Main()
 	ASSERTU1(u4_conditionLT(U4_MAX, 1), 0);
 	ASSERTU1(u4_conditionLT(U4_MAX, U4_MAX), 0);
 
+	ASSERTU1(u4_conditionLTUnused(0, 0, 0), 0);
+	ASSERTU1(u4_conditionLTUnused(0, 0, 1), 1);
+	ASSERTU1(u4_conditionLTUnused(0, 0, U4_MAX), 1);
+	ASSERTU1(u4_conditionLTUnused(0, 1, 0), 0);
+	ASSERTU1(u4_conditionLTUnused(0, 1, 1), 0);
+	ASSERTU1(u4_conditionLTUnused(0, 1, U4_MAX), 1);
+	ASSERTU1(u4_conditionLTUnused(0, U4_MAX, 0), 0);
+	ASSERTU1(u4_conditionLTUnused(0, U4_MAX, 1), 0);
+	ASSERTU1(u4_conditionLTUnused(0, U4_MAX, U4_MAX), 0);
+
 	ASSERTU1(u4_conditionLTZero(0), 0);
 	ASSERTU1(u4_conditionLTZero(1), 0);
 	ASSERTU1(u4_conditionLTZero(U4_MAX), 0);
@@ -561,6 +616,7 @@ TEST u4_conditionLT_Main()
 TEST u4_conditionNE_Main()
 {
 	extern u1 u4_conditionNE(u4 lhs, u4 rhs);
+	extern u1 u4_conditionNEUnused(u4 val, u4 lhs, u4 rhs);
 	extern u1 u4_conditionNEZero(u4 val);
 	extern u1 u4_conditionNEOne(u4 val);
 
@@ -574,6 +630,16 @@ TEST u4_conditionNE_Main()
 	ASSERTU1(u4_conditionNE(U4_MAX, 1), 1);
 	ASSERTU1(u4_conditionNE(U4_MAX, U4_MAX), 0);
 
+	ASSERTU1(u4_conditionNEUnused(0, 0, 0), 0);
+	ASSERTU1(u4_conditionNEUnused(0, 0, 1), 1);
+	ASSERTU1(u4_conditionNEUnused(0, 0, U4_MAX), 1);
+	ASSERTU1(u4_conditionNEUnused(0, 1, 0), 1);
+	ASSERTU1(u4_conditionNEUnused(0, 1, 1), 0);
+	ASSERTU1(u4_conditionNEUnused(0, 1, U4_MAX), 1);
+	ASSERTU1(u4_conditionNEUnused(0, U4_MAX, 0), 1);
+	ASSERTU1(u4_conditionNEUnused(0, U4_MAX, 1), 1);
+	ASSERTU1(u4_conditionNEUnused(0, U4_MAX, U4_MAX), 0);
+
 	ASSERTU1(u4_conditionNEZero(0), 0);
 	ASSERTU1(u4_conditionNEZero(1), 1);
 	ASSERTU1(u4_conditionNEZero(U4_MAX), 1);
@@ -586,6 +652,7 @@ TEST u4_conditionNE_Main()
 TEST i4_conditionGT_Main()
 {
 	extern u1 i4_conditionGT(i4 lhs, i4 rhs);
+	extern u1 i4_conditionGTUnused(i4 val, i4 lhs, i4 rhs);
 	extern u1 i4_conditionGTZero(i4 val);
 	extern u1 i4_conditionGTOne(i4 val);
 
@@ -606,6 +673,23 @@ TEST i4_conditionGT_Main()
 	ASSERTU1(i4_conditionGT(I4_MIN, I4_MAX), 0);
 	ASSERTU1(i4_conditionGT(I4_MIN, I4_MIN), 0);
 
+	ASSERTU1(i4_conditionGTUnused(0, 0, 0), 0);
+	ASSERTU1(i4_conditionGTUnused(0, 0, 1), 0);
+	ASSERTU1(i4_conditionGTUnused(0, 0, I4_MAX), 0);
+	ASSERTU1(i4_conditionGTUnused(0, 0, I4_MIN), 1);
+	ASSERTU1(i4_conditionGTUnused(0, 1, 0), 1);
+	ASSERTU1(i4_conditionGTUnused(0, 1, 1), 0);
+	ASSERTU1(i4_conditionGTUnused(0, 1, I4_MAX), 0);
+	ASSERTU1(i4_conditionGTUnused(0, 1, I4_MIN), 1);
+	ASSERTU1(i4_conditionGTUnused(0, I4_MAX, 0), 1);
+	ASSERTU1(i4_conditionGTUnused(0, I4_MAX, 1), 1);
+	ASSERTU1(i4_conditionGTUnused(0, I4_MAX, I4_MAX), 0);
+	ASSERTU1(i4_conditionGTUnused(0, I4_MAX, I4_MIN), 1);
+	ASSERTU1(i4_conditionGTUnused(0, I4_MIN, 0), 0);
+	ASSERTU1(i4_conditionGTUnused(0, I4_MIN, 1), 0);
+	ASSERTU1(i4_conditionGTUnused(0, I4_MIN, I4_MAX), 0);
+	ASSERTU1(i4_conditionGTUnused(0, I4_MIN, I4_MIN), 0);
+
 	ASSERTU1(i4_conditionGTZero(0), 0);
 	ASSERTU1(i4_conditionGTZero(1), 1);
 	ASSERTU1(i4_conditionGTZero(I4_MAX), 1);
@@ -620,6 +704,7 @@ TEST i4_conditionGT_Main()
 TEST i4_conditionGE_Main()
 {
 	extern u1 i4_conditionGE(i4 lhs, i4 rhs);
+	extern u1 i4_conditionGEUnused(i4 val, i4 lhs, i4 rhs);
 	extern u1 i4_conditionGEZero(i4 val);
 	extern u1 i4_conditionGEOne(i4 val);
 
@@ -640,6 +725,23 @@ TEST i4_conditionGE_Main()
 	ASSERTU1(i4_conditionGE(I4_MIN, I4_MAX), 0);
 	ASSERTU1(i4_conditionGE(I4_MIN, I4_MIN), 1);
 
+	ASSERTU1(i4_conditionGEUnused(0, 0, 0), 1);
+	ASSERTU1(i4_conditionGEUnused(0, 0, 1), 0);
+	ASSERTU1(i4_conditionGEUnused(0, 0, I4_MAX), 0);
+	ASSERTU1(i4_conditionGEUnused(0, 0, I4_MIN), 1);
+	ASSERTU1(i4_conditionGEUnused(0, 1, 0), 1);
+	ASSERTU1(i4_conditionGEUnused(0, 1, 1), 1);
+	ASSERTU1(i4_conditionGEUnused(0, 1, I4_MAX), 0);
+	ASSERTU1(i4_conditionGEUnused(0, 1, I4_MIN), 1);
+	ASSERTU1(i4_conditionGEUnused(0, I4_MAX, 0), 1);
+	ASSERTU1(i4_conditionGEUnused(0, I4_MAX, 1), 1);
+	ASSERTU1(i4_conditionGEUnused(0, I4_MAX, I4_MAX), 1);
+	ASSERTU1(i4_conditionGEUnused(0, I4_MAX, I4_MIN), 1);
+	ASSERTU1(i4_conditionGEUnused(0, I4_MIN, 0), 0);
+	ASSERTU1(i4_conditionGEUnused(0, I4_MIN, 1), 0);
+	ASSERTU1(i4_conditionGEUnused(0, I4_MIN, I4_MAX), 0);
+	ASSERTU1(i4_conditionGEUnused(0, I4_MIN, I4_MIN), 1);
+
 	ASSERTU1(i4_conditionGEZero(0), 1);
 	ASSERTU1(i4_conditionGEZero(1), 1);
 	ASSERTU1(i4_conditionGEZero(I4_MAX), 1);
@@ -654,6 +756,7 @@ TEST i4_conditionGE_Main()
 TEST i4_conditionEQ_Main()
 {
 	extern u1 i4_conditionEQ(i4 lhs, i4 rhs);
+	extern u1 i4_conditionEQUnused(i4 val, i4 lhs, i4 rhs);
 	extern u1 i4_conditionEQZero(i4 val);
 	extern u1 i4_conditionEQOne(i4 val);
 
@@ -674,6 +777,23 @@ TEST i4_conditionEQ_Main()
 	ASSERTU1(i4_conditionEQ(I4_MIN, I4_MAX), 0);
 	ASSERTU1(i4_conditionEQ(I4_MIN, I4_MIN), 1);
 
+	ASSERTU1(i4_conditionEQUnused(0, 0, 0), 1);
+	ASSERTU1(i4_conditionEQUnused(0, 0, 1), 0);
+	ASSERTU1(i4_conditionEQUnused(0, 0, I4_MAX), 0);
+	ASSERTU1(i4_conditionEQUnused(0, 0, I4_MIN), 0);
+	ASSERTU1(i4_conditionEQUnused(0, 1, 0), 0);
+	ASSERTU1(i4_conditionEQUnused(0, 1, 1), 1);
+	ASSERTU1(i4_conditionEQUnused(0, 1, I4_MAX), 0);
+	ASSERTU1(i4_conditionEQUnused(0, 1, I4_MIN), 0);
+	ASSERTU1(i4_conditionEQUnused(0, I4_MAX, 0), 0);
+	ASSERTU1(i4_conditionEQUnused(0, I4_MAX, 1), 0);
+	ASSERTU1(i4_conditionEQUnused(0, I4_MAX, I4_MAX), 1);
+	ASSERTU1(i4_conditionEQUnused(0, I4_MAX, I4_MIN), 0);
+	ASSERTU1(i4_conditionEQUnused(0, I4_MIN, 0), 0);
+	ASSERTU1(i4_conditionEQUnused(0, I4_MIN, 1), 0);
+	ASSERTU1(i4_conditionEQUnused(0, I4_MIN, I4_MAX), 0);
+	ASSERTU1(i4_conditionEQUnused(0, I4_MIN, I4_MIN), 1);
+
 	ASSERTU1(i4_conditionEQZero(0), 1);
 	ASSERTU1(i4_conditionEQZero(1), 0);
 	ASSERTU1(i4_conditionEQZero(I4_MAX), 0);
@@ -688,6 +808,7 @@ TEST i4_conditionEQ_Main()
 TEST i4_conditionLE_Main()
 {
 	extern u1 i4_conditionLE(i4 lhs, i4 rhs);
+	extern u1 i4_conditionLEUnused(i4 val, i4 lhs, i4 rhs);
 	extern u1 i4_conditionLEZero(i4 val);
 	extern u1 i4_conditionLEOne(i4 val);
 
@@ -708,6 +829,23 @@ TEST i4_conditionLE_Main()
 	ASSERTU1(i4_conditionLE(I4_MIN, I4_MAX), 1);
 	ASSERTU1(i4_conditionLE(I4_MIN, I4_MIN), 1);
 
+	ASSERTU1(i4_conditionLEUnused(0, 0, 0), 1);
+	ASSERTU1(i4_conditionLEUnused(0, 0, 1), 1);
+	ASSERTU1(i4_conditionLEUnused(0, 0, I4_MAX), 1);
+	ASSERTU1(i4_conditionLEUnused(0, 0, I4_MIN), 0);
+	ASSERTU1(i4_conditionLEUnused(0, 1, 0), 0);
+	ASSERTU1(i4_conditionLEUnused(0, 1, 1), 1);
+	ASSERTU1(i4_conditionLEUnused(0, 1, I4_MAX), 1);
+	ASSERTU1(i4_conditionLEUnused(0, 1, I4_MIN), 0);
+	ASSERTU1(i4_conditionLEUnused(0, I4_MAX, 0), 0);
+	ASSERTU1(i4_conditionLEUnused(0, I4_MAX, 1), 0);
+	ASSERTU1(i4_conditionLEUnused(0, I4_MAX, I4_MAX), 1);
+	ASSERTU1(i4_conditionLEUnused(0, I4_MAX, I4_MIN), 0);
+	ASSERTU1(i4_conditionLEUnused(0, I4_MIN, 0), 1);
+	ASSERTU1(i4_conditionLEUnused(0, I4_MIN, 1), 1);
+	ASSERTU1(i4_conditionLEUnused(0, I4_MIN, I4_MAX), 1);
+	ASSERTU1(i4_conditionLEUnused(0, I4_MIN, I4_MIN), 1);
+
 	ASSERTU1(i4_conditionLEZero(0), 1);
 	ASSERTU1(i4_conditionLEZero(1), 0);
 	ASSERTU1(i4_conditionLEZero(I4_MAX), 0);
@@ -722,6 +860,7 @@ TEST i4_conditionLE_Main()
 TEST i4_conditionLT_Main()
 {
 	extern u1 i4_conditionLT(i4 lhs, i4 rhs);
+	extern u1 i4_conditionLTUnused(i4 val, i4 lhs, i4 rhs);
 	extern u1 i4_conditionLTZero(i4 val);
 	extern u1 i4_conditionLTOne(i4 val);
 
@@ -742,6 +881,23 @@ TEST i4_conditionLT_Main()
 	ASSERTU1(i4_conditionLT(I4_MIN, I4_MAX), 1);
 	ASSERTU1(i4_conditionLT(I4_MIN, I4_MIN), 0);
 
+	ASSERTU1(i4_conditionLTUnused(0, 0, 0), 0);
+	ASSERTU1(i4_conditionLTUnused(0, 0, 1), 1);
+	ASSERTU1(i4_conditionLTUnused(0, 0, I4_MAX), 1);
+	ASSERTU1(i4_conditionLTUnused(0, 0, I4_MIN), 0);
+	ASSERTU1(i4_conditionLTUnused(0, 1, 0), 0);
+	ASSERTU1(i4_conditionLTUnused(0, 1, 1), 0);
+	ASSERTU1(i4_conditionLTUnused(0, 1, I4_MAX), 1);
+	ASSERTU1(i4_conditionLTUnused(0, 1, I4_MIN), 0);
+	ASSERTU1(i4_conditionLTUnused(0, I4_MAX, 0), 0);
+	ASSERTU1(i4_conditionLTUnused(0, I4_MAX, 1), 0);
+	ASSERTU1(i4_conditionLTUnused(0, I4_MAX, I4_MAX), 0);
+	ASSERTU1(i4_conditionLTUnused(0, I4_MAX, I4_MIN), 0);
+	ASSERTU1(i4_conditionLTUnused(0, I4_MIN, 0), 1);
+	ASSERTU1(i4_conditionLTUnused(0, I4_MIN, 1), 1);
+	ASSERTU1(i4_conditionLTUnused(0, I4_MIN, I4_MAX), 1);
+	ASSERTU1(i4_conditionLTUnused(0, I4_MIN, I4_MIN), 0);
+
 	ASSERTU1(i4_conditionLTZero(0), 0);
 	ASSERTU1(i4_conditionLTZero(1), 0);
 	ASSERTU1(i4_conditionLTZero(I4_MAX), 0);
@@ -756,6 +912,7 @@ TEST i4_conditionLT_Main()
 TEST i4_conditionNE_Main()
 {
 	extern u1 i4_conditionNE(i4 lhs, i4 rhs);
+	extern u1 i4_conditionNEUnused(i4 val, i4 lhs, i4 rhs);
 	extern u1 i4_conditionNEZero(i4 val);
 	extern u1 i4_conditionNEOne(i4 val);
 
@@ -775,6 +932,23 @@ TEST i4_conditionNE_Main()
 	ASSERTU1(i4_conditionNE(I4_MIN, 1), 1);
 	ASSERTU1(i4_conditionNE(I4_MIN, I4_MAX), 1);
 	ASSERTU1(i4_conditionNE(I4_MIN, I4_MIN), 0);
+
+	ASSERTU1(i4_conditionNEUnused(0, 0, 0), 0);
+	ASSERTU1(i4_conditionNEUnused(0, 0, 1), 1);
+	ASSERTU1(i4_conditionNEUnused(0, 0, I4_MAX), 1);
+	ASSERTU1(i4_conditionNEUnused(0, 0, I4_MIN), 1);
+	ASSERTU1(i4_conditionNEUnused(0, 1, 0), 1);
+	ASSERTU1(i4_conditionNEUnused(0, 1, 1), 0);
+	ASSERTU1(i4_conditionNEUnused(0, 1, I4_MAX), 1);
+	ASSERTU1(i4_conditionNEUnused(0, 1, I4_MIN), 1);
+	ASSERTU1(i4_conditionNEUnused(0, I4_MAX, 0), 1);
+	ASSERTU1(i4_conditionNEUnused(0, I4_MAX, 1), 1);
+	ASSERTU1(i4_conditionNEUnused(0, I4_MAX, I4_MAX), 0);
+	ASSERTU1(i4_conditionNEUnused(0, I4_MAX, I4_MIN), 1);
+	ASSERTU1(i4_conditionNEUnused(0, I4_MIN, 0), 1);
+	ASSERTU1(i4_conditionNEUnused(0, I4_MIN, 1), 1);
+	ASSERTU1(i4_conditionNEUnused(0, I4_MIN, I4_MAX), 1);
+	ASSERTU1(i4_conditionNEUnused(0, I4_MIN, I4_MIN), 0);
 
 	ASSERTU1(i4_conditionNEZero(0), 0);
 	ASSERTU1(i4_conditionNEZero(1), 1);

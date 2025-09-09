@@ -29,6 +29,8 @@
 #define PACKED_STRUCTURE
 #endif
 
+#define UNUSED __attribute__((unused))
+
 #ifndef HAS_LIBC
 void *memcpy(void *dest, const void *src, size_t n);
 void *memset(void *s, int c, size_t n);

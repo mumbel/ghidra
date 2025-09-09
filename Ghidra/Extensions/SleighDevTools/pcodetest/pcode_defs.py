@@ -788,6 +788,18 @@ PCodeTest({
 })
 
 PCodeTest({
+    'name': 'RISCV64',
+    'build_all': 1,
+    'toolchain': 'RISCV/riscv64-elf',
+    'language_id': 'RISCV:BE:64:default',
+    'architecture_test': 'RISCV64',
+    'ccflags': '-lgcc -march=rv64imafdc_zicsr_zihintpause_zba_zbb_zbs_zicbom_zicbop_zicboz_zfhmin_zkt',
+    'has_float': 1,
+    'has_double': 1,
+    'has_longlong': 1,
+})
+
+PCodeTest({
     'name': 'V850',
     'build_all': 1,
     'build_exe': 1,

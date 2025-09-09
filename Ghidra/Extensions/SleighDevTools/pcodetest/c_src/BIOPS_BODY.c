@@ -72,6 +72,16 @@ typ typ##_subtract(			\
 	return z;			\
 }
 
+#define PCODE_BIOP_SUBUNUSED(typ)		\
+  typ typ##_subtractUnused(UNUSED typ val,	\
+			typ lhs,	\
+			typ rhs)	\
+{					\
+	typ z;				\
+	z = lhs - rhs;			\
+	return z;			\
+}
+
 #define PCODE_BIOP_SUBZERO(typ)		\
 typ typ##_subtractZero(			\
 			typ val)	\
@@ -91,6 +101,16 @@ typ typ##_subtractOne(			\
 
 #define PCODE_BIOP_ADD(typ)		\
 typ typ##_addition(			\
+			typ lhs,	\
+			typ rhs)	\
+{					\
+	typ z;				\
+	z = lhs + rhs;			\
+	return z;			\
+}
+
+#define PCODE_BIOP_ADDUNUSED(typ)		\
+  typ typ##_additionUnused(UNUSED typ val,		\
 			typ lhs,	\
 			typ rhs)	\
 {					\
@@ -127,6 +147,16 @@ typ typ##_bitwiseAnd(			\
 	return z;			\
 }
 
+#define PCODE_BIOP_ANDUNUSED(typ)		\
+  typ typ##_bitwiseAndUnused(UNUSED typ val,	\
+			typ lhs,	\
+			typ rhs)	\
+{					\
+	typ z;				\
+	z = lhs & rhs;			\
+	return z;			\
+}
+
 #define PCODE_BIOP_ANDZERO(typ)		\
 typ typ##_bitwiseAndZero(			\
 			typ val)	\
@@ -147,6 +177,16 @@ typ typ##_bitwiseAndOne(			\
 
 #define PCODE_BIOP_OR(typ)		\
 typ typ##_bitwiseOr(			\
+			 typ lhs,	\
+			 typ rhs)	\
+{					\
+	typ z;				\
+	z = lhs | rhs;			\
+	return z;			\
+}
+
+#define PCODE_BIOP_ORUNUSED(typ)		\
+  typ typ##_bitwiseOrUnused(UNUSED typ val,	\
 			 typ lhs,	\
 			 typ rhs)	\
 {					\
@@ -184,6 +224,16 @@ typ typ##_logicalAnd(			\
 	return z;			\
 }
 
+#define PCODE_BIOP_LOGIC_ANDUNUSED(typ)	\
+  typ typ##_logicalAndUnused(UNUSED typ val,	\
+			typ lhs,	\
+			typ rhs)	\
+{					\
+	typ z;				\
+	z = lhs && rhs;		\
+	return z;			\
+}
+
 #define PCODE_BIOP_LOGIC_OR(typ)	\
 typ typ##_logicalOr(			\
 			typ lhs,	\
@@ -194,8 +244,28 @@ typ typ##_logicalOr(			\
 	return z;			\
 }
 
+#define PCODE_BIOP_LOGIC_ORUNUSED(typ)	\
+  typ typ##_logicalOrUnused(UNUSED typ val,	\
+			typ lhs,	\
+			typ rhs)	\
+{					\
+	typ z;				\
+	z = lhs || rhs;		\
+	return z;			\
+}
+
 #define PCODE_BIOP_XOR(typ)		\
 typ typ##_bitwiseXor(			\
+			typ lhs,	\
+			typ rhs)	\
+{					\
+	typ z;				\
+	z = lhs ^ rhs;			\
+	return z;			\
+}
+
+#define PCODE_BIOP_XORUNUSED(typ)		\
+  typ typ##_bitwiseXorUnused(UNUSED typ val,	\
 			typ lhs,	\
 			typ rhs)	\
 {					\
@@ -233,6 +303,16 @@ typ typ##_shiftLeft(			\
 	return z;			\
 }
 
+#define PCODE_BIOP_SHLUNUSED(typ)		\
+  typ typ##_shiftLeftUnused(UNUSED typ val,	\
+			typ lhs,	\
+			typ rhs)	\
+{					\
+	typ z;				\
+	z = lhs << rhs;		\
+	return z;			\
+}
+
 #define PCODE_BIOP_SHLZERO(typ)		\
 typ typ##_shiftLeftZero(			\
 			typ val)	\
@@ -261,6 +341,16 @@ typ typ##_shiftRight(			\
 	return z;			\
 }
 
+#define PCODE_BIOP_SHRUNUSED(typ)		\
+  typ typ##_shiftRightUnused(UNUSED typ val,	\
+			typ lhs,	\
+			typ rhs)	\
+{					\
+	typ z;				\
+	z = lhs >> rhs;		\
+	return z;			\
+}
+
 #define PCODE_BIOP_SHRZERO(typ)		\
 typ typ##_shiftRightZero(			\
 			typ val)	\
@@ -280,71 +370,81 @@ typ typ##_shiftRightOne(			\
 }
 
 #define PCODE_UNOP_NOT(typ)		\
-typ typ##_logicalNot(typ lhs)		\
+typ typ##_logicalNot(typ val)		\
 {					\
 	typ z;				\
-	z = !lhs;			\
+	z = !val;			\
 	return z;			\
 }
 
 #define PCODE_UNOP_COMP(typ)	       	\
-typ typ##_unaryComp(typ lhs) \
+typ typ##_unaryComp(typ val) \
 {						\
     typ z;					\
-    z = ~lhs;					\
+    z = ~val;					\
     return z;					\
 }
 
 #define PCODE_UNOP_POSITIVE(typ)		\
-typ typ##_unaryPositive(typ lhs)		\
+typ typ##_unaryPositive(typ val)		\
 {					\
 	typ z;				\
-	z = +lhs;			\
+	z = +val;			\
 	return z;			\
 }
 
 #define PCODE_UNOP_NEGATIVE(typ)		\
-typ typ##_unaryNegative(typ lhs)		\
+  typ typ##_unaryNegative(typ val)		\
 {					\
 	typ z;				\
-	z = -lhs;			\
+	z = -val;			\
 	return z;			\
 }
 
 #define PCODE_UNOP_INCPRE(typ)			\
-typ typ##_unaryIncPre(typ lhs) \
+typ typ##_unaryIncPre(typ val) \
 {						\
     typ z;					\
-    z = ++lhs;					\
+    z = ++val;					\
     return z;					\
 }
 
 #define PCODE_UNOP_INCPOST(typ)			\
-typ typ##_unaryIncPost(typ lhs) \
+typ typ##_unaryIncPost(typ val) \
 {						\
     typ z;					\
-    z = lhs++;       				\
+    z = val++;       				\
     return z;					\
 }
 
 #define PCODE_UNOP_DECPRE(typ)			\
-typ typ##_unaryDecPre(typ lhs) \
+typ typ##_unaryDecPre(typ val) \
 {						\
     typ z;					\
-    z = --lhs;					\
+    z = --val;					\
     return z;					\
 }
 
 #define PCODE_UNOP_DECPOST(typ)			\
-typ typ##_unaryDecPost(typ lhs) \
+typ typ##_unaryDecPost(typ val) \
 {						\
     typ z;					\
-    z = lhs--;       				\
+    z = val--;       				\
     return z;					\
 }
 
 #define PCODE_BIOP_DIV(typ)		\
 typ typ##_divide(			\
+			typ lhs,	\
+			typ rhs)	\
+{					\
+	typ z;				\
+	z = lhs / rhs;			\
+	return z;			\
+}
+
+#define PCODE_BIOP_DIVUNUSED(typ)		\
+  typ typ##_divideUnused(UNUSED typ val,	\
 			typ lhs,	\
 			typ rhs)	\
 {					\
@@ -381,6 +481,16 @@ typ typ##_remainder(			\
 	return z;			\
 }
 
+#define PCODE_BIOP_REMUNUSED(typ)		\
+  typ typ##_remainderUnused(UNUSED typ val,	\
+			typ lhs,	\
+			typ rhs)	\
+{					\
+	typ z;				\
+	z = lhs % rhs;			\
+	return z;			\
+}
+
 #define PCODE_BIOP_REMZERO(typ)		\
 typ typ##_remainderZero(			\
 			typ val)	\
@@ -409,6 +519,16 @@ typ typ##_multiply(			\
 	return z;			\
 }
 
+#define PCODE_BIOP_MULUNUSED(typ)		\
+  typ typ##_multiplyUnused(UNUSED typ val,	\
+			typ lhs,	\
+			typ rhs)	\
+{					\
+	typ z;				\
+	z = lhs * rhs;			\
+	return z;			\
+}
+
 #define PCODE_BIOP_MULZERO(typ)		\
 typ typ##_multiplyZero(			\
 			typ val)	\
@@ -427,8 +547,53 @@ typ typ##_multiplyOne(			\
 	return z;			\
 }
 
+#define PCODE_BIOP_MAX(typ)		\
+typ typ##_maximumA(			\
+		typ lhs,		\
+		typ rhs)		\
+{					\
+	typ z;				\
+	z = lhs > rhs ? lhs : rhs;	\
+	return z;			\
+}					\
+typ typ##_maximumB(			\
+		typ lhs,		\
+		typ rhs)		\
+{					\
+	typ z;				\
+	z = lhs >= rhs ? lhs : rhs;	\
+	return z;			\
+}					\
+typ typ##_maximumC(			\
+		typ lhs,		\
+		typ rhs)		\
+{					\
+	typ z;				\
+	z = lhs < rhs ? rhs : lhs;	\
+	return z;			\
+}					\
+typ typ##_maximumD(			\
+		typ lhs,		\
+       		typ rhs)		\
+{					\
+	typ z;				\
+	z = lhs <= rhs ? rhs : lhs;	\
+	return z;			\
+}
+
+
 #define PCODE_COND_GT(typ)		\
 u1 typ##_conditionGT(			\
+			typ lhs,	\
+			typ rhs)	\
+{					\
+	u1 z;				\
+	z = (u1)(lhs > rhs);		\
+	return z;			\
+}
+
+#define PCODE_COND_GTUNUSED(typ)		\
+  u1 typ##_conditionGTUnused(UNUSED typ val,	\
 			typ lhs,	\
 			typ rhs)	\
 {					\
@@ -465,6 +630,16 @@ u1 typ##_conditionGE(			\
 	return z;			\
 }
 
+#define PCODE_COND_GEUNUSED(typ)		\
+  u1 typ##_conditionGEUnused(UNUSED typ val,	\
+			typ lhs,	\
+			typ rhs)	\
+{					\
+	u1 z;				\
+	z = (u1)(lhs >= rhs);		\
+	return z;			\
+}
+
 #define PCODE_COND_GEZero(typ)			\
 u1 typ##_conditionGEZero(			\
 			typ val)	\
@@ -485,6 +660,16 @@ u1 typ##_conditionGEOne(			\
 
 #define PCODE_COND_EQ(typ)		\
 u1 typ##_conditionEQ(			\
+			typ lhs,	\
+			typ rhs)	\
+{					\
+	u1 z;				\
+	z = (u1)(lhs == rhs);		\
+	return z;			\
+}
+
+#define PCODE_COND_EQUNUSED(typ)		\
+  u1 typ##_conditionEQUnused(UNUSED typ val,	\
 			typ lhs,	\
 			typ rhs)	\
 {					\
@@ -521,6 +706,16 @@ u1 typ##_conditionLE(			\
 	return z;			\
 }
 
+#define PCODE_COND_LEUNUSED(typ)		\
+  u1 typ##_conditionLEUnused(UNUSED typ val,	\
+			typ lhs,	\
+			typ rhs)	\
+{					\
+	u1 z;				\
+	z = (u1)(lhs <= rhs);		\
+	return z;			\
+}
+
 #define PCODE_COND_LEZero(typ)			\
 u1 typ##_conditionLEZero(			\
 			typ val)	\
@@ -541,6 +736,16 @@ u1 typ##_conditionLEOne(			\
 
 #define PCODE_COND_LT(typ)		\
 u1 typ##_conditionLT(			\
+			typ lhs,	\
+			typ rhs)	\
+{					\
+	u1 z;				\
+	z = (u1)(lhs < rhs);		\
+	return z;			\
+}
+
+#define PCODE_COND_LTUNUSED(typ)		\
+  u1 typ##_conditionLTUnused(UNUSED typ val,	\
 			typ lhs,	\
 			typ rhs)	\
 {					\
@@ -577,6 +782,16 @@ u1 typ##_conditionNE(			\
 	return z;			\
 }
 
+#define PCODE_COND_NEUNUSED(typ)		\
+  u1 typ##_conditionNEUnused(UNUSED typ val,	\
+			typ lhs,	\
+			typ rhs)	\
+{					\
+	u1 z;				\
+	z = (u1)(lhs != rhs);		\
+	return z;			\
+}
+
 #define PCODE_COND_NEZero(typ)			\
 u1 typ##_conditionNEZero(			\
 			typ val)	\
@@ -600,24 +815,31 @@ u1 typ##_conditionNEOne(			\
 
 #define PCODE_BIOPS(typ)					\
   PCODE_BIOP_ADD(typ)					\
+       PCODE_BIOP_ADDUNUSED(typ)					\
   PCODE_BIOP_ADDZERO(typ)				\
   PCODE_BIOP_ADDONE(typ)				\
   PCODE_BIOP_AND(typ)					\
+       PCODE_BIOP_ANDUNUSED(typ)					\
   PCODE_BIOP_ANDZERO(typ)				\
   PCODE_BIOP_ANDONE(typ)				\
   PCODE_BIOP_OR(typ)					\
+       PCODE_BIOP_ORUNUSED(typ)					\
   PCODE_BIOP_ORZERO(typ)				\
   PCODE_BIOP_ORONE(typ)				\
   PCODE_BIOP_SHL(typ)					\
+       PCODE_BIOP_SHLUNUSED(typ)					\
   PCODE_BIOP_SHLZERO(typ)				\
   PCODE_BIOP_SHLONE(typ)				\
   PCODE_BIOP_SHR(typ)					\
+  PCODE_BIOP_SHRUNUSED(typ)					\
   PCODE_BIOP_SHRZERO(typ)				\
   PCODE_BIOP_SHRONE(typ)				\
   PCODE_BIOP_SUB(typ)					\
+  PCODE_BIOP_SUBUNUSED(typ)					\
   PCODE_BIOP_SUBZERO(typ)				\
   PCODE_BIOP_SUBONE(typ)				\
   PCODE_BIOP_XOR(typ)					\
+  PCODE_BIOP_XORUNUSED(typ)					\
   PCODE_BIOP_XORZERO(typ)				\
   PCODE_BIOP_XORONE(typ)				\
   PCODE_UNOP_POSITIVE(typ)					\
@@ -630,35 +852,47 @@ u1 typ##_conditionNEOne(			\
   PCODE_UNOP_DECPOST(typ)					\
   PCODE_COMPLEX_LOGIC(typ)					\
   PCODE_BIOP_LOGIC_OR(typ)				\
+  PCODE_BIOP_LOGIC_ORUNUSED(typ)				\
   PCODE_BIOP_LOGIC_AND(typ)				\
+  PCODE_BIOP_LOGIC_ANDUNUSED(typ)				\
   PCODE_BIOP_CMP(typ)					\
   PCODE_BIOP_MUL(typ)					\
+       PCODE_BIOP_MULUNUSED(typ)					\
   PCODE_BIOP_MULZERO(typ)				\
   PCODE_BIOP_MULONE(typ)				\
   PCODE_BIOP_DIV(typ)					\
+       PCODE_BIOP_DIVUNUSED(typ)					\
   PCODE_BIOP_DIVZERO(typ)				\
   PCODE_BIOP_DIVONE(typ)				\
   PCODE_BIOP_REM(typ)					\
+  PCODE_BIOP_REMUNUSED(typ)					\
   PCODE_BIOP_REMZERO(typ)				\
   PCODE_BIOP_REMONE(typ)				\
   PCODE_COND_GT(typ)					\
+  PCODE_COND_GTUNUSED(typ)					\
   PCODE_COND_GTZero(typ)				\
   PCODE_COND_GTOne(typ)					\
   PCODE_COND_GE(typ)					\
+  PCODE_COND_GEUNUSED(typ)					\
   PCODE_COND_GEZero(typ)				\
   PCODE_COND_GEOne(typ)					\
   PCODE_COND_EQ(typ)					\
+  PCODE_COND_EQUNUSED(typ)					\
   PCODE_COND_EQZero(typ)				\
   PCODE_COND_EQOne(typ)					\
   PCODE_COND_LE(typ)					\
+  PCODE_COND_LEUNUSED(typ)					\
   PCODE_COND_LEZero(typ)				\
   PCODE_COND_LEOne(typ)					\
   PCODE_COND_LT(typ)					\
+  PCODE_COND_LTUNUSED(typ)					\
   PCODE_COND_LTZero(typ)				\
   PCODE_COND_LTOne(typ)					\
   PCODE_COND_NE(typ)					\
+  PCODE_COND_NEUNUSED(typ)					\
   PCODE_COND_NEZero(typ)				\
-  PCODE_COND_NEOne(typ)
+  PCODE_COND_NEOne(typ)\
+  PCODE_BIOP_MAX(typ)
 
 
 

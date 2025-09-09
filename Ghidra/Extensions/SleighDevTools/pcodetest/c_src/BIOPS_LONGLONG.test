@@ -487,6 +487,7 @@ TEST i8_remainder_Main()
 TEST u8_conditionGT_Main()
 {
 	extern u1 u8_conditionGT(u8 lhs, u8 rhs);
+	extern u1 u8_conditionGTUnused(u8 val, u8 lhs, u8 rhs);
 	extern u1 u8_conditionGTZero(u8 val);
 	extern u1 u8_conditionGTOne(u8 val);
 
@@ -500,6 +501,16 @@ TEST u8_conditionGT_Main()
 	ASSERTU1(u8_conditionGT(U8_MAX, 1), 1);
 	ASSERTU1(u8_conditionGT(U8_MAX, U8_MAX), 0);
 
+	ASSERTU1(u8_conditionGTUnused(0, 0, 0), 0);
+	ASSERTU1(u8_conditionGTUnused(0, 0, 1), 0);
+	ASSERTU1(u8_conditionGTUnused(0, 0, U8_MAX), 0);
+	ASSERTU1(u8_conditionGTUnused(0, 1, 0), 1);
+	ASSERTU1(u8_conditionGTUnused(0, 1, 1), 0);
+	ASSERTU1(u8_conditionGTUnused(0, 1, U8_MAX), 0);
+	ASSERTU1(u8_conditionGTUnused(0, U8_MAX, 0), 1);
+	ASSERTU1(u8_conditionGTUnused(0, U8_MAX, 1), 1);
+	ASSERTU1(u8_conditionGTUnused(0, U8_MAX, U8_MAX), 0);
+
 	ASSERTU1(u8_conditionGTZero(0), 0);
 	ASSERTU1(u8_conditionGTZero(1), 1);
 	ASSERTU1(u8_conditionGTZero(U8_MAX), 1);
@@ -512,6 +523,7 @@ TEST u8_conditionGT_Main()
 TEST u8_conditionGE_Main()
 {
 	extern u1 u8_conditionGE(u8 lhs, u8 rhs);
+	extern u1 u8_conditionGEUnused(u8 val, u8 lhs, u8 rhs);
 	extern u1 u8_conditionGEZero(u8 val);
 	extern u1 u8_conditionGEOne(u8 val);
 
@@ -525,6 +537,16 @@ TEST u8_conditionGE_Main()
 	ASSERTU1(u8_conditionGE(U8_MAX, 1), 1);
 	ASSERTU1(u8_conditionGE(U8_MAX, U8_MAX), 1);
 
+	ASSERTU1(u8_conditionGEUnused(0, 0, 0), 1);
+	ASSERTU1(u8_conditionGEUnused(0, 0, 1), 0);
+	ASSERTU1(u8_conditionGEUnused(0, 0, U8_MAX), 0);
+	ASSERTU1(u8_conditionGEUnused(0, 1, 0), 1);
+	ASSERTU1(u8_conditionGEUnused(0, 1, 1), 1);
+	ASSERTU1(u8_conditionGEUnused(0, 1, U8_MAX), 0);
+	ASSERTU1(u8_conditionGEUnused(0, U8_MAX, 0), 1);
+	ASSERTU1(u8_conditionGEUnused(0, U8_MAX, 1), 1);
+	ASSERTU1(u8_conditionGEUnused(0, U8_MAX, U8_MAX), 1);
+
 	ASSERTU1(u8_conditionGEZero(0), 1);
 	ASSERTU1(u8_conditionGEZero(1), 1);
 	ASSERTU1(u8_conditionGEZero(U8_MAX), 1);
@@ -537,6 +559,7 @@ TEST u8_conditionGE_Main()
 TEST u8_conditionEQ_Main()
 {
 	extern u1 u8_conditionEQ(u8 lhs, u8 rhs);
+	extern u1 u8_conditionEQUnused(u8 val, u8 lhs, u8 rhs);
 	extern u1 u8_conditionEQZero(u8 val);
 	extern u1 u8_conditionEQOne(u8 val);
 
@@ -550,6 +573,16 @@ TEST u8_conditionEQ_Main()
 	ASSERTU1(u8_conditionEQ(U8_MAX, 1), 0);
 	ASSERTU1(u8_conditionEQ(U8_MAX, U8_MAX), 1);
 
+	ASSERTU1(u8_conditionEQUnused(0, 0, 0), 1);
+	ASSERTU1(u8_conditionEQUnused(0, 0, 1), 0);
+	ASSERTU1(u8_conditionEQUnused(0, 0, U8_MAX), 0);
+	ASSERTU1(u8_conditionEQUnused(0, 1, 0), 0);
+	ASSERTU1(u8_conditionEQUnused(0, 1, 1), 1);
+	ASSERTU1(u8_conditionEQUnused(0, 1, U8_MAX), 0);
+	ASSERTU1(u8_conditionEQUnused(0, U8_MAX, 0), 0);
+	ASSERTU1(u8_conditionEQUnused(0, U8_MAX, 1), 0);
+	ASSERTU1(u8_conditionEQUnused(0, U8_MAX, U8_MAX), 1);
+
 	ASSERTU1(u8_conditionEQZero(0), 1);
 	ASSERTU1(u8_conditionEQZero(1), 0);
 	ASSERTU1(u8_conditionEQZero(U8_MAX), 0);
@@ -562,6 +595,7 @@ TEST u8_conditionEQ_Main()
 TEST u8_conditionLE_Main()
 {
 	extern u1 u8_conditionLE(u8 lhs, u8 rhs);
+	extern u1 u8_conditionLEUnused(u8 val, u8 lhs, u8 rhs);
 	extern u1 u8_conditionLEZero(u8 val);
 	extern u1 u8_conditionLEOne(u8 val);
 
@@ -575,6 +609,16 @@ TEST u8_conditionLE_Main()
 	ASSERTU1(u8_conditionLE(U8_MAX, 1), 0);
 	ASSERTU1(u8_conditionLE(U8_MAX, U8_MAX), 1);
 
+	ASSERTU1(u8_conditionLEUnused(0, 0, 0), 1);
+	ASSERTU1(u8_conditionLEUnused(0, 0, 1), 1);
+	ASSERTU1(u8_conditionLEUnused(0, 0, U8_MAX), 1);
+	ASSERTU1(u8_conditionLEUnused(0, 1, 0), 0);
+	ASSERTU1(u8_conditionLEUnused(0, 1, 1), 1);
+	ASSERTU1(u8_conditionLEUnused(0, 1, U8_MAX), 1);
+	ASSERTU1(u8_conditionLEUnused(0, U8_MAX, 0), 0);
+	ASSERTU1(u8_conditionLEUnused(0, U8_MAX, 1), 0);
+	ASSERTU1(u8_conditionLEUnused(0, U8_MAX, U8_MAX), 1);
+
 	ASSERTU1(u8_conditionLEZero(0), 1);
 	ASSERTU1(u8_conditionLEZero(1), 0);
 	ASSERTU1(u8_conditionLEZero(U8_MAX), 0);
@@ -587,6 +631,7 @@ TEST u8_conditionLE_Main()
 TEST u8_conditionLT_Main()
 {
 	extern u1 u8_conditionLT(u8 lhs, u8 rhs);
+	extern u1 u8_conditionLTUnused(u8 val, u8 lhs, u8 rhs);
 	extern u1 u8_conditionLTZero(u8 val);
 	extern u1 u8_conditionLTOne(u8 val);
 
@@ -600,6 +645,16 @@ TEST u8_conditionLT_Main()
 	ASSERTU1(u8_conditionLT(U8_MAX, 1), 0);
 	ASSERTU1(u8_conditionLT(U8_MAX, U8_MAX), 0);
 
+	ASSERTU1(u8_conditionLTUnused(0, 0, 0), 0);
+	ASSERTU1(u8_conditionLTUnused(0, 0, 1), 1);
+	ASSERTU1(u8_conditionLTUnused(0, 0, U8_MAX), 1);
+	ASSERTU1(u8_conditionLTUnused(0, 1, 0), 0);
+	ASSERTU1(u8_conditionLTUnused(0, 1, 1), 0);
+	ASSERTU1(u8_conditionLTUnused(0, 1, U8_MAX), 1);
+	ASSERTU1(u8_conditionLTUnused(0, U8_MAX, 0), 0);
+	ASSERTU1(u8_conditionLTUnused(0, U8_MAX, 1), 0);
+	ASSERTU1(u8_conditionLTUnused(0, U8_MAX, U8_MAX), 0);
+
 	ASSERTU1(u8_conditionLTZero(0), 0);
 	ASSERTU1(u8_conditionLTZero(1), 0);
 	ASSERTU1(u8_conditionLTZero(U8_MAX), 0);
@@ -612,6 +667,7 @@ TEST u8_conditionLT_Main()
 TEST u8_conditionNE_Main()
 {
 	extern u1 u8_conditionNE(u8 lhs, u8 rhs);
+	extern u1 u8_conditionNEUnused(u8 val, u8 lhs, u8 rhs);
 	extern u1 u8_conditionNEZero(u8 val);
 	extern u1 u8_conditionNEOne(u8 val);
 
@@ -625,6 +681,16 @@ TEST u8_conditionNE_Main()
 	ASSERTU1(u8_conditionNE(U8_MAX, 1), 1);
 	ASSERTU1(u8_conditionNE(U8_MAX, U8_MAX), 0);
 
+	ASSERTU1(u8_conditionNEUnused(0, 0, 0), 0);
+	ASSERTU1(u8_conditionNEUnused(0, 0, 1), 1);
+	ASSERTU1(u8_conditionNEUnused(0, 0, U8_MAX), 1);
+	ASSERTU1(u8_conditionNEUnused(0, 1, 0), 1);
+	ASSERTU1(u8_conditionNEUnused(0, 1, 1), 0);
+	ASSERTU1(u8_conditionNEUnused(0, 1, U8_MAX), 1);
+	ASSERTU1(u8_conditionNEUnused(0, U8_MAX, 0), 1);
+	ASSERTU1(u8_conditionNEUnused(0, U8_MAX, 1), 1);
+	ASSERTU1(u8_conditionNEUnused(0, U8_MAX, U8_MAX), 0);
+
 	ASSERTU1(u8_conditionNEZero(0), 0);
 	ASSERTU1(u8_conditionNEZero(1), 1);
 	ASSERTU1(u8_conditionNEZero(U8_MAX), 1);
@@ -637,6 +703,7 @@ TEST u8_conditionNE_Main()
 TEST i8_conditionGT_Main()
 {
 	extern u1 i8_conditionGT(i8 lhs, i8 rhs);
+	extern u1 i8_conditionGTUnused(i8 val, i8 lhs, i8 rhs);
 	extern u1 i8_conditionGTZero(i8 val);
 	extern u1 i8_conditionGTOne(i8 val);
 
@@ -657,6 +724,23 @@ TEST i8_conditionGT_Main()
 	ASSERTU1(i8_conditionGT(I8_MIN, I8_MAX), 0);
 	ASSERTU1(i8_conditionGT(I8_MIN, I8_MIN), 0);
 
+	ASSERTU1(i8_conditionGTUnused(0, 0, 0), 0);
+	ASSERTU1(i8_conditionGTUnused(0, 0, 1), 0);
+	ASSERTU1(i8_conditionGTUnused(0, 0, I8_MAX), 0);
+	ASSERTU1(i8_conditionGTUnused(0, 0, I8_MIN), 1);
+	ASSERTU1(i8_conditionGTUnused(0, 1, 0), 1);
+	ASSERTU1(i8_conditionGTUnused(0, 1, 1), 0);
+	ASSERTU1(i8_conditionGTUnused(0, 1, I8_MAX), 0);
+	ASSERTU1(i8_conditionGTUnused(0, 1, I8_MIN), 1);
+	ASSERTU1(i8_conditionGTUnused(0, I8_MAX, 0), 1);
+	ASSERTU1(i8_conditionGTUnused(0, I8_MAX, 1), 1);
+	ASSERTU1(i8_conditionGTUnused(0, I8_MAX, I8_MAX), 0);
+	ASSERTU1(i8_conditionGTUnused(0, I8_MAX, I8_MIN), 1);
+	ASSERTU1(i8_conditionGTUnused(0, I8_MIN, 0), 0);
+	ASSERTU1(i8_conditionGTUnused(0, I8_MIN, 1), 0);
+	ASSERTU1(i8_conditionGTUnused(0, I8_MIN, I8_MAX), 0);
+	ASSERTU1(i8_conditionGTUnused(0, I8_MIN, I8_MIN), 0);
+
 	ASSERTU1(i8_conditionGTZero(0), 0);
 	ASSERTU1(i8_conditionGTZero(1), 1);
 	ASSERTU1(i8_conditionGTZero(I8_MAX), 1);
@@ -671,6 +755,7 @@ TEST i8_conditionGT_Main()
 TEST i8_conditionGE_Main()
 {
 	extern u1 i8_conditionGE(i8 lhs, i8 rhs);
+	extern u1 i8_conditionGEUnused(i8 val, i8 lhs, i8 rhs);
 	extern u1 i8_conditionGEZero(i8 val);
 	extern u1 i8_conditionGEOne(i8 val);
 
@@ -691,6 +776,23 @@ TEST i8_conditionGE_Main()
 	ASSERTU1(i8_conditionGE(I8_MIN, I8_MAX), 0);
 	ASSERTU1(i8_conditionGE(I8_MIN, I8_MIN), 1);
 
+	ASSERTU1(i8_conditionGEUnused(0, 0, 0), 1);
+	ASSERTU1(i8_conditionGEUnused(0, 0, 1), 0);
+	ASSERTU1(i8_conditionGEUnused(0, 0, I8_MAX), 0);
+	ASSERTU1(i8_conditionGEUnused(0, 0, I8_MIN), 1);
+	ASSERTU1(i8_conditionGEUnused(0, 1, 0), 1);
+	ASSERTU1(i8_conditionGEUnused(0, 1, 1), 1);
+	ASSERTU1(i8_conditionGEUnused(0, 1, I8_MAX), 0);
+	ASSERTU1(i8_conditionGEUnused(0, 1, I8_MIN), 1);
+	ASSERTU1(i8_conditionGEUnused(0, I8_MAX, 0), 1);
+	ASSERTU1(i8_conditionGEUnused(0, I8_MAX, 1), 1);
+	ASSERTU1(i8_conditionGEUnused(0, I8_MAX, I8_MAX), 1);
+	ASSERTU1(i8_conditionGEUnused(0, I8_MAX, I8_MIN), 1);
+	ASSERTU1(i8_conditionGEUnused(0, I8_MIN, 0), 0);
+	ASSERTU1(i8_conditionGEUnused(0, I8_MIN, 1), 0);
+	ASSERTU1(i8_conditionGEUnused(0, I8_MIN, I8_MAX), 0);
+	ASSERTU1(i8_conditionGEUnused(0, I8_MIN, I8_MIN), 1);
+
 	ASSERTU1(i8_conditionGEZero(0), 1);
 	ASSERTU1(i8_conditionGEZero(1), 1);
 	ASSERTU1(i8_conditionGEZero(I8_MAX), 1);
@@ -705,6 +807,7 @@ TEST i8_conditionGE_Main()
 TEST i8_conditionEQ_Main()
 {
 	extern u1 i8_conditionEQ(i8 lhs, i8 rhs);
+	extern u1 i8_conditionEQUnused(i8 val, i8 lhs, i8 rhs);
 	extern u1 i8_conditionEQZero(i8 val);
 	extern u1 i8_conditionEQOne(i8 val);
 
@@ -725,6 +828,23 @@ TEST i8_conditionEQ_Main()
 	ASSERTU1(i8_conditionEQ(I8_MIN, I8_MAX), 0);
 	ASSERTU1(i8_conditionEQ(I8_MIN, I8_MIN), 1);
 
+	ASSERTU1(i8_conditionEQUnused(0, 0, 0), 1);
+	ASSERTU1(i8_conditionEQUnused(0, 0, 1), 0);
+	ASSERTU1(i8_conditionEQUnused(0, 0, I8_MAX), 0);
+	ASSERTU1(i8_conditionEQUnused(0, 0, I8_MIN), 0);
+	ASSERTU1(i8_conditionEQUnused(0, 1, 0), 0);
+	ASSERTU1(i8_conditionEQUnused(0, 1, 1), 1);
+	ASSERTU1(i8_conditionEQUnused(0, 1, I8_MAX), 0);
+	ASSERTU1(i8_conditionEQUnused(0, 1, I8_MIN), 0);
+	ASSERTU1(i8_conditionEQUnused(0, I8_MAX, 0), 0);
+	ASSERTU1(i8_conditionEQUnused(0, I8_MAX, 1), 0);
+	ASSERTU1(i8_conditionEQUnused(0, I8_MAX, I8_MAX), 1);
+	ASSERTU1(i8_conditionEQUnused(0, I8_MAX, I8_MIN), 0);
+	ASSERTU1(i8_conditionEQUnused(0, I8_MIN, 0), 0);
+	ASSERTU1(i8_conditionEQUnused(0, I8_MIN, 1), 0);
+	ASSERTU1(i8_conditionEQUnused(0, I8_MIN, I8_MAX), 0);
+	ASSERTU1(i8_conditionEQUnused(0, I8_MIN, I8_MIN), 1);
+
 	ASSERTU1(i8_conditionEQZero(0), 1);
 	ASSERTU1(i8_conditionEQZero(1), 0);
 	ASSERTU1(i8_conditionEQZero(I8_MAX), 0);
@@ -739,6 +859,7 @@ TEST i8_conditionEQ_Main()
 TEST i8_conditionLE_Main()
 {
 	extern u1 i8_conditionLE(i8 lhs, i8 rhs);
+	extern u1 i8_conditionLEUnused(i8 val, i8 lhs, i8 rhs);
 	extern u1 i8_conditionLEZero(i8 val);
 	extern u1 i8_conditionLEOne(i8 val);
 
@@ -759,6 +880,23 @@ TEST i8_conditionLE_Main()
 	ASSERTU1(i8_conditionLE(I8_MIN, I8_MAX), 1);
 	ASSERTU1(i8_conditionLE(I8_MIN, I8_MIN), 1);
 
+	ASSERTU1(i8_conditionLEUnused(0, 0, 0), 1);
+	ASSERTU1(i8_conditionLEUnused(0, 0, 1), 1);
+	ASSERTU1(i8_conditionLEUnused(0, 0, I8_MAX), 1);
+	ASSERTU1(i8_conditionLEUnused(0, 0, I8_MIN), 0);
+	ASSERTU1(i8_conditionLEUnused(0, 1, 0), 0);
+	ASSERTU1(i8_conditionLEUnused(0, 1, 1), 1);
+	ASSERTU1(i8_conditionLEUnused(0, 1, I8_MAX), 1);
+	ASSERTU1(i8_conditionLEUnused(0, 1, I8_MIN), 0);
+	ASSERTU1(i8_conditionLEUnused(0, I8_MAX, 0), 0);
+	ASSERTU1(i8_conditionLEUnused(0, I8_MAX, 1), 0);
+	ASSERTU1(i8_conditionLEUnused(0, I8_MAX, I8_MAX), 1);
+	ASSERTU1(i8_conditionLEUnused(0, I8_MAX, I8_MIN), 0);
+	ASSERTU1(i8_conditionLEUnused(0, I8_MIN, 0), 1);
+	ASSERTU1(i8_conditionLEUnused(0, I8_MIN, 1), 1);
+	ASSERTU1(i8_conditionLEUnused(0, I8_MIN, I8_MAX), 1);
+	ASSERTU1(i8_conditionLEUnused(0, I8_MIN, I8_MIN), 1);
+
 	ASSERTU1(i8_conditionLEZero(0), 1);
 	ASSERTU1(i8_conditionLEZero(1), 0);
 	ASSERTU1(i8_conditionLEZero(I8_MAX), 0);
@@ -773,6 +911,7 @@ TEST i8_conditionLE_Main()
 TEST i8_conditionLT_Main()
 {
 	extern u1 i8_conditionLT(i8 lhs, i8 rhs);
+	extern u1 i8_conditionLTUnused(i8 val, i8 lhs, i8 rhs);
 	extern u1 i8_conditionLTZero(i8 val);
 	extern u1 i8_conditionLTOne(i8 val);
 
@@ -793,6 +932,23 @@ TEST i8_conditionLT_Main()
 	ASSERTU1(i8_conditionLT(I8_MIN, I8_MAX), 1);
 	ASSERTU1(i8_conditionLT(I8_MIN, I8_MIN), 0);
 
+	ASSERTU1(i8_conditionLTUnused(0, 0, 0), 0);
+	ASSERTU1(i8_conditionLTUnused(0, 0, 1), 1);
+	ASSERTU1(i8_conditionLTUnused(0, 0, I8_MAX), 1);
+	ASSERTU1(i8_conditionLTUnused(0, 0, I8_MIN), 0);
+	ASSERTU1(i8_conditionLTUnused(0, 1, 0), 0);
+	ASSERTU1(i8_conditionLTUnused(0, 1, 1), 0);
+	ASSERTU1(i8_conditionLTUnused(0, 1, I8_MAX), 1);
+	ASSERTU1(i8_conditionLTUnused(0, 1, I8_MIN), 0);
+	ASSERTU1(i8_conditionLTUnused(0, I8_MAX, 0), 0);
+	ASSERTU1(i8_conditionLTUnused(0, I8_MAX, 1), 0);
+	ASSERTU1(i8_conditionLTUnused(0, I8_MAX, I8_MAX), 0);
+	ASSERTU1(i8_conditionLTUnused(0, I8_MAX, I8_MIN), 0);
+	ASSERTU1(i8_conditionLTUnused(0, I8_MIN, 0), 1);
+	ASSERTU1(i8_conditionLTUnused(0, I8_MIN, 1), 1);
+	ASSERTU1(i8_conditionLTUnused(0, I8_MIN, I8_MAX), 1);
+	ASSERTU1(i8_conditionLTUnused(0, I8_MIN, I8_MIN), 0);
+
 	ASSERTU1(i8_conditionLTZero(0), 0);
 	ASSERTU1(i8_conditionLTZero(1), 0);
 	ASSERTU1(i8_conditionLTZero(I8_MAX), 0);
@@ -807,6 +963,7 @@ TEST i8_conditionLT_Main()
 TEST i8_conditionNE_Main()
 {
 	extern u1 i8_conditionNE(i8 lhs, i8 rhs);
+	extern u1 i8_conditionNEUnused(i8 val, i8 lhs, i8 rhs);
 	extern u1 i8_conditionNEZero(i8 val);
 	extern u1 i8_conditionNEOne(i8 val);
 
@@ -826,6 +983,23 @@ TEST i8_conditionNE_Main()
 	ASSERTU1(i8_conditionNE(I8_MIN, 1), 1);
 	ASSERTU1(i8_conditionNE(I8_MIN, I8_MAX), 1);
 	ASSERTU1(i8_conditionNE(I8_MIN, I8_MIN), 0);
+
+	ASSERTU1(i8_conditionNEUnused(0, 0, 0), 0);
+	ASSERTU1(i8_conditionNEUnused(0, 0, 1), 1);
+	ASSERTU1(i8_conditionNEUnused(0, 0, I8_MAX), 1);
+	ASSERTU1(i8_conditionNEUnused(0, 0, I8_MIN), 1);
+	ASSERTU1(i8_conditionNEUnused(0, 1, 0), 1);
+	ASSERTU1(i8_conditionNEUnused(0, 1, 1), 0);
+	ASSERTU1(i8_conditionNEUnused(0, 1, I8_MAX), 1);
+	ASSERTU1(i8_conditionNEUnused(0, 1, I8_MIN), 1);
+	ASSERTU1(i8_conditionNEUnused(0, I8_MAX, 0), 1);
+	ASSERTU1(i8_conditionNEUnused(0, I8_MAX, 1), 1);
+	ASSERTU1(i8_conditionNEUnused(0, I8_MAX, I8_MAX), 0);
+	ASSERTU1(i8_conditionNEUnused(0, I8_MAX, I8_MIN), 1);
+	ASSERTU1(i8_conditionNEUnused(0, I8_MIN, 0), 1);
+	ASSERTU1(i8_conditionNEUnused(0, I8_MIN, 1), 1);
+	ASSERTU1(i8_conditionNEUnused(0, I8_MIN, I8_MAX), 1);
+	ASSERTU1(i8_conditionNEUnused(0, I8_MIN, I8_MIN), 0);
 
 	ASSERTU1(i8_conditionNEZero(0), 0);
 	ASSERTU1(i8_conditionNEZero(1), 1);
