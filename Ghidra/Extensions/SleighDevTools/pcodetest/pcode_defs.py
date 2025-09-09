@@ -611,6 +611,21 @@ PCodeTest({
 })
 
 PCodeTest({
+    'name': 'X86',
+    'build_all': 1,
+    'build_exe': 1,
+    'qemu_command': 'qemu-i386',
+    'toolchain': 'x86/i686-elf-linux',
+    'cclibs': '-lgcc',
+    'objdump_option': '-M intel',
+    'language_id': 'x86:LE:32:default',
+    'architecture_test': 'I686',
+    'has_float': 1,
+    'has_double': 1,
+    'has_longlong': 1,
+})
+
+PCodeTest({
     'name': 'pentium',
     'build_all': 1,
     'build_exe': 1,

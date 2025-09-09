@@ -28,6 +28,13 @@ void __stack_chk_fail(void)
 {
 }
 
+void __stack_chk_fail_local(void)
+{
+  return __stack_chk_fail();
+}
+
+
+
 FunctionInfo mainFunctionInfoTable[] = {
 #ifdef HAS_FLOAT
 	{"assertF4", (testFuncPtr) assertF4, 0},
