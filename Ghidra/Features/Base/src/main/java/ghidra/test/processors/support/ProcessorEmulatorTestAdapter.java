@@ -2253,5 +2253,13 @@ public abstract class ProcessorEmulatorTestAdapter extends TestCase implements E
 	public final void test_StructUnionManipulation() {
 		// stub
 	}
+	
+	public final void test_CONVERT() {
+		// stub
+	}
+	
+	public final void test_CONVERT_LONGLONG() {
+		// stub
+	}
 
 }

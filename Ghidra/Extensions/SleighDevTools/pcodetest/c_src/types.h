@@ -232,22 +232,22 @@ typedef u4 size_t;
 
 
 /* Simulated limit.h */
-#define U1_MAX                   0xFF
-#define U1_MIN                   0
-#define U2_MAX                   0xFFFF
-#define U2_MIN                   0
-#define U4_MAX                   0xFFFFFFFFU
-#define U4_MIN                   0
-#define U8_MAX                   0xFFFFFFFFFFFFFFFFULL
-#define U8_MIN                   0
-#define I1_MAX                   0x7F
-#define I1_MIN                   (-128)
-#define I2_MAX                   0x7FFF
-#define I2_MIN                   (-32768)
-#define I4_MAX                   0x7FFFFFFF
-#define I4_MIN                   (-I4_MAX - 1)
-#define I8_MAX                   9223372036854775807LL
-#define I8_MIN                   (-I8_MAX - 1LL)
+#define U1_MAX                   ((u1)0xFF)
+#define U1_MIN                   ((u1)0)
+#define U2_MAX                   ((u2)0xFFFF)
+#define U2_MIN                   ((u2)0)
+#define U4_MAX                   ((u4)0xFFFFFFFFU)
+#define U4_MIN                   ((u4)0)
+#define U8_MAX                   ((u8)0xFFFFFFFFFFFFFFFFULL)
+#define U8_MIN                   ((u8)0)
+#define I1_MAX                   ((i1)0x7F)
+#define I1_MIN                   ((i1)(-128))
+#define I2_MAX                   ((i2)0x7FFF)
+#define I2_MIN                   ((i2)(-32768))
+#define I4_MAX                   ((i4)0x7FFFFFFF)
+#define I4_MIN                   ((i4)(-I4_MAX - 1))
+#define I8_MAX                   ((i8)9223372036854775807LL)
+#define I8_MIN                   ((i8)(-I8_MAX - 1LL))
 
 /* Simulate float.h assumes IEEE standard format and 4 8 10 byte formats (FLT_, DBL_, LDBL_) (FLT_ maps to F4, DBL_ maps to F8) */
 
