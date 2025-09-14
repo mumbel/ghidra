@@ -548,7 +548,7 @@ typ typ##_multiplyOne(			\
 }
 
 #define PCODE_BIOP_MAX(typ)		\
-typ typ##_maximumA(			\
+typ typ##_maximumNew(			\
 		typ lhs,		\
 		typ rhs)		\
 {					\
@@ -556,28 +556,30 @@ typ typ##_maximumA(			\
 	z = lhs > rhs ? lhs : rhs;	\
 	return z;			\
 }					\
-typ typ##_maximumB(			\
+typ typ##_maximum(			\
 		typ lhs,		\
 		typ rhs)		\
 {					\
 	typ z;				\
 	z = lhs >= rhs ? lhs : rhs;	\
 	return z;			\
-}					\
-typ typ##_maximumC(			\
+}
+
+#define PCODE_BIOP_MIN(typ)		\
+typ typ##_minimumNew(			\
 		typ lhs,		\
 		typ rhs)		\
 {					\
 	typ z;				\
-	z = lhs < rhs ? rhs : lhs;	\
+	z = lhs < rhs ? lhs : rhs;	\
 	return z;			\
 }					\
-typ typ##_maximumD(			\
+typ typ##_minimum(			\
 		typ lhs,		\
        		typ rhs)		\
 {					\
 	typ z;				\
-	z = lhs <= rhs ? rhs : lhs;	\
+	z = lhs <= rhs ? lhs : rhs;	\
 	return z;			\
 }
 
@@ -892,7 +894,8 @@ u1 typ##_conditionNEOne(			\
   PCODE_COND_NEUNUSED(typ)					\
   PCODE_COND_NEZero(typ)				\
   PCODE_COND_NEOne(typ)\
-  PCODE_BIOP_MAX(typ)
+  PCODE_BIOP_MAX(typ)\
+  PCODE_BIOP_MIN(typ)
 
 
 

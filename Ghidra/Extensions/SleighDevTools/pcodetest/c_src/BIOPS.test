@@ -921,4 +921,148 @@ TEST i1_conditionNE_Main()
 	ASSERTU1(i1_conditionNEOne(I1_MIN), 1);
 }
 
+TEST u1_minimum_Main()
+{
+	extern u1 u1_minimumNew(u1 lhs, u1 rhs);
+	extern u1 u1_minimum(u1 lhs, u1 rhs);
+
+	ASSERTU1(u1_minimumNew(0, 0), 0);
+	ASSERTU1(u1_minimum(0, 0), 0);
+	ASSERTU1(u1_minimumNew(0, 1), 0);
+	ASSERTU1(u1_minimum(0, 1), 0);
+	ASSERTU1(u1_minimumNew(0, U1_MAX), 0);
+	ASSERTU1(u1_minimum(0, U1_MAX), 0);
+	ASSERTU1(u1_minimumNew(1, 0), 0);
+	ASSERTU1(u1_minimum(1, 0), 0);
+	ASSERTU1(u1_minimumNew(1, 1), 1);
+	ASSERTU1(u1_minimum(1, 1), 1);
+	ASSERTU1(u1_minimumNew(1, U1_MAX), 1);
+	ASSERTU1(u1_minimum(1, U1_MAX), 1);
+	ASSERTU1(u1_minimumNew(U1_MAX, 0), 0);
+	ASSERTU1(u1_minimum(U1_MAX, 0), 0);
+	ASSERTU1(u1_minimumNew(U1_MAX, 1), 1);
+	ASSERTU1(u1_minimum(U1_MAX, 1), 1);
+	ASSERTU1(u1_minimumNew(U1_MAX, U1_MAX), U1_MAX);
+	ASSERTU1(u1_minimum(U1_MAX, U1_MAX), U1_MAX);
+}
+
+TEST u1_maximum_Main()
+{
+	extern u1 u1_maximumNew(u1 lhs, u1 rhs);
+	extern u1 u1_maximum(u1 lhs, u1 rhs);
+
+	ASSERTU1(u1_maximumNew(0, 0), 0);
+	ASSERTU1(u1_maximum(0, 0), 0);
+	ASSERTU1(u1_maximumNew(0, 1), 1);
+	ASSERTU1(u1_maximum(0, 1), 1);
+	ASSERTU1(u1_maximumNew(0, U1_MAX), U1_MAX);
+	ASSERTU1(u1_maximum(0, U1_MAX), U1_MAX);
+	ASSERTU1(u1_maximumNew(1, 0), 1);
+	ASSERTU1(u1_maximum(1, 0), 1);
+	ASSERTU1(u1_maximumNew(1, 1), 1);
+	ASSERTU1(u1_maximum(1, 1), 1);
+	ASSERTU1(u1_maximumNew(1, U1_MAX), U1_MAX);
+	ASSERTU1(u1_maximum(1, U1_MAX), U1_MAX);
+	ASSERTU1(u1_maximumNew(U1_MAX, 0), U1_MAX);
+	ASSERTU1(u1_maximum(U1_MAX, 0), U1_MAX);
+	ASSERTU1(u1_maximumNew(U1_MAX, 1), U1_MAX);
+	ASSERTU1(u1_maximum(U1_MAX, 1), U1_MAX);
+	ASSERTU1(u1_maximumNew(U1_MAX, U1_MAX), U1_MAX);
+	ASSERTU1(u1_maximum(U1_MAX, U1_MAX), U1_MAX);
+}
+
+TEST i1_minimum_Main()
+{
+	extern i1 i1_minimumNew(i1 lhs, i1 rhs);
+	extern i1 i1_minimum(i1 lhs, i1 rhs);
+
+	ASSERTI1(i1_minimumNew(0, 0), 0);
+	ASSERTI1(i1_minimum(0, 0), 0);
+	ASSERTI1(i1_minimumNew(0, 1), 0);
+	ASSERTI1(i1_minimum(0, 1), 0);
+	ASSERTI1(i1_minimumNew(0, -1), -1);
+	ASSERTI1(i1_minimum(0, -1), -1);
+	ASSERTI1(i1_minimumNew(0, I1_MAX), 0);
+	ASSERTI1(i1_minimum(0, I1_MAX), 0);
+	ASSERTI1(i1_minimumNew(0, I1_MIN), I1_MIN);
+	ASSERTI1(i1_minimum(0, I1_MIN), I1_MIN);
+	ASSERTI1(i1_minimumNew(1, 0), 0);
+	ASSERTI1(i1_minimum(1, 0), 0);
+	ASSERTI1(i1_minimumNew(1, 1), 1);
+	ASSERTI1(i1_minimum(1, 1), 1);
+	ASSERTI1(i1_minimumNew(1, -1), -1);
+	ASSERTI1(i1_minimum(1, -1), -1);
+	ASSERTI1(i1_minimumNew(1, I1_MAX), 1);
+	ASSERTI1(i1_minimum(1, I1_MAX), 1);
+	ASSERTI1(i1_minimumNew(1, I1_MIN), I1_MIN);
+	ASSERTI1(i1_minimum(1, I1_MIN), I1_MIN);
+	ASSERTI1(i1_minimumNew(I1_MAX, 0), 0);
+	ASSERTI1(i1_minimum(I1_MAX, 0), 0);
+	ASSERTI1(i1_minimumNew(I1_MAX, 1), 1);
+	ASSERTI1(i1_minimum(I1_MAX, 1), 1);
+	ASSERTI1(i1_minimumNew(I1_MAX, -1), -1);
+	ASSERTI1(i1_minimum(I1_MAX, -1), -1);
+	ASSERTI1(i1_minimumNew(I1_MAX, I1_MAX), I1_MAX);
+	ASSERTI1(i1_minimum(I1_MAX, I1_MAX), I1_MAX);
+	ASSERTI1(i1_minimumNew(I1_MAX, I1_MIN), I1_MIN);
+	ASSERTI1(i1_minimum(I1_MAX, I1_MIN), I1_MIN);
+	ASSERTI1(i1_minimumNew(I1_MIN, 0), I1_MIN);
+	ASSERTI1(i1_minimum(I1_MIN, 0), I1_MIN);
+	ASSERTI1(i1_minimumNew(I1_MIN, 1), I1_MIN);
+	ASSERTI1(i1_minimum(I1_MIN, 1), I1_MIN);
+	ASSERTI1(i1_minimumNew(I1_MIN, -1), I1_MIN);
+	ASSERTI1(i1_minimum(I1_MIN, -1), I1_MIN);
+	ASSERTI1(i1_minimumNew(I1_MIN, I1_MAX), I1_MIN);
+	ASSERTI1(i1_minimum(I1_MIN, I1_MAX), I1_MIN);
+	ASSERTI1(i1_minimumNew(I1_MIN, I1_MIN), I1_MIN);
+	ASSERTI1(i1_minimum(I1_MIN, I1_MIN), I1_MIN);
+}
+
+TEST i1_maximum_Main()
+{
+	extern i1 i1_maximumNew(i1 lhs, i1 rhs);
+	extern i1 i1_maximum(i1 lhs, i1 rhs);
+
+	ASSERTI1(i1_maximumNew(0, 0), 0);
+	ASSERTI1(i1_maximum(0, 0), 0);
+	ASSERTI1(i1_maximumNew(0, 1), 1);
+	ASSERTI1(i1_maximum(0, 1), 1);
+	ASSERTI1(i1_maximumNew(0, -1), 0);
+	ASSERTI1(i1_maximum(0, -1), 0);
+	ASSERTI1(i1_maximumNew(0, I1_MAX), I1_MAX);
+	ASSERTI1(i1_maximum(0, I1_MAX), I1_MAX);
+	ASSERTI1(i1_maximumNew(0, I1_MIN), 0);
+	ASSERTI1(i1_maximum(0, I1_MIN), 0);
+	ASSERTI1(i1_maximumNew(1, 0), 1);
+	ASSERTI1(i1_maximum(1, 0), 1);
+	ASSERTI1(i1_maximumNew(1, 1), 1);
+	ASSERTI1(i1_maximum(1, 1), 1);
+	ASSERTI1(i1_maximumNew(1, -1), 1);
+	ASSERTI1(i1_maximum(1, -1), 1);
+	ASSERTI1(i1_maximumNew(1, I1_MAX), I1_MAX);
+	ASSERTI1(i1_maximum(1, I1_MAX), I1_MAX);
+	ASSERTI1(i1_maximumNew(1, I1_MIN), 1);
+	ASSERTI1(i1_maximum(1, I1_MIN), 1);
+	ASSERTI1(i1_maximumNew(I1_MAX, 0), I1_MAX);
+	ASSERTI1(i1_maximum(I1_MAX, 0), I1_MAX);
+	ASSERTI1(i1_maximumNew(I1_MAX, 1), I1_MAX);
+	ASSERTI1(i1_maximum(I1_MAX, 1), I1_MAX);
+	ASSERTI1(i1_maximumNew(I1_MAX, -1), I1_MAX);
+	ASSERTI1(i1_maximum(I1_MAX, -1), I1_MAX);
+	ASSERTI1(i1_maximumNew(I1_MAX, I1_MAX), I1_MAX);
+	ASSERTI1(i1_maximum(I1_MAX, I1_MAX), I1_MAX);
+	ASSERTI1(i1_maximumNew(I1_MAX, I1_MIN), I1_MAX);
+	ASSERTI1(i1_maximum(I1_MAX, I1_MIN), I1_MAX);
+	ASSERTI1(i1_maximumNew(I1_MIN, 0), 0);
+	ASSERTI1(i1_maximum(I1_MIN, 0), 0);
+	ASSERTI1(i1_maximumNew(I1_MIN, 1), 1);
+	ASSERTI1(i1_maximum(I1_MIN, 1), 1);
+	ASSERTI1(i1_maximumNew(I1_MIN, -1), -1);
+	ASSERTI1(i1_maximum(I1_MIN, -1), -1);
+	ASSERTI1(i1_maximumNew(I1_MIN, I1_MAX), I1_MAX);
+	ASSERTI1(i1_maximum(I1_MIN, I1_MAX), I1_MAX);
+	ASSERTI1(i1_maximumNew(I1_MIN, I1_MIN), I1_MIN);
+	ASSERTI1(i1_maximum(I1_MIN, I1_MIN), I1_MIN);
+}
+
 MAIN BIOPS_main() { }

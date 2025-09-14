@@ -1012,6 +1012,150 @@ TEST i8_conditionNE_Main()
 	ASSERTU1(i8_conditionNEOne(I8_MIN), 1);
 }
 
+TEST u8_minimum_Main()
+{
+	extern u8 u8_minimumNew(u8 lhs, u8 rhs);
+	extern u8 u8_minimum(u8 lhs, u8 rhs);
+
+	ASSERTU8(u8_minimumNew(0, 0), 0);
+	ASSERTU8(u8_minimum(0, 0), 0);
+	ASSERTU8(u8_minimumNew(0, 1), 0);
+	ASSERTU8(u8_minimum(0, 1), 0);
+	ASSERTU8(u8_minimumNew(0, U8_MAX), 0);
+	ASSERTU8(u8_minimum(0, U8_MAX), 0);
+	ASSERTU8(u8_minimumNew(1, 0), 0);
+	ASSERTU8(u8_minimum(1, 0), 0);
+	ASSERTU8(u8_minimumNew(1, 1), 1);
+	ASSERTU8(u8_minimum(1, 1), 1);
+	ASSERTU8(u8_minimumNew(1, U8_MAX), 1);
+	ASSERTU8(u8_minimum(1, U8_MAX), 1);
+	ASSERTU8(u8_minimumNew(U8_MAX, 0), 0);
+	ASSERTU8(u8_minimum(U8_MAX, 0), 0);
+	ASSERTU8(u8_minimumNew(U8_MAX, 1), 1);
+	ASSERTU8(u8_minimum(U8_MAX, 1), 1);
+	ASSERTU8(u8_minimumNew(U8_MAX, U8_MAX), U8_MAX);
+	ASSERTU8(u8_minimum(U8_MAX, U8_MAX), U8_MAX);
+}
+
+TEST u8_maximum_Main()
+{
+	extern u8 u8_maximumNew(u8 lhs, u8 rhs);
+	extern u8 u8_maximum(u8 lhs, u8 rhs);
+
+	ASSERTU8(u8_maximumNew(0, 0), 0);
+	ASSERTU8(u8_maximum(0, 0), 0);
+	ASSERTU8(u8_maximumNew(0, 1), 1);
+	ASSERTU8(u8_maximum(0, 1), 1);
+	ASSERTU8(u8_maximumNew(0, U8_MAX), U8_MAX);
+	ASSERTU8(u8_maximum(0, U8_MAX), U8_MAX);
+	ASSERTU8(u8_maximumNew(1, 0), 1);
+	ASSERTU8(u8_maximum(1, 0), 1);
+	ASSERTU8(u8_maximumNew(1, 1), 1);
+	ASSERTU8(u8_maximum(1, 1), 1);
+	ASSERTU8(u8_maximumNew(1, U8_MAX), U8_MAX);
+	ASSERTU8(u8_maximum(1, U8_MAX), U8_MAX);
+	ASSERTU8(u8_maximumNew(U8_MAX, 0), U8_MAX);
+	ASSERTU8(u8_maximum(U8_MAX, 0), U8_MAX);
+	ASSERTU8(u8_maximumNew(U8_MAX, 1), U8_MAX);
+	ASSERTU8(u8_maximum(U8_MAX, 1), U8_MAX);
+	ASSERTU8(u8_maximumNew(U8_MAX, U8_MAX), U8_MAX);
+	ASSERTU8(u8_maximum(U8_MAX, U8_MAX), U8_MAX);
+}
+
+TEST i8_minimum_Main()
+{
+	extern i8 i8_minimumNew(i8 lhs, i8 rhs);
+	extern i8 i8_minimum(i8 lhs, i8 rhs);
+
+	ASSERTI8(i8_minimumNew(0, 0), 0);
+	ASSERTI8(i8_minimum(0, 0), 0);
+	ASSERTI8(i8_minimumNew(0, 1), 0);
+	ASSERTI8(i8_minimum(0, 1), 0);
+	ASSERTI8(i8_minimumNew(0, -1), -1);
+	ASSERTI8(i8_minimum(0, -1), -1);
+	ASSERTI8(i8_minimumNew(0, I8_MAX), 0);
+	ASSERTI8(i8_minimum(0, I8_MAX), 0);
+	ASSERTI8(i8_minimumNew(0, I8_MIN), I8_MIN);
+	ASSERTI8(i8_minimum(0, I8_MIN), I8_MIN);
+	ASSERTI8(i8_minimumNew(1, 0), 0);
+	ASSERTI8(i8_minimum(1, 0), 0);
+	ASSERTI8(i8_minimumNew(1, 1), 1);
+	ASSERTI8(i8_minimum(1, 1), 1);
+	ASSERTI8(i8_minimumNew(1, -1), -1);
+	ASSERTI8(i8_minimum(1, -1), -1);
+	ASSERTI8(i8_minimumNew(1, I8_MAX), 1);
+	ASSERTI8(i8_minimum(1, I8_MAX), 1);
+	ASSERTI8(i8_minimumNew(1, I8_MIN), I8_MIN);
+	ASSERTI8(i8_minimum(1, I8_MIN), I8_MIN);
+	ASSERTI8(i8_minimumNew(I8_MAX, 0), 0);
+	ASSERTI8(i8_minimum(I8_MAX, 0), 0);
+	ASSERTI8(i8_minimumNew(I8_MAX, 1), 1);
+	ASSERTI8(i8_minimum(I8_MAX, 1), 1);
+	ASSERTI8(i8_minimumNew(I8_MAX, -1), -1);
+	ASSERTI8(i8_minimum(I8_MAX, -1), -1);
+	ASSERTI8(i8_minimumNew(I8_MAX, I8_MAX), I8_MAX);
+	ASSERTI8(i8_minimum(I8_MAX, I8_MAX), I8_MAX);
+	ASSERTI8(i8_minimumNew(I8_MAX, I8_MIN), I8_MIN);
+	ASSERTI8(i8_minimum(I8_MAX, I8_MIN), I8_MIN);
+	ASSERTI8(i8_minimumNew(I8_MIN, 0), I8_MIN);
+	ASSERTI8(i8_minimum(I8_MIN, 0), I8_MIN);
+	ASSERTI8(i8_minimumNew(I8_MIN, 1), I8_MIN);
+	ASSERTI8(i8_minimum(I8_MIN, 1), I8_MIN);
+	ASSERTI8(i8_minimumNew(I8_MIN, -1), I8_MIN);
+	ASSERTI8(i8_minimum(I8_MIN, -1), I8_MIN);
+	ASSERTI8(i8_minimumNew(I8_MIN, I8_MAX), I8_MIN);
+	ASSERTI8(i8_minimum(I8_MIN, I8_MAX), I8_MIN);
+	ASSERTI8(i8_minimumNew(I8_MIN, I8_MIN), I8_MIN);
+	ASSERTI8(i8_minimum(I8_MIN, I8_MIN), I8_MIN);
+}
+
+TEST i8_maximum_Main()
+{
+	extern i8 i8_maximumNew(i8 lhs, i8 rhs);
+	extern i8 i8_maximum(i8 lhs, i8 rhs);
+
+	ASSERTI8(i8_maximumNew(0, 0), 0);
+	ASSERTI8(i8_maximum(0, 0), 0);
+	ASSERTI8(i8_maximumNew(0, 1), 1);
+	ASSERTI8(i8_maximum(0, 1), 1);
+	ASSERTI8(i8_maximumNew(0, -1), 0);
+	ASSERTI8(i8_maximum(0, -1), 0);
+	ASSERTI8(i8_maximumNew(0, I8_MAX), I8_MAX);
+	ASSERTI8(i8_maximum(0, I8_MAX), I8_MAX);
+	ASSERTI8(i8_maximumNew(0, I8_MIN), 0);
+	ASSERTI8(i8_maximum(0, I8_MIN), 0);
+	ASSERTI8(i8_maximumNew(1, 0), 1);
+	ASSERTI8(i8_maximum(1, 0), 1);
+	ASSERTI8(i8_maximumNew(1, 1), 1);
+	ASSERTI8(i8_maximum(1, 1), 1);
+	ASSERTI8(i8_maximumNew(1, -1), 1);
+	ASSERTI8(i8_maximum(1, -1), 1);
+	ASSERTI8(i8_maximumNew(1, I8_MAX), I8_MAX);
+	ASSERTI8(i8_maximum(1, I8_MAX), I8_MAX);
+	ASSERTI8(i8_maximumNew(1, I8_MIN), 1);
+	ASSERTI8(i8_maximum(1, I8_MIN), 1);
+	ASSERTI8(i8_maximumNew(I8_MAX, 0), I8_MAX);
+	ASSERTI8(i8_maximum(I8_MAX, 0), I8_MAX);
+	ASSERTI8(i8_maximumNew(I8_MAX, 1), I8_MAX);
+	ASSERTI8(i8_maximum(I8_MAX, 1), I8_MAX);
+	ASSERTI8(i8_maximumNew(I8_MAX, -1), I8_MAX);
+	ASSERTI8(i8_maximum(I8_MAX, -1), I8_MAX);
+	ASSERTI8(i8_maximumNew(I8_MAX, I8_MAX), I8_MAX);
+	ASSERTI8(i8_maximum(I8_MAX, I8_MAX), I8_MAX);
+	ASSERTI8(i8_maximumNew(I8_MAX, I8_MIN), I8_MAX);
+	ASSERTI8(i8_maximum(I8_MAX, I8_MIN), I8_MAX);
+	ASSERTI8(i8_maximumNew(I8_MIN, 0), 0);
+	ASSERTI8(i8_maximum(I8_MIN, 0), 0);
+	ASSERTI8(i8_maximumNew(I8_MIN, 1), 1);
+	ASSERTI8(i8_maximum(I8_MIN, 1), 1);
+	ASSERTI8(i8_maximumNew(I8_MIN, -1), -1);
+	ASSERTI8(i8_maximum(I8_MIN, -1), -1);
+	ASSERTI8(i8_maximumNew(I8_MIN, I8_MAX), I8_MAX);
+	ASSERTI8(i8_maximum(I8_MIN, I8_MAX), I8_MAX);
+	ASSERTI8(i8_maximumNew(I8_MIN, I8_MIN), I8_MIN);
+	ASSERTI8(i8_maximum(I8_MIN, I8_MIN), I8_MIN);
+}
+
 #endif
 
 MAIN BIOPS_LONGLONG_main() { }

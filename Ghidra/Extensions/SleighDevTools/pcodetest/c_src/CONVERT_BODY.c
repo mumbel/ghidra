@@ -16,9 +16,12 @@
 #include "pcode_test.h"
 
 
-#define PCODE_CONVERT(typ, typ0)			\
-  typ0 pcode_##typ##_to_##typ0##_convert(typ a) {	\
-    return (typ0)a;					\
+#define PCODE_CONVERT(typ, typ0)					\
+  typ0 pcode_##typ##_to_##typ0##_convert(typ a) {			\
+    return (typ0)a;							\
+  }									\
+  typ0 pcode_##typ##_to_##typ0##_convertUnused(UNUSED typ val, typ a) { \
+    return (typ0)a;							\
   }
 
 
