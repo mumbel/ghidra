@@ -18,23 +18,23 @@ package ghidra.test.processors;
 import ghidra.test.processors.support.ProcessorEmulatorTestAdapter;
 import junit.framework.Test;
 
-public class RISCV64_Otest_EmulatorTest extends ProcessorEmulatorTestAdapter {
-	
-	private static final String LANGUAGE_ID = "RISCV:LE:64:RV64GC";
-	private static final String COMPILER_SPEC_ID = "gcc";
+public class ARM_O2_EmulatorTest extends ProcessorEmulatorTestAdapter {
+
+	private static final String LANGUAGE_ID = "ARM:LE:32:v8";
+	private static final String COMPILER_SPEC_ID = "default";
 
 	private static final String[] REG_DUMP_SET = new String[] {};
-	
-	public RISCV64_Otest_EmulatorTest(String name) throws Exception {
+
+	public ARM_O2_EmulatorTest(String name) throws Exception {
 		super(name, LANGUAGE_ID, COMPILER_SPEC_ID, REG_DUMP_SET);
 	}
-	
+
 	@Override
 	protected String getProcessorDesignator() {
-		return "RISCV64_GCC_O0";
+		return "ARM_GCC_O2";
 	}
-	
+
 	public static Test suite() {
-		return ProcessorEmulatorTestAdapter.buildEmulatorTestSuite(RISCV64_Otest_EmulatorTest.class);
+		return ProcessorEmulatorTestAdapter.buildEmulatorTestSuite(ARM_O2_EmulatorTest.class);
 	}
 }

@@ -62,6 +62,88 @@ typ typ##_compareLogic(		\
 	return z;			\
 }
 
+#define PCODE_BIOP_COND(typ)		\
+typ typ##_conditionLogic(		\
+			typ lhs,	\
+			typ rhs,	\
+			typ val0,	\
+			typ val1,	\
+			typ val2,	\
+			typ val3,	\
+			typ val4,	\
+			typ val5,	\
+			typ val6)	\
+{					\
+  typ z = val0;				\
+  if (lhs < rhs)			\
+    z = z + val1;				\
+  if (lhs > rhs)			\
+    z = z - val2;				\
+  if (lhs != rhs)			\
+    z = z * val3;				\
+  if (lhs == rhs)			\
+    z = z / val4;				\
+  if (lhs <= rhs)			\
+    z = z ^ val5;				\
+  if (lhs >= rhs)			\
+    z = z | val6;				\
+  return z;				\
+}
+
+#define PCODE_BIOP_CONDZERO(typ)		\
+typ typ##_conditionLogicZero(		\
+			typ val,	\
+			typ val0,	\
+			typ val1,	\
+			typ val2,	\
+			typ val3,	\
+			typ val4,	\
+			typ val5,	\
+			typ val6)	\
+{					\
+	typ z = val0;			\
+	if (val1 < 0)			\
+		z = z + val;		\
+	if (val2 > 0)			\
+		z = z - val;		\
+	if (val3 != 0)			\
+		z = z * val;		\
+	if (val4 == 0)			\
+		z = z / val;		\
+	if (val5 <= 0)			\
+		z = z ^ val;		\
+	if (val6 >= 0)			\
+		z = z | val;		\
+	return z;			\
+}
+
+#define PCODE_BIOP_CONDONE(typ)		\
+typ typ##_conditionLogicOne(		\
+			typ val,	\
+			typ val0,	\
+			typ val1,	\
+			typ val2,	\
+			typ val3,	\
+			typ val4,	\
+			typ val5,	\
+			typ val6)	\
+{					\
+	typ z = val0;			\
+	if (val < 1)			\
+		z = z + val1;		\
+	if (val > 1)			\
+		z = z - val2;		\
+	if (val != 1)			\
+		z = z * val3;		\
+	if (val == 1)			\
+		z = z / val4;		\
+	if (val <= 1)			\
+		z = z ^ val5;		\
+	if (val >= 1)			\
+		z = z | val6;		\
+	return z;			\
+}
+
 #define PCODE_BIOP_SUB(typ)		\
 typ typ##_subtract(			\
 			typ lhs,	\
@@ -815,87 +897,90 @@ u1 typ##_conditionNEOne(			\
 
 
 
-#define PCODE_BIOPS(typ)					\
-  PCODE_BIOP_ADD(typ)					\
-       PCODE_BIOP_ADDUNUSED(typ)					\
-  PCODE_BIOP_ADDZERO(typ)				\
-  PCODE_BIOP_ADDONE(typ)				\
-  PCODE_BIOP_AND(typ)					\
-       PCODE_BIOP_ANDUNUSED(typ)					\
-  PCODE_BIOP_ANDZERO(typ)				\
-  PCODE_BIOP_ANDONE(typ)				\
-  PCODE_BIOP_OR(typ)					\
-       PCODE_BIOP_ORUNUSED(typ)					\
-  PCODE_BIOP_ORZERO(typ)				\
-  PCODE_BIOP_ORONE(typ)				\
-  PCODE_BIOP_SHL(typ)					\
-       PCODE_BIOP_SHLUNUSED(typ)					\
-  PCODE_BIOP_SHLZERO(typ)				\
-  PCODE_BIOP_SHLONE(typ)				\
-  PCODE_BIOP_SHR(typ)					\
-  PCODE_BIOP_SHRUNUSED(typ)					\
-  PCODE_BIOP_SHRZERO(typ)				\
-  PCODE_BIOP_SHRONE(typ)				\
-  PCODE_BIOP_SUB(typ)					\
-  PCODE_BIOP_SUBUNUSED(typ)					\
-  PCODE_BIOP_SUBZERO(typ)				\
-  PCODE_BIOP_SUBONE(typ)				\
-  PCODE_BIOP_XOR(typ)					\
-  PCODE_BIOP_XORUNUSED(typ)					\
-  PCODE_BIOP_XORZERO(typ)				\
-  PCODE_BIOP_XORONE(typ)				\
-  PCODE_UNOP_POSITIVE(typ)					\
-  PCODE_UNOP_NOT(typ)					\
-  PCODE_UNOP_NEGATIVE(typ)					\
-  PCODE_UNOP_COMP(typ)						\
-  PCODE_UNOP_INCPRE(typ)					\
-  PCODE_UNOP_INCPOST(typ)					\
-  PCODE_UNOP_DECPRE(typ)					\
-  PCODE_UNOP_DECPOST(typ)					\
-  PCODE_COMPLEX_LOGIC(typ)					\
-  PCODE_BIOP_LOGIC_OR(typ)				\
-  PCODE_BIOP_LOGIC_ORUNUSED(typ)				\
-  PCODE_BIOP_LOGIC_AND(typ)				\
-  PCODE_BIOP_LOGIC_ANDUNUSED(typ)				\
-  PCODE_BIOP_CMP(typ)					\
-  PCODE_BIOP_MUL(typ)					\
-       PCODE_BIOP_MULUNUSED(typ)					\
-  PCODE_BIOP_MULZERO(typ)				\
-  PCODE_BIOP_MULONE(typ)				\
-  PCODE_BIOP_DIV(typ)					\
-       PCODE_BIOP_DIVUNUSED(typ)					\
-  PCODE_BIOP_DIVZERO(typ)				\
-  PCODE_BIOP_DIVONE(typ)				\
-  PCODE_BIOP_REM(typ)					\
-  PCODE_BIOP_REMUNUSED(typ)					\
-  PCODE_BIOP_REMZERO(typ)				\
-  PCODE_BIOP_REMONE(typ)				\
-  PCODE_COND_GT(typ)					\
-  PCODE_COND_GTUNUSED(typ)					\
-  PCODE_COND_GTZero(typ)				\
-  PCODE_COND_GTOne(typ)					\
-  PCODE_COND_GE(typ)					\
-  PCODE_COND_GEUNUSED(typ)					\
-  PCODE_COND_GEZero(typ)				\
-  PCODE_COND_GEOne(typ)					\
-  PCODE_COND_EQ(typ)					\
-  PCODE_COND_EQUNUSED(typ)					\
-  PCODE_COND_EQZero(typ)				\
-  PCODE_COND_EQOne(typ)					\
-  PCODE_COND_LE(typ)					\
-  PCODE_COND_LEUNUSED(typ)					\
-  PCODE_COND_LEZero(typ)				\
-  PCODE_COND_LEOne(typ)					\
-  PCODE_COND_LT(typ)					\
-  PCODE_COND_LTUNUSED(typ)					\
-  PCODE_COND_LTZero(typ)				\
-  PCODE_COND_LTOne(typ)					\
-  PCODE_COND_NE(typ)					\
-  PCODE_COND_NEUNUSED(typ)					\
-  PCODE_COND_NEZero(typ)				\
-  PCODE_COND_NEOne(typ)\
-  PCODE_BIOP_MAX(typ)\
-  PCODE_BIOP_MIN(typ)
+#define PCODE_BIOPS(typ)			\
+	PCODE_BIOP_ADD(typ)			\
+	PCODE_BIOP_ADDUNUSED(typ)		\
+	PCODE_BIOP_ADDZERO(typ)			\
+	PCODE_BIOP_ADDONE(typ)			\
+	PCODE_BIOP_AND(typ)			\
+	PCODE_BIOP_ANDUNUSED(typ)		\
+	PCODE_BIOP_ANDZERO(typ)			\
+	PCODE_BIOP_ANDONE(typ)			\
+	PCODE_BIOP_OR(typ)			\
+	PCODE_BIOP_ORUNUSED(typ)		\
+	PCODE_BIOP_ORZERO(typ)			\
+	PCODE_BIOP_ORONE(typ)			\
+	PCODE_BIOP_SHL(typ)			\
+	PCODE_BIOP_SHLUNUSED(typ)		\
+	PCODE_BIOP_SHLZERO(typ)			\
+	PCODE_BIOP_SHLONE(typ)			\
+	PCODE_BIOP_SHR(typ)			\
+	PCODE_BIOP_SHRUNUSED(typ)		\
+	PCODE_BIOP_SHRZERO(typ)			\
+	PCODE_BIOP_SHRONE(typ)			\
+	PCODE_BIOP_SUB(typ)			\
+	PCODE_BIOP_SUBUNUSED(typ)		\
+	PCODE_BIOP_SUBZERO(typ)			\
+	PCODE_BIOP_SUBONE(typ)			\
+	PCODE_BIOP_XOR(typ)			\
+	PCODE_BIOP_XORUNUSED(typ)		\
+	PCODE_BIOP_XORZERO(typ)			\
+	PCODE_BIOP_XORONE(typ)			\
+	PCODE_UNOP_POSITIVE(typ)		\
+	PCODE_UNOP_NOT(typ)			\
+	PCODE_UNOP_NEGATIVE(typ)		\
+	PCODE_UNOP_COMP(typ)			\
+	PCODE_UNOP_INCPRE(typ)			\
+	PCODE_UNOP_INCPOST(typ)			\
+	PCODE_UNOP_DECPRE(typ)			\
+	PCODE_UNOP_DECPOST(typ)			\
+	PCODE_COMPLEX_LOGIC(typ)		\
+	PCODE_BIOP_LOGIC_OR(typ)		\
+	PCODE_BIOP_LOGIC_ORUNUSED(typ)		\
+	PCODE_BIOP_LOGIC_AND(typ)		\
+	PCODE_BIOP_LOGIC_ANDUNUSED(typ)		\
+	PCODE_BIOP_CMP(typ)			\
+	PCODE_BIOP_MUL(typ)			\
+	PCODE_BIOP_MULUNUSED(typ)		\
+	PCODE_BIOP_MULZERO(typ)			\
+	PCODE_BIOP_MULONE(typ)			\
+	PCODE_BIOP_DIV(typ)			\
+	PCODE_BIOP_DIVUNUSED(typ)		\
+	PCODE_BIOP_DIVZERO(typ)			\
+	PCODE_BIOP_DIVONE(typ)			\
+	PCODE_BIOP_REM(typ)			\
+	PCODE_BIOP_REMUNUSED(typ)		\
+	PCODE_BIOP_REMZERO(typ)			\
+	PCODE_BIOP_REMONE(typ)			\
+	PCODE_COND_GT(typ)			\
+	PCODE_COND_GTUNUSED(typ)		\
+	PCODE_COND_GTZero(typ)			\
+	PCODE_COND_GTOne(typ)			\
+	PCODE_COND_GE(typ)			\
+	PCODE_COND_GEUNUSED(typ)		\
+	PCODE_COND_GEZero(typ)			\
+	PCODE_COND_GEOne(typ)			\
+	PCODE_COND_EQ(typ)			\
+	PCODE_COND_EQUNUSED(typ)		\
+	PCODE_COND_EQZero(typ)			\
+	PCODE_COND_EQOne(typ)			\
+	PCODE_COND_LE(typ)			\
+	PCODE_COND_LEUNUSED(typ)		\
+	PCODE_COND_LEZero(typ)			\
+	PCODE_COND_LEOne(typ)			\
+	PCODE_COND_LT(typ)			\
+	PCODE_COND_LTUNUSED(typ)		\
+	PCODE_COND_LTZero(typ)			\
+	PCODE_COND_LTOne(typ)			\
+	PCODE_COND_NE(typ)			\
+	PCODE_COND_NEUNUSED(typ)		\
+	PCODE_COND_NEZero(typ)			\
+	PCODE_COND_NEOne(typ)			\
+	PCODE_BIOP_MAX(typ)			\
+	PCODE_BIOP_MIN(typ)			\
+	PCODE_BIOP_COND(typ)			\
+	PCODE_BIOP_CONDZERO(typ)		\
+	PCODE_BIOP_CONDONE(typ)
 
 
 

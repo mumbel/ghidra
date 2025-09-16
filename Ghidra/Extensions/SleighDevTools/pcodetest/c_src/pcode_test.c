@@ -33,6 +33,11 @@ void __stack_chk_fail_local(void)
   return __stack_chk_fail();
 }
 
+int raise(int sig)
+{
+  (void)sig;
+  return 0;
+}
 
 
 FunctionInfo mainFunctionInfoTable[] = {
