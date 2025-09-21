@@ -31,7 +31,7 @@ public class RISCV64_O3_EmulatorTest extends ProcessorEmulatorTestAdapter {
 	
 	@Override
 	protected String getProcessorDesignator() {
-		return "RISCV64_GCC_O0";
+		return "RISCV64_GCC_O3";
 	}
 	
 	public static Test suite() {

@@ -33,7 +33,7 @@ public class SparcV9_32_O1_EmulatorTest extends ProcessorEmulatorTestAdapter {
 
 	@Override
 	protected String getProcessorDesignator() {
-		return "sparcV9_32_GCC_O0";
+		return "sparcV9_32_GCC_O1";
 	}
 
 	@Override
