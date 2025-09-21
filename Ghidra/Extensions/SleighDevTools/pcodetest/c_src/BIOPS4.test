@@ -1105,5 +1105,116 @@ TEST i4_maximum_Main()
 	ASSERTI4(i4_maximum(I4_MIN, I4_MIN), I4_MIN);
 }
 
+TEST u4_swap_Main()
+{
+	extern u4 u4_swapRef(u4 val);
+	extern u4 u4_swapMaskShift(u4 val);
+	extern u4 u4_swapShiftMask(u4 val);
+	extern u4 u4_swapMask(u4 val);
+
+	ASSERTU4(u4_swapRef(0x00000000), 0x00000000);
+	ASSERTU4(u4_swapRef(0x00000001), 0x01000000);
+	ASSERTU4(u4_swapRef(I1_MAX), 0x7f000000);
+	ASSERTU4(u4_swapRef(I2_MAX), 0xff7f0000);
+	ASSERTU4(u4_swapRef(U1_MAX), 0xff000000);
+	ASSERTU4(u4_swapRef(U2_MAX), 0xffff0000);
+	ASSERTU4(u4_swapRef(U4_MAX), U4_MAX);
+	ASSERTU4(u4_swapRef(0x80000000), 0x00000080);
+	ASSERTU4(u4_swapRef(0x00800000), 0x00008000);
+	ASSERTU4(u4_swapRef(0x00008000), 0x00800000);
+	ASSERTU4(u4_swapRef(0x00000080), 0x80000000);
+
+	ASSERTU4(u4_swapMaskShift(0x00000000), 0x00000000);
+	ASSERTU4(u4_swapMaskShift(0x00000001), 0x01000000);
+	ASSERTU4(u4_swapMaskShift(I1_MAX), 0x7f000000);
+	ASSERTU4(u4_swapMaskShift(I2_MAX), 0xff7f0000);
+	ASSERTU4(u4_swapMaskShift(U1_MAX), 0xff000000);
+	ASSERTU4(u4_swapMaskShift(U2_MAX), 0xffff0000);
+	ASSERTU4(u4_swapMaskShift(U4_MAX), U4_MAX);
+	ASSERTU4(u4_swapMaskShift(0x80000000), 0x00000080);
+	ASSERTU4(u4_swapMaskShift(0x00800000), 0x00008000);
+	ASSERTU4(u4_swapMaskShift(0x00008000), 0x00800000);
+	ASSERTU4(u4_swapMaskShift(0x00000080), 0x80000000);
+
+	ASSERTU4(u4_swapShiftMask(0x00000000), 0x00000000);
+	ASSERTU4(u4_swapShiftMask(0x00000001), 0x01000000);
+	ASSERTU4(u4_swapShiftMask(I1_MAX), 0x7f000000);
+	ASSERTU4(u4_swapShiftMask(I2_MAX), 0xff7f0000);
+	ASSERTU4(u4_swapShiftMask(U1_MAX), 0xff000000);
+	ASSERTU4(u4_swapShiftMask(U2_MAX), 0xffff0000);
+	ASSERTU4(u4_swapShiftMask(U4_MAX), U4_MAX);
+	ASSERTU4(u4_swapShiftMask(0x80000000), 0x00000080);
+	ASSERTU4(u4_swapShiftMask(0x00800000), 0x00008000);
+	ASSERTU4(u4_swapShiftMask(0x00008000), 0x00800000);
+	ASSERTU4(u4_swapShiftMask(0x00000080), 0x80000000);
+
+	ASSERTU4(u4_swapMask(0x00000000), 0x00000000);
+	ASSERTU4(u4_swapMask(0x00000001), 0x01000000);
+	ASSERTU4(u4_swapMask(I1_MAX), 0x7f000000);
+	ASSERTU4(u4_swapMask(I2_MAX), 0xff7f0000);
+	ASSERTU4(u4_swapMask(U1_MAX), 0xff000000);
+	ASSERTU4(u4_swapMask(U2_MAX), 0xffff0000);
+	ASSERTU4(u4_swapMask(U4_MAX), U4_MAX);
+	ASSERTU4(u4_swapMask(0x80000000), 0x00000080);
+	ASSERTU4(u4_swapMask(0x00800000), 0x00008000);
+	ASSERTU4(u4_swapMask(0x00008000), 0x00800000);
+	ASSERTU4(u4_swapMask(0x00000080), 0x80000000);
+}
+
+TEST i4_swap_Main()
+{
+	extern i4 i4_swapRef(i4 val);
+	extern i4 i4_swapMaskShift(i4 val);
+	extern i4 i4_swapShiftMask(i4 val);
+	extern i4 i4_swapMask(i4 val);
+
+       	ASSERTI4(i4_swapRef(0x00000000), 0x00000000);
+	ASSERTI4(i4_swapRef(0x00000001), 0x01000000);
+	ASSERTI4(i4_swapRef(-1), -1);
+	ASSERTI4(i4_swapRef(I1_MAX), 0x7f000000);
+	ASSERTI4(i4_swapRef(I1_MIN), 0x80ffffff);
+	ASSERTI4(i4_swapRef(U1_MAX), 0xff000000);
+	ASSERTI4(i4_swapRef(I2_MAX), 0xff7f0000);
+	ASSERTI4(i4_swapRef(I2_MIN), 0x80ffff);
+	ASSERTI4(i4_swapRef(U2_MAX), 0xffff0000);
+	ASSERTI4(i4_swapRef(I4_MAX), 0xffffff7f);
+	ASSERTI4(i4_swapRef(I4_MIN), 0x00000080);
+
+	ASSERTI4(i4_swapMaskShift(0x00000000), 0x00000000);
+	ASSERTI4(i4_swapMaskShift(0x00000001), 0x01000000);
+	ASSERTI4(i4_swapMaskShift(-1), -1);
+	ASSERTI4(i4_swapMaskShift(I1_MAX), 0x7f000000);
+	ASSERTI4(i4_swapMaskShift(I1_MIN), 0x80ffffff);
+	ASSERTI4(i4_swapMaskShift(U1_MAX), 0xff000000);
+	ASSERTI4(i4_swapMaskShift(I2_MAX), 0xff7f0000);
+	ASSERTI4(i4_swapMaskShift(I2_MIN), 0x80ffff);
+	ASSERTI4(i4_swapMaskShift(U2_MAX), 0xffff0000);
+	ASSERTI4(i4_swapMaskShift(I4_MAX), 0xffffff7f);
+	ASSERTI4(i4_swapMaskShift(I4_MIN), 0x00000080);
+
+	ASSERTI4(i4_swapShiftMask(0x00000000), 0x00000000);
+	ASSERTI4(i4_swapShiftMask(0x00000001), 0x01000000);
+	ASSERTI4(i4_swapShiftMask(-1), -1);
+	ASSERTI4(i4_swapShiftMask(I1_MAX), 0x7f000000);
+	ASSERTI4(i4_swapShiftMask(I1_MIN), 0x80ffffff);
+	ASSERTI4(i4_swapShiftMask(U1_MAX), 0xff000000);
+	ASSERTI4(i4_swapShiftMask(I2_MAX), 0xff7f0000);
+	ASSERTI4(i4_swapShiftMask(I2_MIN), 0x80ffff);
+	ASSERTI4(i4_swapShiftMask(U2_MAX), 0xffff0000);
+	ASSERTI4(i4_swapShiftMask(I4_MAX), 0xffffff7f);
+	ASSERTI4(i4_swapShiftMask(I4_MIN), 0x00000080);
+
+	ASSERTI4(i4_swapMask(0x00000000), 0x00000000);
+	ASSERTI4(i4_swapMask(0x00000001), 0x01000000);
+	ASSERTI4(i4_swapMask(-1), -1);
+	ASSERTI4(i4_swapMask(I1_MAX), 0x7f000000);
+	ASSERTI4(i4_swapMask(I1_MIN), 0x80ffffff);
+	ASSERTI4(i4_swapMask(U1_MAX), 0xff000000);
+	ASSERTI4(i4_swapMask(I2_MAX), 0xff7f0000);
+	ASSERTI4(i4_swapMask(I2_MIN), 0x80ffff);
+	ASSERTI4(i4_swapMask(U2_MAX), 0xffff0000);
+	ASSERTI4(i4_swapMask(I4_MAX), 0xffffff7f);
+	ASSERTI4(i4_swapMask(I4_MIN), 0x00000080);
+}
 
 MAIN BIOPS4_main(){ }

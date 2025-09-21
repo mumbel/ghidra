@@ -1302,6 +1302,70 @@ TEST i2_maximum_Main()
 	ASSERTI2(i2_maximum(I2_MIN, I2_MIN), I2_MIN);
 }
 
+TEST u2_swap_Main()
+{
+	extern u2 u2_swapRef(u2 val);
+	extern u2 u2_swapMaskShift(u2 val);
+	extern u2 u2_swapShiftMask(u2 val);
+
+	ASSERTU2(u2_swapRef(0x0000), 0x0000);
+	ASSERTU2(u2_swapRef(0x0001), 0x0100);
+	ASSERTU2(u2_swapRef(I1_MAX), 0x7f00);
+	ASSERTU2(u2_swapRef(U1_MAX), 0xff00);
+	ASSERTU2(u2_swapRef(U2_MAX), U2_MAX);
+	ASSERTU2(u2_swapRef(0x8000), 0x0080);
+	ASSERTU2(u2_swapRef(0x0080), 0x8000);
+
+	ASSERTU2(u2_swapMaskShift(0x0000), 0x0000);
+	ASSERTU2(u2_swapMaskShift(0x0001), 0x0100);
+	ASSERTU2(u2_swapMaskShift(I1_MAX), 0x7f00);
+	ASSERTU2(u2_swapMaskShift(U1_MAX), 0xff00);
+	ASSERTU2(u2_swapMaskShift(U2_MAX), U2_MAX);
+	ASSERTU2(u2_swapMaskShift(0x8000), 0x0080);
+	ASSERTU2(u2_swapMaskShift(0x0080), 0x8000);
+
+	ASSERTU2(u2_swapShiftMask(0x0000), 0x0000);
+	ASSERTU2(u2_swapShiftMask(0x0001), 0x0100);
+	ASSERTU2(u2_swapShiftMask(I1_MAX), 0x7f00);
+	ASSERTU2(u2_swapShiftMask(U1_MAX), 0xff00);
+	ASSERTU2(u2_swapShiftMask(U2_MAX), U2_MAX);
+	ASSERTU2(u2_swapShiftMask(0x8000), 0x0080);
+	ASSERTU2(u2_swapShiftMask(0x0080), 0x8000);
+}
+
+TEST i2_swap_Main()
+{
+	extern i2 i2_swapRef(i2 val);
+	extern i2 i2_swapMaskShift(i2 val);
+	extern i2 i2_swapShiftMask(i2 val);
+
+	ASSERTI2(i2_swapRef(0x0000), 0x0000);
+	ASSERTI2(i2_swapRef(0x0001), 0x0100);
+	ASSERTI2(i2_swapRef(-1), -1);
+	ASSERTI2(i2_swapRef(I1_MAX), 0x7f00);
+	ASSERTI2(i2_swapRef(I1_MIN), -32513);
+	ASSERTI2(i2_swapRef(U1_MAX), -256);
+	ASSERTI2(i2_swapRef(I2_MAX), -129);
+	ASSERTI2(i2_swapRef(I2_MIN), 128);
+
+	ASSERTI2(i2_swapMaskShift(0x0000), 0x0000);
+	ASSERTI2(i2_swapMaskShift(0x0001), 0x0100);
+	ASSERTI2(i2_swapMaskShift(-1), -1);
+	ASSERTI2(i2_swapMaskShift(I1_MAX), 0x7f00);
+	ASSERTI2(i2_swapMaskShift(I1_MIN), -32513);
+	ASSERTI2(i2_swapMaskShift(U1_MAX), -256);
+	ASSERTI2(i2_swapMaskShift(I2_MAX), -129);
+	ASSERTI2(i2_swapMaskShift(I2_MIN), 128);
+
+	ASSERTI2(i2_swapShiftMask(0x0000), 0x0000);
+	ASSERTI2(i2_swapShiftMask(0x0001), 0x0100);
+	ASSERTI2(i2_swapShiftMask(-1), -1);
+	ASSERTI2(i2_swapShiftMask(I1_MAX), 0x7f00);
+	ASSERTI2(i2_swapShiftMask(I1_MIN), -32513);
+	ASSERTI2(i2_swapShiftMask(U1_MAX), -256);
+	ASSERTI2(i2_swapShiftMask(I2_MAX), -129);
+	ASSERTI2(i2_swapShiftMask(I2_MIN), 128);
+}
 
 MAIN BIOPS2_main(){ }
 

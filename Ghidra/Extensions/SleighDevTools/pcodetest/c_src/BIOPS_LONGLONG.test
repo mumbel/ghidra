@@ -1,6 +1,7 @@
 #include "pcode_test.h"
 
 #ifdef HAS_LONGLONG
+
 TEST i8_complexLogic_Main()
 {
 	extern i8 i8_complexLogic(i8 a, i8 b, i8 c, i8 d, i8 e, i8 f);
@@ -9,9 +10,8 @@ TEST i8_complexLogic_Main()
 	ASSERTI8(i8_complexLogic(0, -750167716LL, -1104561852LL, 0, -915711850LL, 737703662LL), 11);
 	ASSERTI8(i8_complexLogic(0, 386839851LL, -771476364LL, 0, -942724790LL, 1833488263LL), 10);
 }
-#endif
 
-#ifdef HAS_LONGLONG
+
 TEST u8_complexLogic_Main()
 {
 	extern u8 u8_complexLogic(u8 a, u8 b, u8 c, u8 d, u8 e, u8 f);
@@ -20,9 +20,8 @@ TEST u8_complexLogic_Main()
 	ASSERTU8(u8_complexLogic(1665204916ULL, 1707056552ULL, 564325578ULL, 0, 0, 1010528946ULL), 14);
 	ASSERTU8(u8_complexLogic(0, 1516266761ULL, 1866000081ULL, 0, 1175526309ULL, 1586903190ULL), 10);
 }
-#endif
 
-#ifdef HAS_LONGLONG
+
 TEST i8_compareLogic_Main()
 {
 	extern i8 i8_compareLogic(i8 lhs, i8 rhs);
@@ -33,9 +32,8 @@ TEST i8_compareLogic_Main()
 	ASSERTI8(i8_compareLogic(-0x1, -0x2), 41);
 	ASSERTI8(i8_compareLogic(-0x2, -0x1), 37);
 }
-#endif
 
-#ifdef HAS_LONGLONG
+
 TEST u8_compareLogic_Main()
 {
 	extern u8 u8_compareLogic(u8 lhs, u8 rhs);
@@ -43,10 +41,8 @@ TEST u8_compareLogic_Main()
 	ASSERTU8(u8_compareLogic(0x1, 0x2), 38);
 	ASSERTU8(u8_compareLogic(0x2, 0x1), 42);
 }
-#endif
 
 /* Bitwise operators */
-#ifdef HAS_LONGLONG
 TEST u8_bitwiseAnd_Main()
 {
 	extern u8 u8_bitwiseAnd(u8 lhs, u8 rhs);
@@ -55,9 +51,8 @@ TEST u8_bitwiseAnd_Main()
 	ASSERTU8(u8_bitwiseAnd(U8_MAX, 0), 0);
 	ASSERTU8(u8_bitwiseAnd(U8_MAX, 1), 1);
 }
-#endif
 
-#ifdef HAS_LONGLONG
+
 TEST u8_bitwiseOr_Main()
 {
 	extern u8 u8_bitwiseOr(u8 lhs, u8 rhs);
@@ -66,9 +61,8 @@ TEST u8_bitwiseOr_Main()
 	ASSERTU8(u8_bitwiseOr(U8_MAX, U8_MIN), 18446744073709551615ULL);
 	ASSERTU8(u8_bitwiseOr(U8_MAX, 0), 18446744073709551615ULL);
 }
-#endif
 
-#ifdef HAS_LONGLONG
+
 TEST u8_bitwiseXor_Main()
 {
 	extern u8 u8_bitwiseXor(u8 lhs, u8 rhs);
@@ -77,9 +71,8 @@ TEST u8_bitwiseXor_Main()
 	ASSERTU8(u8_bitwiseXor(U8_MAX, 0), U8_MAX);
 	ASSERTU8(u8_bitwiseXor(U8_MAX, 2), 18446744073709551613ULL);
 }
-#endif
 
-#ifdef HAS_LONGLONG
+
 TEST i8_bitwiseAnd_Main()
 {
 	extern i8 i8_bitwiseAnd(i8 lhs, i8 rhs);
@@ -89,9 +82,8 @@ TEST i8_bitwiseAnd_Main()
 	ASSERTI8(i8_bitwiseAnd(I8_MAX, I8_MIN), 0);
 	ASSERTI8(i8_bitwiseAnd(I8_MAX, 0), 0);
 }
-#endif
 
-#ifdef HAS_LONGLONG
+
 TEST i8_bitwiseOr_Main()
 {
 	extern i8 i8_bitwiseOr(i8 lhs, i8 rhs);
@@ -103,9 +95,8 @@ TEST i8_bitwiseOr_Main()
 	ASSERTI8(i8_bitwiseOr(U8_MAX, 0), -1);
 	ASSERTI8(i8_bitwiseOr(U8_MAX, 4), -1);
 }
-#endif
 
-#ifdef HAS_LONGLONG
+
 TEST i8_bitwiseXor_Main()
 {
 	extern i8 i8_bitwiseXor(i8 lhs, i8 rhs);
@@ -117,10 +108,9 @@ TEST i8_bitwiseXor_Main()
 	ASSERTI8(i8_bitwiseXor(U8_MAX, 0), -1);
 	ASSERTI8(i8_bitwiseXor(U8_MAX, 5), -6);
 }
-#endif
+
 
 /* Logical operators */
-#ifdef HAS_LONGLONG
 TEST u8_logicalAnd_Main()
 {
 	extern u8 u8_logicalAnd(u8 lhs, u8 rhs);
@@ -129,9 +119,8 @@ TEST u8_logicalAnd_Main()
 	ASSERTU8(u8_logicalAnd(U8_MAX, 0), 0);
 	ASSERTU8(u8_logicalAnd(U8_MAX, 5), 1);
 }
-#endif
 
-#ifdef HAS_LONGLONG
+
 TEST u8_logicalOr_Main()
 {
 	extern u8 u8_logicalOr(u8 lhs, u8 rhs);
@@ -140,17 +129,15 @@ TEST u8_logicalOr_Main()
 	ASSERTU8(u8_logicalOr(U8_MIN, U8_MIN), 0);
 	ASSERTU8(u8_logicalOr(U8_MIN, 0), 0);
 }
-#endif
 
-#ifdef HAS_LONGLONG
+
 TEST u8_logicalNot_Main()
 {
 	extern u8 u8_logicalNot(u8 lhs);
 	ASSERTU8(u8_logicalNot(2), 0);
 }
-#endif
 
-#ifdef HAS_LONGLONG
+
 TEST i8_logicalAnd_Main()
 {
 	extern i8 i8_logicalAnd(i8 lhs, i8 rhs);
@@ -161,9 +148,8 @@ TEST i8_logicalAnd_Main()
 	ASSERTI8(i8_logicalAnd(I8_MAX, I8_MIN), 1);
 	ASSERTI8(i8_logicalAnd(I8_MAX, 0), 0);
 }
-#endif
 
-#ifdef HAS_LONGLONG
+
 TEST i8_logicalOr_Main()
 {
 	extern i8 i8_logicalOr(i8 lhs, i8 rhs);
@@ -174,9 +160,8 @@ TEST i8_logicalOr_Main()
 	ASSERTI8(i8_logicalOr(I8_MAX, 0), 1);
 	ASSERTI8(i8_logicalOr(I8_MAX, 5), 1);
 }
-#endif
 
-#ifdef HAS_LONGLONG
+
 TEST i8_logicalNot_Main()
 {
 	extern i8 i8_logicalNot(i8 lhs);
@@ -186,10 +171,9 @@ TEST i8_logicalNot_Main()
 	ASSERTI8(i8_logicalNot(I8_MIN), 0);
 	ASSERTI8(i8_logicalNot(0), 1);
 }
-#endif
+
 
 /* Shift operators */
-#ifdef HAS_LONGLONG
 TEST u8_shiftLeft_Main()
 {
 	extern u8 u8_shiftLeft(u8 lhs, u8 rhs);
@@ -197,9 +181,8 @@ TEST u8_shiftLeft_Main()
 	ASSERTU8(u8_shiftLeft(U8_MAX, 0), U8_MAX);
 	ASSERTU8(u8_shiftLeft(0, 4), 0);
 }
-#endif
 
-#ifdef HAS_LONGLONG
+
 TEST u8_shiftRight_Main()
 {
 	extern u8 u8_shiftRight(u8 lhs, u8 rhs);
@@ -208,9 +191,8 @@ TEST u8_shiftRight_Main()
 	ASSERTU8(u8_shiftRight(0, 2), 0);
 	ASSERTU8(u8_shiftRight(2, 2), 0);
 }
-#endif
 
-#ifdef HAS_LONGLONG
+
 TEST i8_shiftLeft_Main()
 {
 	extern i8 i8_shiftLeft(i8 lhs, i8 rhs);
@@ -220,9 +202,8 @@ TEST i8_shiftLeft_Main()
 	ASSERTI8(i8_shiftLeft(2, 1), 4);
 	ASSERTI8(i8_shiftLeft(I8_MAX, 0), I8_MAX);
 }
-#endif
 
-#ifdef HAS_LONGLONG
+
 TEST i8_shiftRight_Main()
 {
 	extern i8 i8_shiftRight(i8 lhs, i8 rhs);
@@ -232,10 +213,9 @@ TEST i8_shiftRight_Main()
 	ASSERTI8(i8_shiftRight(2, 1), 1);
 	ASSERTI8(i8_shiftRight(I8_MAX, 0), I8_MAX);
 }
-#endif
+
 
 /* Arithmetic operators */
-#ifdef HAS_LONGLONG
 TEST u8_unaryPositive_Main()
 {
 	extern u8 u8_unaryPositive(u8 lhs);
@@ -243,9 +223,8 @@ TEST u8_unaryPositive_Main()
 	ASSERTU8(u8_unaryPositive(U8_MAX), U8_MAX);
 	ASSERTU8(u8_unaryPositive(0), 0);
 }
-#endif
 
-#ifdef HAS_LONGLONG
+
 TEST u8_unaryComp_Main()
 {
 	extern u8 u8_unaryComp(u8 val);
@@ -285,9 +264,8 @@ TEST u8_unaryDecPre_Main()
 	ASSERTU8(u8_unaryDecPre(1), 0);
 	ASSERTU8(u8_unaryDecPre(U8_MAX), U8_MAX-1);
 }
-#endif
 
-#ifdef HAS_LONGLONG
+
 TEST u8_addition_Main()
 {
 	extern u8 u8_addition(u8 lhs, u8 rhs);
@@ -295,9 +273,8 @@ TEST u8_addition_Main()
 	ASSERTU8(u8_addition(U8_MAX, U8_MAX), 18446744073709551614ULL);
 	ASSERTU8(u8_addition(U8_MAX, 0), U8_MAX);
 }
-#endif
 
-#ifdef HAS_LONGLONG
+
 TEST u8_subtract_Main()
 {
 	extern u8 u8_subtract(u8 lhs, u8 rhs);
@@ -306,9 +283,8 @@ TEST u8_subtract_Main()
 	ASSERTU8(u8_subtract(U8_MAX, 0), U8_MAX);
 	ASSERTU8(u8_subtract(0, U8_MAX), 1);
 }
-#endif
 
-#ifdef HAS_LONGLONG
+
 TEST u8_multiply_Main()
 {
 	extern u8 u8_multiply(u8 lhs, u8 rhs);
@@ -317,9 +293,8 @@ TEST u8_multiply_Main()
 	ASSERTU8(u8_multiply(U8_MAX, U8_MIN), 0);
 	ASSERTU8(u8_multiply(U8_MAX, 0), 0);
 }
-#endif
 
-#ifdef HAS_LONGLONG
+
 TEST u8_divide_Main()
 {
 	extern u8 u8_divide(u8 lhs, u8 rhs);
@@ -331,9 +306,8 @@ TEST u8_divide_Main()
 	ASSERTU8(u8_divide(0, U8_MAX), 0);
 	ASSERTU8(u8_divide(U8_MAX, 5), 3689348814741910323ULL);
 }
-#endif
 
-#ifdef HAS_LONGLONG
+
 TEST i8_unaryNegative_Main()
 {
 	extern i8 i8_unaryNegative(i8 lhs);
@@ -344,9 +318,8 @@ TEST i8_unaryNegative_Main()
 	ASSERTI8(i8_unaryNegative(I8_MIN), I8_MIN);
 	ASSERTI8(i8_unaryNegative(0), 0);
 }
-#endif
 
-#ifdef HAS_LONGLONG
+
 TEST i8_unaryPositive_Main()
 {
 	extern i8 i8_unaryPositive(i8 lhs);
@@ -357,9 +330,8 @@ TEST i8_unaryPositive_Main()
 	ASSERTI8(i8_unaryPositive(I8_MIN), I8_MIN);
 	ASSERTI8(i8_unaryPositive(0), 0);
 }
-#endif
 
-#ifdef HAS_LONGLONG
+
 TEST i8_unaryComp_Main()
 {
 	extern i8 i8_unaryComp(i8 val);
@@ -409,9 +381,8 @@ TEST i8_unaryDecPre_Main()
 	ASSERTI8(i8_unaryDecPre(I8_MAX), I8_MAX-1);
 	ASSERTI8(i8_unaryDecPre(I8_MIN), I8_MAX);
 }
-#endif
 
-#ifdef HAS_LONGLONG
+
 TEST i8_addition_Main()
 {
 	extern i8 i8_addition(i8 lhs, i8 rhs);
@@ -421,9 +392,8 @@ TEST i8_addition_Main()
 	ASSERTI8(i8_addition(I8_MAX, I8_MIN), -1);
 	ASSERTI8(i8_addition(I8_MAX, 0), I8_MAX);
 }
-#endif
 
-#ifdef HAS_LONGLONG
+
 TEST i8_subtract_Main()
 {
 	extern i8 i8_subtract(i8 lhs, i8 rhs);
@@ -436,9 +406,8 @@ TEST i8_subtract_Main()
 	ASSERTI8(i8_subtract(I8_MAX, 0), I8_MAX);
 	ASSERTI8(i8_subtract(0, I8_MAX), -I8_MAX);
 }
-#endif
 
-#ifdef HAS_LONGLONG
+
 TEST i8_multiply_Main()
 {
 	extern i8 i8_multiply(i8 lhs, i8 rhs);
@@ -451,9 +420,8 @@ TEST i8_multiply_Main()
 
 	ASSERTI8(i8_multiply(I8_MAX, 0), 0);
 }
-#endif
 
-#ifdef HAS_LONGLONG
+
 TEST i8_divide_Main()
 {
 	extern i8 i8_divide(i8 lhs, i8 rhs);
@@ -466,9 +434,8 @@ TEST i8_divide_Main()
 	ASSERTI8(i8_divide(0, I8_MAX), 0);
 	ASSERTI8(i8_divide(I8_MAX, 5), 1844674407370955161LL);
 }
-#endif
 
-#ifdef HAS_LONGLONG
+
 TEST i8_remainder_Main()
 {
 	extern i8 i8_remainder(i8 lhs, i8 rhs);
@@ -480,9 +447,7 @@ TEST i8_remainder_Main()
 	ASSERTI8(i8_remainder(I8_MAX, I8_MIN), 9223372036854775807);
 	ASSERTI8(i8_remainder(I8_MAX, 0xFFFF), 32767);
 }
-#endif
 
-#ifdef HAS_LONGLONG
 
 TEST u8_conditionGT_Main()
 {
@@ -1154,6 +1119,51 @@ TEST i8_maximum_Main()
 	ASSERTI8(i8_maximum(I8_MIN, I8_MAX), I8_MAX);
 	ASSERTI8(i8_maximumNew(I8_MIN, I8_MIN), I8_MIN);
 	ASSERTI8(i8_maximum(I8_MIN, I8_MIN), I8_MIN);
+}
+
+TEST u8_swap_Main()
+{
+	extern u8 u8_swapRef(u8 val);
+	extern u8 u8_swapMaskShift(u8 val);
+	extern u8 u8_swapShiftMask(u8 val);
+	extern u8 u8_swapMask(u8 val);
+
+	ASSERTU8(u8_swapRef(0x0000000000000000), 0x0000000000000000);
+	ASSERTU8(u8_swapRef(0x0000000000000001), 0x0100000000000000);
+	ASSERTU8(u8_swapRef(I1_MAX), 0x7f00000000000000);
+	ASSERTU8(u8_swapRef(I2_MAX), 0xff7f000000000000);
+	ASSERTU8(u8_swapRef(I4_MAX), 0xffffff7f00000000);
+	ASSERTU8(u8_swapRef(U1_MAX), 0xff00000000000000);
+	ASSERTU8(u8_swapRef(U2_MAX), 0xffff000000000000);
+	ASSERTU8(u8_swapRef(U4_MAX), 0xffffffff00000000);
+	ASSERTU8(u8_swapRef(U8_MAX), U8_MAX);
+	ASSERTU8(u8_swapRef(0x80000000), 0x0000008000000000);
+	ASSERTU8(u8_swapRef(0x00800000), 0x0000800000000000);
+	ASSERTU8(u8_swapRef(0x00008000), 0x0080000000000000);
+	ASSERTU8(u8_swapRef(0x0000000000000080), 0x8000000000000000);
+}
+
+TEST i8_swap_Main()
+{
+	extern i8 i8_swapRef(i8 val);
+	extern i8 i8_swapMaskShift(i8 val);
+	extern i8 i8_swapShiftMask(i8 val);
+	extern i8 i8_swapMask(i8 val);
+
+       	ASSERTI8(i8_swapRef(0x0000000000000000), 0x0000000000000000);
+	ASSERTI8(i8_swapRef(0x0000000000000001), 0x0100000000000000);
+	ASSERTI8(i8_swapRef(-1), -1);
+	ASSERTI8(i8_swapRef(I1_MAX), 0x7f00000000000000);
+	ASSERTI8(i8_swapRef(I1_MIN), 0x80ffffffffffffff);
+	ASSERTI8(i8_swapRef(U1_MAX), 0xff00000000000000);
+	ASSERTI8(i8_swapRef(I2_MAX), 0xff7f000000000000);
+	ASSERTI8(i8_swapRef(I2_MIN), 0x0080ffffffffffff);
+	ASSERTI8(i8_swapRef(U2_MAX), 0xffff000000000000);
+	ASSERTI8(i8_swapRef(I4_MAX), 0xffffff7f00000000);
+	ASSERTI8(i8_swapRef(I4_MIN), 0x00000080ffffffff);
+	ASSERTI8(i8_swapRef(U4_MAX), 0xffffffff00000000);
+	ASSERTI8(i8_swapRef(I8_MAX), 0xffffffffffffff7f);
+	ASSERTI8(i8_swapRef(I8_MIN), 0x0000000000000080);
 }
 
 #endif

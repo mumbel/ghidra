@@ -894,8 +894,241 @@ u1 typ##_conditionNEOne(			\
 	return z;			\
 }
 
+u2 u2_swapRef(u2 val)
+{
+  u2 z;
+  u1 *x = (u1 *)&val;
+  z = (x[0] << 8) |
+    (x[1] << 0);
+  return z;
+}
 
+u2 u2_swapMaskShift(u2 val)
+{
+  u2 z;
+  z = ((val & 0xff00) >> 8) |
+    ((val & 0x00ff) << 8);
+  return z;
+}
 
+u2 u2_swapShiftMask(u2 val)
+{
+  u2 z;
+  z = ((val >> 8) & 0x00ff) |
+    ((val << 8) & 0xff00);
+  return z;
+}
+
+i2 i2_swapRef(i2 val)
+{
+  i2 z;
+  u1 *x = (u1 *)&val;
+  z = (x[0] << 8) |
+    (x[1] << 0);
+  return z;
+}
+
+i2 i2_swapMaskShift(i2 val)
+{
+  i2 z;
+  z = ((val & 0xff00) >> 8) |
+    ((val & 0x00ff) << 8);
+  return z;
+}
+
+i2 i2_swapShiftMask(i2 val)
+{
+  i2 z;
+  z = ((val >> 8) & 0x00ff) |
+    ((val << 8) & 0xff00);
+  return z;
+}
+
+u4 u4_swapRef(u4 val)
+{
+  u4 z;
+  u1 *x = (u1 *)&val;
+  z = (x[0] << 24) |
+    (x[1] << 16) |
+    (x[2] << 8) |
+    (x[3] << 0);
+  return z;
+}
+
+u4 u4_swapMaskShift(u4 val)
+{
+  u4 z;
+  z = ((val & 0xff000000) >> 24) |
+    ((val & 0x00ff0000) >> 8) |
+    ((val & 0x0000ff00) << 8) |
+    ((val & 0x000000ff) << 24);
+  return z;
+}
+
+u4 u4_swapShiftMask(u4 val)
+{
+  u4 z;
+  z = ((val >> 24) & 0x000000ff) |
+    ((val >> 8) & 0x0000ff00) |
+    ((val << 8) & 0x00ff0000) |
+    ((val << 24) & 0xff000000);
+  return z;
+}
+
+u4 u4_swapMask(u4 val)
+{
+  u4 z = val;
+  z = (z & 0x0000FFFF) << 16 | (z & 0xFFFF0000) >> 16;
+  z = (z & 0x00FF00FF) << 8  | (z & 0xFF00FF00) >> 8;
+  return z;
+}
+
+i4 i4_swapRef(i4 val)
+{
+  i4 z;
+  u1 *x = (u1 *)&val;
+  z = (x[0] << 24) |
+    (x[1] << 16) |
+    (x[2] << 8) |
+    (x[3] << 0);
+  return z;
+}
+
+i4 i4_swapMaskShift(i4 val)
+{
+  i4 z;
+  z = ((val & 0xff000000) >> 24) |
+    ((val & 0x00ff0000) >> 8) |
+    ((val & 0x0000ff00) << 8) |
+    ((val & 0x000000ff) << 24);
+  return z;
+}
+
+i4 i4_swapShiftMask(i4 val)
+{
+  i4 z;
+  z = ((val >> 24) & 0x000000ff) |
+    ((val >> 8) & 0x0000ff00) |
+    ((val << 8) & 0x00ff0000) |
+    ((val << 24) & 0xff000000);
+  return z;
+}
+
+i4 i4_swapMask(i4 val)
+{
+  i4 z = val;
+  z = (z & 0x0000FFFF) << 16 | (z & 0xFFFF0000) >> 16;
+  z = (z & 0x00FF00FF) << 8  | (z & 0xFF00FF00) >> 8;
+  return z;
+}
+
+#ifdef HAS_LONGLONG
+
+u8 u8_swapRef(u8 val)
+{
+  u8 z;
+  u1 *x = (u1 *)&val;
+  z = ((u8)x[0] << 56) |
+      ((u8)x[1] << 48) |
+      ((u8)x[2] << 40) |
+      ((u8)x[3] << 32) |
+      ((u8)x[4] << 24) |
+      ((u8)x[5] << 16) |
+      ((u8)x[6] << 8) |
+      ((u8)x[7] << 0);
+  return z;
+}
+
+u8 u8_swapMaskShift(u8 val)
+{
+  u8 z;
+  z = ((val & 0xff00000000000000) >> 56) |
+      ((val & 0x00ff000000000000) >> 40) |
+      ((val & 0x0000ff0000000000) >> 24) |
+      ((val & 0x000000ff00000000) >> 8) |
+      ((val & 0x00000000ff000000) << 8) |
+      ((val & 0x0000000000ff0000) << 24) |
+      ((val & 0x000000000000ff00) << 40) |
+      ((val & 0x00000000000000ff) << 56);
+  return z;
+}
+
+u8 u8_swapShiftMask(u8 val)
+{
+  u8 z;
+  z = ((val >> 56) & 0x00000000000000ff) |
+      ((val >> 40) & 0x000000000000ff00) |
+      ((val >> 24) & 0x0000000000ff0000) |
+      ((val >>  8) & 0x00000000ff000000) |
+      ((val <<  8) & 0x000000ff00000000) |
+      ((val << 24) & 0x0000ff0000000000) |
+      ((val << 40) & 0x00ff000000000000) |
+      ((val << 56) & 0xff00000000000000);
+  return z;
+}
+
+u8 u8_swapMask(u8 val)
+{
+  u8 z = val;
+  z = (z & 0x00000000FFFFFFFF) << 32 | (z & 0xFFFFFFFF00000000) >> 32;
+  z = (z & 0x0000FFFF0000FFFF) << 16 | (z & 0xFFFF0000FFFF0000) >> 16;
+  z = (z & 0x00FF00FF00FF00FF) << 8  | (z & 0xFF00FF00FF00FF00) >> 8;
+  return z;
+}
+
+i8 i8_swapRef(i8 val)
+{
+  i8 z;
+  u1 *x = (u1 *)&val;
+  z = ((i8)x[0] << 56) |
+      ((i8)x[1] << 48) |
+      ((i8)x[2] << 40) |
+      ((i8)x[3] << 32) |
+      ((i8)x[4] << 24) |
+      ((i8)x[5] << 16) |
+      ((i8)x[6] << 8) |
+      ((i8)x[7] << 0);
+  return z;
+}
+
+i8 i8_swapMaskShift(i8 val)
+{
+  i8 z;
+  z = ((val & 0xff00000000000000) >> 56) |
+      ((val & 0x00ff000000000000) >> 40) |
+      ((val & 0x0000ff0000000000) >> 24) |
+      ((val & 0x000000ff00000000) >> 8) |
+      ((val & 0x00000000ff000000) << 8) |
+      ((val & 0x0000000000ff0000) << 24) |
+      ((val & 0x000000000000ff00) << 40) |
+      ((val & 0x00000000000000ff) << 56);
+  return z;
+}
+
+i8 i8_swapShiftMask(i8 val)
+{
+  i8 z;
+  z = ((val >> 56) & 0x00000000000000ff) |
+      ((val >> 40) & 0x000000000000ff00) |
+      ((val >> 24) & 0x0000000000ff0000) |
+      ((val >>  8) & 0x00000000ff000000) |
+      ((val <<  8) & 0x000000ff00000000) |
+      ((val << 24) & 0x0000ff0000000000) |
+      ((val << 40) & 0x00ff000000000000) |
+      ((val << 56) & 0xff00000000000000);
+  return z;
+}
+
+i8 i8_swapMask(i8 val)
+{
+  i8 z = val;
+  z = (z & 0x00000000FFFFFFFF) << 32 | (z & 0xFFFFFFFF00000000) >> 32;
+  z = (z & 0x0000FFFF0000FFFF) << 16 | (z & 0xFFFF0000FFFF0000) >> 16;
+  z = (z & 0x00FF00FF00FF00FF) << 8  | (z & 0xFF00FF00FF00FF00) >> 8;
+  return z;
+}
+
+#endif
 
 #define PCODE_BIOPS(typ)			\
 	PCODE_BIOP_ADD(typ)			\
