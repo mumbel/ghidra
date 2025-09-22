@@ -118,13 +118,6 @@ TEST u4_logicalOr_Main()
 	ASSERTU4(u4_logicalOr(U4_MAX, U4_MIN), 1);
 }
 
-TEST u4_logicalNot_Main()
-{
-	extern u4 u4_logicalNot(u4 lhs);
-	ASSERTU4(u4_logicalNot(0x01010101), 0);
-	ASSERTU4(u4_logicalNot(2), 0);
-	ASSERTU4(u4_logicalNot(U4_MAX), 0);
-}
 
 TEST i4_logicalAnd_Main()
 {
@@ -148,15 +141,6 @@ TEST i4_logicalOr_Main()
 	ASSERTI4(i4_logicalOr(0, 0), 0);
 }
 
-TEST i4_logicalNot_Main()
-{
-	extern i4 i4_logicalNot(i4 lhs);
-	ASSERTI4(i4_logicalNot(0x01010101), 0);
-	ASSERTI4(i4_logicalNot(2), 0);
-	ASSERTI4(i4_logicalNot(I4_MAX), 0);
-	ASSERTI4(i4_logicalNot(I4_MIN), 0);
-	ASSERTI4(i4_logicalNot(0), 1);
-}
 
 /* Shift operators */
 TEST u4_shiftLeft_Main()
@@ -199,56 +183,6 @@ TEST i4_shiftRight_Main()
 }
 
 /* Arithmetic operators */
-TEST u4_unaryPositive_Main()
-{
-	extern u4 u4_unaryPositive(u4 lhs);
-	ASSERTU4(u4_unaryPositive(0x01010101), 0x01010101);
-	ASSERTU4(u4_unaryPositive(2), 2);
-	ASSERTU4(u4_unaryPositive(U4_MAX), -1);
-	ASSERTU4(u4_unaryPositive(~1000), 4294966295);
-	ASSERTU4(u4_unaryPositive(0), 0);
-}
-
-TEST u4_unaryComp_Main()
-{
-	extern u4 u4_unaryComp(u4 val);
-	ASSERTU4(u4_unaryComp(0), U4_MAX);
-	ASSERTU4(u4_unaryComp(1), U4_MAX-1);
-	ASSERTU4(u4_unaryComp(U4_MAX), 0);
-}
-
-TEST u4_unaryIncPost_Main()
-{
-	extern u4 u4_unaryIncPost(u4 val);
-	ASSERTU4(u4_unaryIncPost(0), 0);
-	ASSERTU4(u4_unaryIncPost(1), 1);
-	ASSERTU4(u4_unaryIncPost(U4_MAX), U4_MAX);
-}
-
-TEST u4_unaryIncPre_Main()
-{
-	extern u4 u4_unaryIncPre(u4 val);
-	ASSERTU4(u4_unaryIncPre(0), 1);
-	ASSERTU4(u4_unaryIncPre(1), 2);
-	ASSERTU4(u4_unaryIncPre(U4_MAX), 0);
-}
-
-TEST u4_unaryDecPost_Main()
-{
-	extern u4 u4_unaryDecPost(u4 val);
-	ASSERTU4(u4_unaryDecPost(0), 0);
-	ASSERTU4(u4_unaryDecPost(1), 1);
-	ASSERTU4(u4_unaryDecPost(U4_MAX), U4_MAX);
-}
-
-TEST u4_unaryDecPre_Main()
-{
-	extern u4 u4_unaryDecPre(u4 val);
-	ASSERTU4(u4_unaryDecPre(0), U4_MAX);
-	ASSERTU4(u4_unaryDecPre(1), 0);
-	ASSERTU4(u4_unaryDecPre(U4_MAX), U4_MAX-1);
-}
-
 TEST u4_addition_Main()
 {
 	extern u4 u4_addition(u4 lhs, u4 rhs);
@@ -303,76 +237,6 @@ TEST u4_remainder_Main()
 	ASSERTU4(u4_remainder(0, U4_MAX), 0);
 }
 
-TEST i4_unaryNegative_Main()
-{
-	extern i4 i4_unaryNegative(i4 lhs);
-	ASSERTI4(i4_unaryNegative(0x01010101), -0x01010101);
-	ASSERTI4(i4_unaryNegative(-0x01010101), 0x01010101);
-	ASSERTI4(i4_unaryNegative(I4_MAX), -I4_MAX);
-	ASSERTI4(i4_unaryNegative(I4_MIN), I4_MIN);
-	ASSERTI4(i4_unaryNegative(0), 0);
-}
-
-TEST i4_unaryPositive_Main()
-{
-	extern i4 i4_unaryPositive(i4 lhs);
-	ASSERTI4(i4_unaryPositive(0x01010101), 0x01010101);
-	ASSERTI4(i4_unaryPositive(-0x01010101), -0x01010101);
-	ASSERTI4(i4_unaryPositive(2), 2);
-	ASSERTI4(i4_unaryPositive(I4_MAX), 2147483647);
-	ASSERTI4(i4_unaryPositive(I4_MIN), -2147483648);
-	ASSERTI4(i4_unaryPositive(0), 0);
-}
-
-TEST i4_unaryComp_Main()
-{
-	extern i4 i4_unaryComp(i4 val);
-	ASSERTI4(i4_unaryComp(0), -1);
-	ASSERTI4(i4_unaryComp(1), -2);
-	ASSERTI4(i4_unaryComp(-1), 0);
-	ASSERTI4(i4_unaryComp(I4_MAX), I4_MIN);
-	ASSERTI4(i4_unaryComp(I4_MIN), I4_MAX);
-}
-
-TEST i4_unaryIncPost_Main()
-{
-	extern i4 i4_unaryIncPost(i4 val);
-	ASSERTI4(i4_unaryIncPost(0), 0);
-	ASSERTI4(i4_unaryIncPost(1), 1);
-	ASSERTI4(i4_unaryIncPost(-1), -1);
-	ASSERTI4(i4_unaryIncPost(I4_MAX), I4_MAX);
-	ASSERTI4(i4_unaryIncPost(I4_MIN), I4_MIN);
-}
-
-TEST i4_unaryIncPre_Main()
-{
-	extern i4 i4_unaryIncPre(i4 val);
-	ASSERTI4(i4_unaryIncPre(0), 1);
-	ASSERTI4(i4_unaryIncPre(1), 2);
-	ASSERTI4(i4_unaryIncPre(-1), 0);
-	ASSERTI4(i4_unaryIncPre(I4_MAX), I4_MIN);
-	ASSERTI4(i4_unaryIncPre(I4_MIN), I4_MIN+1);
-}
-
-TEST i4_unaryDecPost_Main()
-{
-	extern i4 i4_unaryDecPost(i4 val);
-	ASSERTI4(i4_unaryDecPost(0), 0);
-	ASSERTI4(i4_unaryDecPost(1), 1);
-	ASSERTI4(i4_unaryDecPost(-1), -1);
-	ASSERTI4(i4_unaryDecPost(I4_MAX), I4_MAX);
-	ASSERTI4(i4_unaryDecPost(I4_MIN), I4_MIN);
-}
-
-TEST i4_unaryDecPre_Main()
-{
-	extern i4 i4_unaryDecPre(i4 val);
-	ASSERTI4(i4_unaryDecPre(0), -1);
-	ASSERTI4(i4_unaryDecPre(1), 0);
-	ASSERTI4(i4_unaryDecPre(-1), -2);
-	ASSERTI4(i4_unaryDecPre(I4_MAX), I4_MAX-1);
-	ASSERTI4(i4_unaryDecPre(I4_MIN), I4_MAX);
-}
 
 TEST i4_addition_Main()
 {
@@ -1105,116 +969,5 @@ TEST i4_maximum_Main()
 	ASSERTI4(i4_maximum(I4_MIN, I4_MIN), I4_MIN);
 }
 
-TEST u4_swap_Main()
-{
-	extern u4 u4_swapRef(u4 val);
-	extern u4 u4_swapMaskShift(u4 val);
-	extern u4 u4_swapShiftMask(u4 val);
-	extern u4 u4_swapMask(u4 val);
-
-	ASSERTU4(u4_swapRef(0x00000000), 0x00000000);
-	ASSERTU4(u4_swapRef(0x00000001), 0x01000000);
-	ASSERTU4(u4_swapRef(I1_MAX), 0x7f000000);
-	ASSERTU4(u4_swapRef(I2_MAX), 0xff7f0000);
-	ASSERTU4(u4_swapRef(U1_MAX), 0xff000000);
-	ASSERTU4(u4_swapRef(U2_MAX), 0xffff0000);
-	ASSERTU4(u4_swapRef(U4_MAX), U4_MAX);
-	ASSERTU4(u4_swapRef(0x80000000), 0x00000080);
-	ASSERTU4(u4_swapRef(0x00800000), 0x00008000);
-	ASSERTU4(u4_swapRef(0x00008000), 0x00800000);
-	ASSERTU4(u4_swapRef(0x00000080), 0x80000000);
-
-	ASSERTU4(u4_swapMaskShift(0x00000000), 0x00000000);
-	ASSERTU4(u4_swapMaskShift(0x00000001), 0x01000000);
-	ASSERTU4(u4_swapMaskShift(I1_MAX), 0x7f000000);
-	ASSERTU4(u4_swapMaskShift(I2_MAX), 0xff7f0000);
-	ASSERTU4(u4_swapMaskShift(U1_MAX), 0xff000000);
-	ASSERTU4(u4_swapMaskShift(U2_MAX), 0xffff0000);
-	ASSERTU4(u4_swapMaskShift(U4_MAX), U4_MAX);
-	ASSERTU4(u4_swapMaskShift(0x80000000), 0x00000080);
-	ASSERTU4(u4_swapMaskShift(0x00800000), 0x00008000);
-	ASSERTU4(u4_swapMaskShift(0x00008000), 0x00800000);
-	ASSERTU4(u4_swapMaskShift(0x00000080), 0x80000000);
-
-	ASSERTU4(u4_swapShiftMask(0x00000000), 0x00000000);
-	ASSERTU4(u4_swapShiftMask(0x00000001), 0x01000000);
-	ASSERTU4(u4_swapShiftMask(I1_MAX), 0x7f000000);
-	ASSERTU4(u4_swapShiftMask(I2_MAX), 0xff7f0000);
-	ASSERTU4(u4_swapShiftMask(U1_MAX), 0xff000000);
-	ASSERTU4(u4_swapShiftMask(U2_MAX), 0xffff0000);
-	ASSERTU4(u4_swapShiftMask(U4_MAX), U4_MAX);
-	ASSERTU4(u4_swapShiftMask(0x80000000), 0x00000080);
-	ASSERTU4(u4_swapShiftMask(0x00800000), 0x00008000);
-	ASSERTU4(u4_swapShiftMask(0x00008000), 0x00800000);
-	ASSERTU4(u4_swapShiftMask(0x00000080), 0x80000000);
-
-	ASSERTU4(u4_swapMask(0x00000000), 0x00000000);
-	ASSERTU4(u4_swapMask(0x00000001), 0x01000000);
-	ASSERTU4(u4_swapMask(I1_MAX), 0x7f000000);
-	ASSERTU4(u4_swapMask(I2_MAX), 0xff7f0000);
-	ASSERTU4(u4_swapMask(U1_MAX), 0xff000000);
-	ASSERTU4(u4_swapMask(U2_MAX), 0xffff0000);
-	ASSERTU4(u4_swapMask(U4_MAX), U4_MAX);
-	ASSERTU4(u4_swapMask(0x80000000), 0x00000080);
-	ASSERTU4(u4_swapMask(0x00800000), 0x00008000);
-	ASSERTU4(u4_swapMask(0x00008000), 0x00800000);
-	ASSERTU4(u4_swapMask(0x00000080), 0x80000000);
-}
-
-TEST i4_swap_Main()
-{
-	extern i4 i4_swapRef(i4 val);
-	extern i4 i4_swapMaskShift(i4 val);
-	extern i4 i4_swapShiftMask(i4 val);
-	extern i4 i4_swapMask(i4 val);
-
-       	ASSERTI4(i4_swapRef(0x00000000), 0x00000000);
-	ASSERTI4(i4_swapRef(0x00000001), 0x01000000);
-	ASSERTI4(i4_swapRef(-1), -1);
-	ASSERTI4(i4_swapRef(I1_MAX), 0x7f000000);
-	ASSERTI4(i4_swapRef(I1_MIN), 0x80ffffff);
-	ASSERTI4(i4_swapRef(U1_MAX), 0xff000000);
-	ASSERTI4(i4_swapRef(I2_MAX), 0xff7f0000);
-	ASSERTI4(i4_swapRef(I2_MIN), 0x80ffff);
-	ASSERTI4(i4_swapRef(U2_MAX), 0xffff0000);
-	ASSERTI4(i4_swapRef(I4_MAX), 0xffffff7f);
-	ASSERTI4(i4_swapRef(I4_MIN), 0x00000080);
-
-	ASSERTI4(i4_swapMaskShift(0x00000000), 0x00000000);
-	ASSERTI4(i4_swapMaskShift(0x00000001), 0x01000000);
-	ASSERTI4(i4_swapMaskShift(-1), -1);
-	ASSERTI4(i4_swapMaskShift(I1_MAX), 0x7f000000);
-	ASSERTI4(i4_swapMaskShift(I1_MIN), 0x80ffffff);
-	ASSERTI4(i4_swapMaskShift(U1_MAX), 0xff000000);
-	ASSERTI4(i4_swapMaskShift(I2_MAX), 0xff7f0000);
-	ASSERTI4(i4_swapMaskShift(I2_MIN), 0x80ffff);
-	ASSERTI4(i4_swapMaskShift(U2_MAX), 0xffff0000);
-	ASSERTI4(i4_swapMaskShift(I4_MAX), 0xffffff7f);
-	ASSERTI4(i4_swapMaskShift(I4_MIN), 0x00000080);
-
-	ASSERTI4(i4_swapShiftMask(0x00000000), 0x00000000);
-	ASSERTI4(i4_swapShiftMask(0x00000001), 0x01000000);
-	ASSERTI4(i4_swapShiftMask(-1), -1);
-	ASSERTI4(i4_swapShiftMask(I1_MAX), 0x7f000000);
-	ASSERTI4(i4_swapShiftMask(I1_MIN), 0x80ffffff);
-	ASSERTI4(i4_swapShiftMask(U1_MAX), 0xff000000);
-	ASSERTI4(i4_swapShiftMask(I2_MAX), 0xff7f0000);
-	ASSERTI4(i4_swapShiftMask(I2_MIN), 0x80ffff);
-	ASSERTI4(i4_swapShiftMask(U2_MAX), 0xffff0000);
-	ASSERTI4(i4_swapShiftMask(I4_MAX), 0xffffff7f);
-	ASSERTI4(i4_swapShiftMask(I4_MIN), 0x00000080);
-
-	ASSERTI4(i4_swapMask(0x00000000), 0x00000000);
-	ASSERTI4(i4_swapMask(0x00000001), 0x01000000);
-	ASSERTI4(i4_swapMask(-1), -1);
-	ASSERTI4(i4_swapMask(I1_MAX), 0x7f000000);
-	ASSERTI4(i4_swapMask(I1_MIN), 0x80ffffff);
-	ASSERTI4(i4_swapMask(U1_MAX), 0xff000000);
-	ASSERTI4(i4_swapMask(I2_MAX), 0xff7f0000);
-	ASSERTI4(i4_swapMask(I2_MIN), 0x80ffff);
-	ASSERTI4(i4_swapMask(U2_MAX), 0xffff0000);
-	ASSERTI4(i4_swapMask(I4_MAX), 0xffffff7f);
-	ASSERTI4(i4_swapMask(I4_MIN), 0x00000080);
-}
 
 MAIN BIOPS4_main(){ }

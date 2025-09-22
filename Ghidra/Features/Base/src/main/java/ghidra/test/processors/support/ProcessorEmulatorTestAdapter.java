@@ -2206,6 +2206,30 @@ public abstract class ProcessorEmulatorTestAdapter extends TestCase implements E
 		// stub
 	}
 
+    	public final void test_UNOPS_DOUBLE() {
+		// stub
+	}
+
+	public final void test_UNOPS_FLOAT() {
+		// stub
+	}
+
+	public final void test_UNOPS_LONGLONG() {
+		// stub
+	}
+
+	public final void test_UNOPS() {
+		// stub
+	}
+
+	public final void test_UNOPS2() {
+		// stub
+	}
+
+	public final void test_UNOPS4() {
+		// stub
+	}
+
 	public final void test_BitManipulation() {
 		// stub
 	}

@@ -1,6 +1,7 @@
 #include "pcode_test.h"
 
 #ifdef HAS_DOUBLE
+
 TEST f8_compareLogic_Main()
 {
 	extern f8 f8_compareLogic(f8 lhs, f8 rhs);
@@ -11,10 +12,8 @@ TEST f8_compareLogic_Main()
 	ASSERTF8(f8_compareLogic(-0x1, -0x2), 41);
 	ASSERTF8(f8_compareLogic(-0x2, -0x1), 37);
 }
-#endif
 
 /* Logical operators */
-#ifdef HAS_DOUBLE
 TEST f8_logicalAnd_Main()
 {
 	extern f8 f8_logicalAnd(f8 lhs, f8 rhs);
@@ -26,9 +25,8 @@ TEST f8_logicalAnd_Main()
 	ASSERTF8(f8_logicalAnd(PI_SHORT, PI_SHORT), 1);
 	ASSERTF8(f8_logicalAnd(PI_SHORT, 0), 0.0);
 }
-#endif
 
-#ifdef HAS_DOUBLE
+
 TEST f8_logicalOr_Main()
 {
 	extern f8 f8_logicalOr(f8 lhs, f8 rhs);
@@ -40,46 +38,10 @@ TEST f8_logicalOr_Main()
 	ASSERTF8(f8_logicalOr(PI_SHORT, PI_SHORT), 1);
 	ASSERTF8(f8_logicalOr(PI_SHORT, 0), 1);
 }
-#endif
 
-#ifdef HAS_DOUBLE
-TEST f8_logicalNot_Main()
-{
-	extern f8 f8_logicalNot(f8 lhs);
-	f8 lhs = 2;
-	f8 retVal;
-	retVal = f8_logicalNot(lhs);
-	ASSERTF8(retVal, 0);
-	ASSERTF8(f8_logicalNot(PI_SHORT), 0);
-}
-#endif
 
 /* Arithmetic operators */
-#ifdef HAS_DOUBLE
-TEST f8_unaryNegative_Main()
-{
-	extern f8 f8_unaryNegative(f8 lhs);
-	f8 lhs = 2;
-	f8 retVal;
-	retVal = f8_unaryNegative(lhs);
-	ASSERTF8(retVal, -2);
-	ASSERTF8(f8_unaryNegative(PI_SHORT), -3.14);
-}
-#endif
 
-#ifdef HAS_DOUBLE
-TEST f8_unaryPositive_Main()
-{
-	extern f8 f8_unaryPositive(f8 lhs);
-	f8 lhs = 2;
-	f8 retVal;
-	retVal = f8_unaryPositive(lhs);
-	ASSERTF8(retVal, 2);
-	ASSERTF8(f8_unaryPositive(PI_SHORT), PI_SHORT);
-}
-#endif
-
-#ifdef HAS_DOUBLE
 TEST f8_addition_Main()
 {
 	extern f8 f8_addition(f8 lhs, f8 rhs);
@@ -90,9 +52,8 @@ TEST f8_addition_Main()
 	ASSERTF8(retVal, 3);
 	ASSERTF8(f8_addition(PI_SHORT, PI_SHORT), 6.28);
 }
-#endif
 
-#ifdef HAS_DOUBLE
+
 TEST f8_subtract_Main()
 {
 	extern f8 f8_subtract(f8 lhs, f8 rhs);
@@ -103,9 +64,8 @@ TEST f8_subtract_Main()
 	ASSERTF8(retVal, 1);
 	ASSERTF8(f8_subtract(PI_SHORT, PI_SHORT), 0.0);
 }
-#endif
 
-#ifdef HAS_DOUBLE
+
 TEST f8_multiply_Main()
 {
 	extern f8 f8_multiply(f8 lhs, f8 rhs);
@@ -116,9 +76,8 @@ TEST f8_multiply_Main()
 	ASSERTF8(retVal, 2);
 	ASSERTF8(f8_multiply(PI_SHORT, PI_SHORT), 9.8596);
 }
-#endif
 
-#ifdef HAS_DOUBLE
+
 TEST f8_conditionGT_Main()
 {
 	extern u1 f8_conditionGT(f8 lhs, f8 rhs);
@@ -323,6 +282,6 @@ TEST f8_conditionNE_Main()
 	ASSERTU1(f8_conditionNEOne(-PI_SHORT), 1);
 }
 
-#endif
+#endif /* HAS_DOUBLE */
 
 MAIN BIOPS_DOUBLE_main() { }

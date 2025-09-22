@@ -1,0 +1,40 @@
+#include "pcode_test.h"
+
+#ifdef HAS_DOUBLE
+
+
+TEST f8_logicalNot_Main()
+{
+	extern f8 f8_logicalNot(f8 lhs);
+	f8 lhs = 2;
+	f8 retVal;
+	retVal = f8_logicalNot(lhs);
+	ASSERTF8(retVal, 0);
+	ASSERTF8(f8_logicalNot(PI_SHORT), 0);
+}
+
+
+TEST f8_unaryNegative_Main()
+{
+	extern f8 f8_unaryNegative(f8 lhs);
+	f8 lhs = 2;
+	f8 retVal;
+	retVal = f8_unaryNegative(lhs);
+	ASSERTF8(retVal, -2);
+	ASSERTF8(f8_unaryNegative(PI_SHORT), -3.14);
+}
+
+
+TEST f8_unaryPositive_Main()
+{
+	extern f8 f8_unaryPositive(f8 lhs);
+	f8 lhs = 2;
+	f8 retVal;
+	retVal = f8_unaryPositive(lhs);
+	ASSERTF8(retVal, 2);
+	ASSERTF8(f8_unaryPositive(PI_SHORT), PI_SHORT);
+}
+
+#endif /* HAS_DOUBLE */
+
+MAIN UNOPS_DOUBLE_main() { }

@@ -131,13 +131,6 @@ TEST u8_logicalOr_Main()
 }
 
 
-TEST u8_logicalNot_Main()
-{
-	extern u8 u8_logicalNot(u8 lhs);
-	ASSERTU8(u8_logicalNot(2), 0);
-}
-
-
 TEST i8_logicalAnd_Main()
 {
 	extern i8 i8_logicalAnd(i8 lhs, i8 rhs);
@@ -159,17 +152,6 @@ TEST i8_logicalOr_Main()
 	ASSERTI8(i8_logicalOr(I8_MAX, I8_MIN), 1);
 	ASSERTI8(i8_logicalOr(I8_MAX, 0), 1);
 	ASSERTI8(i8_logicalOr(I8_MAX, 5), 1);
-}
-
-
-TEST i8_logicalNot_Main()
-{
-	extern i8 i8_logicalNot(i8 lhs);
-	ASSERTI8(i8_logicalNot(0x0101010101010101LL), 0);
-	ASSERTI8(i8_logicalNot(2), 0);
-	ASSERTI8(i8_logicalNot(I8_MAX), 0);
-	ASSERTI8(i8_logicalNot(I8_MIN), 0);
-	ASSERTI8(i8_logicalNot(0), 1);
 }
 
 
@@ -216,55 +198,6 @@ TEST i8_shiftRight_Main()
 
 
 /* Arithmetic operators */
-TEST u8_unaryPositive_Main()
-{
-	extern u8 u8_unaryPositive(u8 lhs);
-	ASSERTU8(u8_unaryPositive(2), 2);
-	ASSERTU8(u8_unaryPositive(U8_MAX), U8_MAX);
-	ASSERTU8(u8_unaryPositive(0), 0);
-}
-
-
-TEST u8_unaryComp_Main()
-{
-	extern u8 u8_unaryComp(u8 val);
-	ASSERTU8(u8_unaryComp(0), U8_MAX);
-	ASSERTU8(u8_unaryComp(1), U8_MAX-1);
-	ASSERTU8(u8_unaryComp(U8_MAX), 0);
-}
-
-TEST u8_unaryIncPost_Main()
-{
-	extern u8 u8_unaryIncPost(u8 val);
-	ASSERTU8(u8_unaryIncPost(0), 0);
-	ASSERTU8(u8_unaryIncPost(1), 1);
-	ASSERTU8(u8_unaryIncPost(U8_MAX), U8_MAX);
-}
-
-TEST u8_unaryIncPre_Main()
-{
-	extern u8 u8_unaryIncPre(u8 val);
-	ASSERTU8(u8_unaryIncPre(0), 1);
-	ASSERTU8(u8_unaryIncPre(1), 2);
-	ASSERTU8(u8_unaryIncPre(U8_MAX), 0);
-}
-
-TEST u8_unaryDecPost_Main()
-{
-	extern u8 u8_unaryDecPost(u8 val);
-	ASSERTU8(u8_unaryDecPost(0), 0);
-	ASSERTU8(u8_unaryDecPost(1), 1);
-	ASSERTU8(u8_unaryDecPost(U8_MAX), U8_MAX);
-}
-
-TEST u8_unaryDecPre_Main()
-{
-	extern u8 u8_unaryDecPre(u8 val);
-	ASSERTU8(u8_unaryDecPre(0), U8_MAX);
-	ASSERTU8(u8_unaryDecPre(1), 0);
-	ASSERTU8(u8_unaryDecPre(U8_MAX), U8_MAX-1);
-}
-
 
 TEST u8_addition_Main()
 {
@@ -305,81 +238,6 @@ TEST u8_divide_Main()
 	ASSERTU8(u8_divide(U8_MAX, U8_MAX), 1);
 	ASSERTU8(u8_divide(0, U8_MAX), 0);
 	ASSERTU8(u8_divide(U8_MAX, 5), 3689348814741910323ULL);
-}
-
-
-TEST i8_unaryNegative_Main()
-{
-	extern i8 i8_unaryNegative(i8 lhs);
-	ASSERTI8(i8_unaryNegative(2), -2);
-	ASSERTI8(i8_unaryNegative(0x0101010101010101LL), -0x0101010101010101LL);
-	ASSERTI8(i8_unaryNegative(-0x0101010101010101LL), 0x0101010101010101LL);
-	ASSERTI8(i8_unaryNegative(I8_MAX), I8_MIN+1);
-	ASSERTI8(i8_unaryNegative(I8_MIN), I8_MIN);
-	ASSERTI8(i8_unaryNegative(0), 0);
-}
-
-
-TEST i8_unaryPositive_Main()
-{
-	extern i8 i8_unaryPositive(i8 lhs);
-	ASSERTI8(i8_unaryPositive(2), 2);
-	ASSERTI8(i8_unaryPositive(0x0101010101010101LL), 0x0101010101010101LL);
-	ASSERTI8(i8_unaryPositive(-0x0101010101010101LL), -0x0101010101010101LL);
-	ASSERTI8(i8_unaryPositive(I8_MAX), I8_MAX);
-	ASSERTI8(i8_unaryPositive(I8_MIN), I8_MIN);
-	ASSERTI8(i8_unaryPositive(0), 0);
-}
-
-
-TEST i8_unaryComp_Main()
-{
-	extern i8 i8_unaryComp(i8 val);
-	ASSERTI8(i8_unaryComp(0), -1);
-	ASSERTI8(i8_unaryComp(1), -2);
-	ASSERTI8(i8_unaryComp(-1), 0);
-	ASSERTI8(i8_unaryComp(I8_MAX), I8_MIN);
-	ASSERTI8(i8_unaryComp(I8_MIN), I8_MAX);
-}
-
-TEST i8_unaryIncPost_Main()
-{
-	extern i8 i8_unaryIncPost(i8 val);
-	ASSERTI8(i8_unaryIncPost(0), 0);
-	ASSERTI8(i8_unaryIncPost(1), 1);
-	ASSERTI8(i8_unaryIncPost(-1), -1);
-	ASSERTI8(i8_unaryIncPost(I8_MAX), I8_MAX);
-	ASSERTI8(i8_unaryIncPost(I8_MIN), I8_MIN);
-}
-
-TEST i8_unaryIncPre_Main()
-{
-	extern i8 i8_unaryIncPre(i8 val);
-	ASSERTI8(i8_unaryIncPre(0), 1);
-	ASSERTI8(i8_unaryIncPre(1), 2);
-	ASSERTI8(i8_unaryIncPre(-1), 0);
-	ASSERTI8(i8_unaryIncPre(I8_MAX), I8_MIN);
-	ASSERTI8(i8_unaryIncPre(I8_MIN), I8_MIN+1);
-}
-
-TEST i8_unaryDecPost_Main()
-{
-	extern i8 i8_unaryDecPost(i8 val);
-	ASSERTI8(i8_unaryDecPost(0), 0);
-	ASSERTI8(i8_unaryDecPost(1), 1);
-	ASSERTI8(i8_unaryDecPost(-1), -1);
-	ASSERTI8(i8_unaryDecPost(I8_MAX), I8_MAX);
-	ASSERTI8(i8_unaryDecPost(I8_MIN), I8_MIN);
-}
-
-TEST i8_unaryDecPre_Main()
-{
-	extern i8 i8_unaryDecPre(i8 val);
-	ASSERTI8(i8_unaryDecPre(0), -1);
-	ASSERTI8(i8_unaryDecPre(1), 0);
-	ASSERTI8(i8_unaryDecPre(-1), -2);
-	ASSERTI8(i8_unaryDecPre(I8_MAX), I8_MAX-1);
-	ASSERTI8(i8_unaryDecPre(I8_MIN), I8_MAX);
 }
 
 
@@ -1121,52 +979,7 @@ TEST i8_maximum_Main()
 	ASSERTI8(i8_maximum(I8_MIN, I8_MIN), I8_MIN);
 }
 
-TEST u8_swap_Main()
-{
-	extern u8 u8_swapRef(u8 val);
-	extern u8 u8_swapMaskShift(u8 val);
-	extern u8 u8_swapShiftMask(u8 val);
-	extern u8 u8_swapMask(u8 val);
-
-	ASSERTU8(u8_swapRef(0x0000000000000000), 0x0000000000000000);
-	ASSERTU8(u8_swapRef(0x0000000000000001), 0x0100000000000000);
-	ASSERTU8(u8_swapRef(I1_MAX), 0x7f00000000000000);
-	ASSERTU8(u8_swapRef(I2_MAX), 0xff7f000000000000);
-	ASSERTU8(u8_swapRef(I4_MAX), 0xffffff7f00000000);
-	ASSERTU8(u8_swapRef(U1_MAX), 0xff00000000000000);
-	ASSERTU8(u8_swapRef(U2_MAX), 0xffff000000000000);
-	ASSERTU8(u8_swapRef(U4_MAX), 0xffffffff00000000);
-	ASSERTU8(u8_swapRef(U8_MAX), U8_MAX);
-	ASSERTU8(u8_swapRef(0x80000000), 0x0000008000000000);
-	ASSERTU8(u8_swapRef(0x00800000), 0x0000800000000000);
-	ASSERTU8(u8_swapRef(0x00008000), 0x0080000000000000);
-	ASSERTU8(u8_swapRef(0x0000000000000080), 0x8000000000000000);
-}
-
-TEST i8_swap_Main()
-{
-	extern i8 i8_swapRef(i8 val);
-	extern i8 i8_swapMaskShift(i8 val);
-	extern i8 i8_swapShiftMask(i8 val);
-	extern i8 i8_swapMask(i8 val);
-
-       	ASSERTI8(i8_swapRef(0x0000000000000000), 0x0000000000000000);
-	ASSERTI8(i8_swapRef(0x0000000000000001), 0x0100000000000000);
-	ASSERTI8(i8_swapRef(-1), -1);
-	ASSERTI8(i8_swapRef(I1_MAX), 0x7f00000000000000);
-	ASSERTI8(i8_swapRef(I1_MIN), 0x80ffffffffffffff);
-	ASSERTI8(i8_swapRef(U1_MAX), 0xff00000000000000);
-	ASSERTI8(i8_swapRef(I2_MAX), 0xff7f000000000000);
-	ASSERTI8(i8_swapRef(I2_MIN), 0x0080ffffffffffff);
-	ASSERTI8(i8_swapRef(U2_MAX), 0xffff000000000000);
-	ASSERTI8(i8_swapRef(I4_MAX), 0xffffff7f00000000);
-	ASSERTI8(i8_swapRef(I4_MIN), 0x00000080ffffffff);
-	ASSERTI8(i8_swapRef(U4_MAX), 0xffffffff00000000);
-	ASSERTI8(i8_swapRef(I8_MAX), 0xffffffffffffff7f);
-	ASSERTI8(i8_swapRef(I8_MIN), 0x0000000000000080);
-}
-
-#endif
+#endif /* HAS_LONGLONG */
 
 MAIN BIOPS_LONGLONG_main() { }
 

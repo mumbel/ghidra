@@ -1,0 +1,32 @@
+#include "pcode_test.h"
+
+#ifdef HAS_FLOAT
+
+
+TEST f4_logicalNot_Main()
+{
+	extern f4 f4_logicalNot(f4 lhs);
+	ASSERTF4(f4_logicalNot(2), 0);
+	ASSERTF4(f4_logicalNot(PI_SHORT), 0);
+}
+
+
+TEST f4_unaryNegative_Main()
+{
+	extern f4 f4_unaryNegative(f4 lhs);
+	ASSERTF4(f4_unaryNegative(2), -2);
+	ASSERTF4(f4_unaryNegative(PI_SHORT), -3.14);
+}
+
+
+TEST f4_unaryPositive_Main()
+{
+	extern f4 f4_unaryPositive(f4 lhs);
+	ASSERTF4(f4_unaryPositive(2), 2);
+	ASSERTF4(f4_unaryPositive(PI_SHORT), PI_SHORT);
+}
+
+#endif /* HAS_FLOAT */
+
+
+MAIN UNOPS_FLOAT_main() { }

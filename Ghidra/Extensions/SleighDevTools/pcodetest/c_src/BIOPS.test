@@ -111,14 +111,6 @@ TEST u1_logicalOr_Main()
 	ASSERTU1(u1_logicalOr(U1_MAX, 0), 1);
 }
 
-TEST u1_logicalNot_Main()
-{
-	extern u1 u1_logicalNot(u1 lhs);
-	ASSERTU1(u1_logicalNot(0x01), 0);
-	ASSERTU1(u1_logicalNot(U1_MAX), 0);
-	ASSERTU1(u1_logicalNot(0), 1);
-}
-
 TEST i1_logicalAnd_Main()
 {
 	extern i1 i1_logicalAnd(i1 lhs, i1 rhs);
@@ -138,15 +130,6 @@ TEST i1_logicalOr_Main()
 	ASSERTI1(i1_logicalOr(0, 0), 0);
 	ASSERTI1(i1_logicalOr(0, I1_MAX), 1);
 	ASSERTI1(i1_logicalOr(I1_MAX, I1_MIN), 1);
-}
-
-TEST i1_logicalNot_Main()
-{
-	extern i1 i1_logicalNot(i1 lhs);
-	ASSERTI1(i1_logicalNot(2), 0);
-	ASSERTI1(i1_logicalNot(I1_MAX), 0);
-	ASSERTI1(i1_logicalNot(I1_MIN), 0);
-	ASSERTI1(i1_logicalNot(0), 1);
 }
 
 /* Shift operators */
@@ -187,54 +170,6 @@ TEST i1_shiftRight_Main()
 }
 
 /* Arithmetic functions */
-TEST u1_unaryPositive_Main()
-{
-	extern u1 u1_unaryPositive(u1 lhs);
-	ASSERTU1(u1_unaryPositive(0x01), 0x01);
-	ASSERTU1(u1_unaryPositive(U1_MAX), 255);
-	ASSERTU1(u1_unaryPositive(0), 0);
-}
-
-TEST u1_unaryComp_Main()
-{
-	extern u1 u1_unaryComp(u1 lhs);
-	ASSERTU1(u1_unaryComp(0), U1_MAX);
-	ASSERTU1(u1_unaryComp(1), U1_MAX-1);
-	ASSERTU1(u1_unaryComp(U1_MAX), 0);
-}
-
-TEST u1_unaryIncPost_Main()
-{
-	extern u1 u1_unaryIncPost(u1 lhs);
-	ASSERTU1(u1_unaryIncPost(0), 0);
-	ASSERTU1(u1_unaryIncPost(1), 1);
-	ASSERTU1(u1_unaryIncPost(U1_MAX), U1_MAX);
-}
-
-TEST u1_unaryIncPre_Main()
-{
-	extern u1 u1_unaryIncPre(u1 lhs);
-	ASSERTU1(u1_unaryIncPre(0), 1);
-	ASSERTU1(u1_unaryIncPre(1), 2);
-	ASSERTU1(u1_unaryIncPre(U1_MAX), 0);
-}
-
-TEST u1_unaryDecPost_Main()
-{
-	extern u1 u1_unaryDecPost(u1 lhs);
-	ASSERTU1(u1_unaryDecPost(0), 0);
-	ASSERTU1(u1_unaryDecPost(1), 1);
-	ASSERTU1(u1_unaryDecPost(U1_MAX), U1_MAX);
-}
-
-TEST u1_unaryDecPre_Main()
-{
-	extern u1 u1_unaryDecPre(u1 lhs);
-	ASSERTU1(u1_unaryDecPre(0), U1_MAX);
-	ASSERTU1(u1_unaryDecPre(1), 0);
-	ASSERTU1(u1_unaryDecPre(U1_MAX), U1_MAX-1);
-}
-
 TEST u1_addition_Main()
 {
 	extern u1 u1_addition(u1 lhs, u1 rhs);
@@ -276,74 +211,6 @@ TEST u1_remainder_Main()
 	ASSERTU1(u1_remainder(0x01, 0x01), 0);
 	ASSERTU1(u1_remainder(U1_MAX, U1_MAX), 0);
 	ASSERTU1(u1_remainder(0, I1_MIN), 0);
-}
-
-TEST i1_unaryNegative_Main()
-{
-	extern i1 i1_unaryNegative(i1 lhs);
-	ASSERTI1(i1_unaryNegative(2), -2);
-	ASSERTI1(i1_unaryNegative(I1_MAX), -127);
-	ASSERTI1(i1_unaryNegative(I1_MIN), -128);
-	ASSERTI1(i1_unaryNegative(0), 0);
-}
-
-TEST i1_unaryPositive_Main()
-{
-	extern i1 i1_unaryPositive(i1 lhs);
-	ASSERTI1(i1_unaryPositive(2), 2);
-	ASSERTI1(i1_unaryPositive(I1_MAX), 127);
-	ASSERTI1(i1_unaryPositive(I1_MIN), -128);
-	ASSERTI1(i1_unaryPositive(0), 0);
-}
-
-TEST i1_unaryComp_Main()
-{
-	extern i1 i1_unaryComp(i1 val);
-	ASSERTI1(i1_unaryComp(0), -1);
-	ASSERTI1(i1_unaryComp(1), -2);
-	ASSERTI1(i1_unaryComp(-1), 0);
-	ASSERTI1(i1_unaryComp(I1_MAX), I1_MIN);
-	ASSERTI1(i1_unaryComp(I1_MIN), I1_MAX);
-}
-
-TEST i1_unaryIncPost_Main()
-{
-	extern i1 i1_unaryIncPost(i1 val);
-	ASSERTI1(i1_unaryIncPost(0), 0);
-	ASSERTI1(i1_unaryIncPost(1), 1);
-	ASSERTI1(i1_unaryIncPost(-1), -1);
-	ASSERTI1(i1_unaryIncPost(I1_MAX), I1_MAX);
-	ASSERTI1(i1_unaryIncPost(I1_MIN), I1_MIN);
-}
-
-TEST i1_unaryIncPre_Main()
-{
-	extern i1 i1_unaryIncPre(i1 val);
-	ASSERTI1(i1_unaryIncPre(0), 1);
-	ASSERTI1(i1_unaryIncPre(1), 2);
-	ASSERTI1(i1_unaryIncPre(-1), 0);
-	ASSERTI1(i1_unaryIncPre(I1_MAX), I1_MIN);
-	ASSERTI1(i1_unaryIncPre(I1_MIN), I1_MIN+1);
-}
-
-TEST i1_unaryDecPost_Main()
-{
-	extern i1 i1_unaryDecPost(i1 val);
-	ASSERTI1(i1_unaryDecPost(0), 0);
-	ASSERTI1(i1_unaryDecPost(1), 1);
-	ASSERTI1(i1_unaryDecPost(-1), -1);
-	ASSERTI1(i1_unaryDecPost(I1_MAX), I1_MAX);
-	ASSERTI1(i1_unaryDecPost(I1_MIN), I1_MIN);
-}
-
-TEST i1_unaryDecPre_Main()
-{
-	extern i1 i1_unaryDecPre(i1 val);
-	ASSERTI1(i1_unaryDecPre(0), -1);
-	ASSERTI1(i1_unaryDecPre(1), 0);
-	ASSERTI1(i1_unaryDecPre(-1), -2);
-	ASSERTI1(i1_unaryDecPre(I1_MAX), I1_MAX-1);
-	ASSERTI1(i1_unaryDecPre(I1_MIN), I1_MAX);
 }
 
 TEST i1_addition_Main()
