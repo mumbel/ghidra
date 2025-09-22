@@ -1,0 +1,695 @@
+#include "pcode_test.h"
+
+TEST u4_compareLogic_Main()
+{
+	extern u4 u4_compareLogic(u4 lhs, u4 rhs);
+	ASSERTU4(u4_compareLogic(0x1, 0x1), 66);
+	ASSERTU4(u4_compareLogic(0x1, 0x2), 38);
+	ASSERTU4(u4_compareLogic(0x2, 0x1), 42);
+}
+
+TEST i4_compareLogic_Main()
+{
+	extern i4 i4_compareLogic(i4 lhs, i4 rhs);
+	ASSERTI4(i4_compareLogic(0x1, 0x1), 66);
+	ASSERTI4(i4_compareLogic(0x1, 0x2), 38);
+	ASSERTI4(i4_compareLogic(0x2, 0x1), 42);
+	ASSERTI4(i4_compareLogic(-0x1, -0x1), 65);
+	ASSERTI4(i4_compareLogic(-0x1, -0x2), 41);
+	ASSERTI4(i4_compareLogic(-0x2, -0x1), 37);
+}
+
+TEST u4_conditionGT_Main()
+{
+	extern u1 u4_conditionGT(u4 lhs, u4 rhs);
+	extern u1 u4_conditionGTUnused(u4 val, u4 lhs, u4 rhs);
+	extern u1 u4_conditionGTZero(u4 val);
+	extern u1 u4_conditionGTOne(u4 val);
+
+	ASSERTU1(u4_conditionGT(0, 0), 0);
+	ASSERTU1(u4_conditionGT(0, 1), 0);
+	ASSERTU1(u4_conditionGT(0, U4_MAX), 0);
+	ASSERTU1(u4_conditionGT(1, 0), 1);
+	ASSERTU1(u4_conditionGT(1, 1), 0);
+	ASSERTU1(u4_conditionGT(1, U4_MAX), 0);
+	ASSERTU1(u4_conditionGT(U4_MAX, 0), 1);
+	ASSERTU1(u4_conditionGT(U4_MAX, 1), 1);
+	ASSERTU1(u4_conditionGT(U4_MAX, U4_MAX), 0);
+
+	ASSERTU1(u4_conditionGTUnused(0, 0, 0), 0);
+	ASSERTU1(u4_conditionGTUnused(0, 0, 1), 0);
+	ASSERTU1(u4_conditionGTUnused(0, 0, U4_MAX), 0);
+	ASSERTU1(u4_conditionGTUnused(0, 1, 0), 1);
+	ASSERTU1(u4_conditionGTUnused(0, 1, 1), 0);
+	ASSERTU1(u4_conditionGTUnused(0, 1, U4_MAX), 0);
+	ASSERTU1(u4_conditionGTUnused(0, U4_MAX, 0), 1);
+	ASSERTU1(u4_conditionGTUnused(0, U4_MAX, 1), 1);
+	ASSERTU1(u4_conditionGTUnused(0, U4_MAX, U4_MAX), 0);
+
+	ASSERTU1(u4_conditionGTZero(0), 0);
+	ASSERTU1(u4_conditionGTZero(1), 1);
+	ASSERTU1(u4_conditionGTZero(U4_MAX), 1);
+
+	ASSERTU1(u4_conditionGTOne(0), 0);
+	ASSERTU1(u4_conditionGTOne(1), 0);
+	ASSERTU1(u4_conditionGTOne(U4_MAX), 1);
+}
+
+TEST u4_conditionGE_Main()
+{
+	extern u1 u4_conditionGE(u4 lhs, u4 rhs);
+	extern u1 u4_conditionGEUnused(u4 val, u4 lhs, u4 rhs);
+	extern u1 u4_conditionGEZero(u4 val);
+	extern u1 u4_conditionGEOne(u4 val);
+
+	ASSERTU1(u4_conditionGE(0, 0), 1);
+	ASSERTU1(u4_conditionGE(0, 1), 0);
+	ASSERTU1(u4_conditionGE(0, U4_MAX), 0);
+	ASSERTU1(u4_conditionGE(1, 0), 1);
+	ASSERTU1(u4_conditionGE(1, 1), 1);
+	ASSERTU1(u4_conditionGE(1, U4_MAX), 0);
+	ASSERTU1(u4_conditionGE(U4_MAX, 0), 1);
+	ASSERTU1(u4_conditionGE(U4_MAX, 1), 1);
+	ASSERTU1(u4_conditionGE(U4_MAX, U4_MAX), 1);
+
+	ASSERTU1(u4_conditionGEUnused(0, 0, 0), 1);
+	ASSERTU1(u4_conditionGEUnused(0, 0, 1), 0);
+	ASSERTU1(u4_conditionGEUnused(0, 0, U4_MAX), 0);
+	ASSERTU1(u4_conditionGEUnused(0, 1, 0), 1);
+	ASSERTU1(u4_conditionGEUnused(0, 1, 1), 1);
+	ASSERTU1(u4_conditionGEUnused(0, 1, U4_MAX), 0);
+	ASSERTU1(u4_conditionGEUnused(0, U4_MAX, 0), 1);
+	ASSERTU1(u4_conditionGEUnused(0, U4_MAX, 1), 1);
+	ASSERTU1(u4_conditionGEUnused(0, U4_MAX, U4_MAX), 1);
+
+	ASSERTU1(u4_conditionGEZero(0), 1);
+	ASSERTU1(u4_conditionGEZero(1), 1);
+	ASSERTU1(u4_conditionGEZero(U4_MAX), 1);
+
+	ASSERTU1(u4_conditionGEOne(0), 0);
+	ASSERTU1(u4_conditionGEOne(1), 1);
+	ASSERTU1(u4_conditionGEOne(U4_MAX), 1);
+}
+
+TEST u4_conditionEQ_Main()
+{
+	extern u1 u4_conditionEQ(u4 lhs, u4 rhs);
+	extern u1 u4_conditionEQUnused(u4 val, u4 lhs, u4 rhs);
+	extern u1 u4_conditionEQZero(u4 val);
+	extern u1 u4_conditionEQOne(u4 val);
+
+	ASSERTU1(u4_conditionEQ(0, 0), 1);
+	ASSERTU1(u4_conditionEQ(0, 1), 0);
+	ASSERTU1(u4_conditionEQ(0, U4_MAX), 0);
+	ASSERTU1(u4_conditionEQ(1, 0), 0);
+	ASSERTU1(u4_conditionEQ(1, 1), 1);
+	ASSERTU1(u4_conditionEQ(1, U4_MAX), 0);
+	ASSERTU1(u4_conditionEQ(U4_MAX, 0), 0);
+	ASSERTU1(u4_conditionEQ(U4_MAX, 1), 0);
+	ASSERTU1(u4_conditionEQ(U4_MAX, U4_MAX), 1);
+
+	ASSERTU1(u4_conditionEQUnused(0, 0, 0), 1);
+	ASSERTU1(u4_conditionEQUnused(0, 0, 1), 0);
+	ASSERTU1(u4_conditionEQUnused(0, 0, U4_MAX), 0);
+	ASSERTU1(u4_conditionEQUnused(0, 1, 0), 0);
+	ASSERTU1(u4_conditionEQUnused(0, 1, 1), 1);
+	ASSERTU1(u4_conditionEQUnused(0, 1, U4_MAX), 0);
+	ASSERTU1(u4_conditionEQUnused(0, U4_MAX, 0), 0);
+	ASSERTU1(u4_conditionEQUnused(0, U4_MAX, 1), 0);
+	ASSERTU1(u4_conditionEQUnused(0, U4_MAX, U4_MAX), 1);
+
+	ASSERTU1(u4_conditionEQZero(0), 1);
+	ASSERTU1(u4_conditionEQZero(1), 0);
+	ASSERTU1(u4_conditionEQZero(U4_MAX), 0);
+
+	ASSERTU1(u4_conditionEQOne(0), 0);
+	ASSERTU1(u4_conditionEQOne(1), 1);
+	ASSERTU1(u4_conditionEQOne(U4_MAX), 0);
+}
+
+TEST u4_conditionLE_Main()
+{
+	extern u1 u4_conditionLE(u4 lhs, u4 rhs);
+	extern u1 u4_conditionLEUnused(u4 val, u4 lhs, u4 rhs);
+	extern u1 u4_conditionLEZero(u4 val);
+	extern u1 u4_conditionLEOne(u4 val);
+
+	ASSERTU1(u4_conditionLE(0, 0), 1);
+	ASSERTU1(u4_conditionLE(0, 1), 1);
+	ASSERTU1(u4_conditionLE(0, U4_MAX), 1);
+	ASSERTU1(u4_conditionLE(1, 0), 0);
+	ASSERTU1(u4_conditionLE(1, 1), 1);
+	ASSERTU1(u4_conditionLE(1, U4_MAX), 1);
+	ASSERTU1(u4_conditionLE(U4_MAX, 0), 0);
+	ASSERTU1(u4_conditionLE(U4_MAX, 1), 0);
+	ASSERTU1(u4_conditionLE(U4_MAX, U4_MAX), 1);
+
+	ASSERTU1(u4_conditionLEUnused(0, 0, 0), 1);
+	ASSERTU1(u4_conditionLEUnused(0, 0, 1), 1);
+	ASSERTU1(u4_conditionLEUnused(0, 0, U4_MAX), 1);
+	ASSERTU1(u4_conditionLEUnused(0, 1, 0), 0);
+	ASSERTU1(u4_conditionLEUnused(0, 1, 1), 1);
+	ASSERTU1(u4_conditionLEUnused(0, 1, U4_MAX), 1);
+	ASSERTU1(u4_conditionLEUnused(0, U4_MAX, 0), 0);
+	ASSERTU1(u4_conditionLEUnused(0, U4_MAX, 1), 0);
+	ASSERTU1(u4_conditionLEUnused(0, U4_MAX, U4_MAX), 1);
+
+	ASSERTU1(u4_conditionLEZero(0), 1);
+	ASSERTU1(u4_conditionLEZero(1), 0);
+	ASSERTU1(u4_conditionLEZero(U4_MAX), 0);
+
+	ASSERTU1(u4_conditionLEOne(0), 1);
+	ASSERTU1(u4_conditionLEOne(1), 1);
+	ASSERTU1(u4_conditionLEOne(U4_MAX), 0);
+}
+
+TEST u4_conditionLT_Main()
+{
+	extern u1 u4_conditionLT(u4 lhs, u4 rhs);
+	extern u1 u4_conditionLTUnused(u4 val, u4 lhs, u4 rhs);
+	extern u1 u4_conditionLTZero(u4 val);
+	extern u1 u4_conditionLTOne(u4 val);
+
+	ASSERTU1(u4_conditionLT(0, 0), 0);
+	ASSERTU1(u4_conditionLT(0, 1), 1);
+	ASSERTU1(u4_conditionLT(0, U4_MAX), 1);
+	ASSERTU1(u4_conditionLT(1, 0), 0);
+	ASSERTU1(u4_conditionLT(1, 1), 0);
+	ASSERTU1(u4_conditionLT(1, U4_MAX), 1);
+	ASSERTU1(u4_conditionLT(U4_MAX, 0), 0);
+	ASSERTU1(u4_conditionLT(U4_MAX, 1), 0);
+	ASSERTU1(u4_conditionLT(U4_MAX, U4_MAX), 0);
+
+	ASSERTU1(u4_conditionLTUnused(0, 0, 0), 0);
+	ASSERTU1(u4_conditionLTUnused(0, 0, 1), 1);
+	ASSERTU1(u4_conditionLTUnused(0, 0, U4_MAX), 1);
+	ASSERTU1(u4_conditionLTUnused(0, 1, 0), 0);
+	ASSERTU1(u4_conditionLTUnused(0, 1, 1), 0);
+	ASSERTU1(u4_conditionLTUnused(0, 1, U4_MAX), 1);
+	ASSERTU1(u4_conditionLTUnused(0, U4_MAX, 0), 0);
+	ASSERTU1(u4_conditionLTUnused(0, U4_MAX, 1), 0);
+	ASSERTU1(u4_conditionLTUnused(0, U4_MAX, U4_MAX), 0);
+
+	ASSERTU1(u4_conditionLTZero(0), 0);
+	ASSERTU1(u4_conditionLTZero(1), 0);
+	ASSERTU1(u4_conditionLTZero(U4_MAX), 0);
+
+	ASSERTU1(u4_conditionLTOne(0), 1);
+	ASSERTU1(u4_conditionLTOne(1), 0);
+	ASSERTU1(u4_conditionLTOne(U4_MAX), 0);
+}
+
+TEST u4_conditionNE_Main()
+{
+	extern u1 u4_conditionNE(u4 lhs, u4 rhs);
+	extern u1 u4_conditionNEUnused(u4 val, u4 lhs, u4 rhs);
+	extern u1 u4_conditionNEZero(u4 val);
+	extern u1 u4_conditionNEOne(u4 val);
+
+	ASSERTU1(u4_conditionNE(0, 0), 0);
+	ASSERTU1(u4_conditionNE(0, 1), 1);
+	ASSERTU1(u4_conditionNE(0, U4_MAX), 1);
+	ASSERTU1(u4_conditionNE(1, 0), 1);
+	ASSERTU1(u4_conditionNE(1, 1), 0);
+	ASSERTU1(u4_conditionNE(1, U4_MAX), 1);
+	ASSERTU1(u4_conditionNE(U4_MAX, 0), 1);
+	ASSERTU1(u4_conditionNE(U4_MAX, 1), 1);
+	ASSERTU1(u4_conditionNE(U4_MAX, U4_MAX), 0);
+
+	ASSERTU1(u4_conditionNEUnused(0, 0, 0), 0);
+	ASSERTU1(u4_conditionNEUnused(0, 0, 1), 1);
+	ASSERTU1(u4_conditionNEUnused(0, 0, U4_MAX), 1);
+	ASSERTU1(u4_conditionNEUnused(0, 1, 0), 1);
+	ASSERTU1(u4_conditionNEUnused(0, 1, 1), 0);
+	ASSERTU1(u4_conditionNEUnused(0, 1, U4_MAX), 1);
+	ASSERTU1(u4_conditionNEUnused(0, U4_MAX, 0), 1);
+	ASSERTU1(u4_conditionNEUnused(0, U4_MAX, 1), 1);
+	ASSERTU1(u4_conditionNEUnused(0, U4_MAX, U4_MAX), 0);
+
+	ASSERTU1(u4_conditionNEZero(0), 0);
+	ASSERTU1(u4_conditionNEZero(1), 1);
+	ASSERTU1(u4_conditionNEZero(U4_MAX), 1);
+
+	ASSERTU1(u4_conditionNEOne(0), 1);
+	ASSERTU1(u4_conditionNEOne(1), 0);
+	ASSERTU1(u4_conditionNEOne(U4_MAX), 1);
+}
+
+TEST i4_conditionGT_Main()
+{
+	extern u1 i4_conditionGT(i4 lhs, i4 rhs);
+	extern u1 i4_conditionGTUnused(i4 val, i4 lhs, i4 rhs);
+	extern u1 i4_conditionGTZero(i4 val);
+	extern u1 i4_conditionGTOne(i4 val);
+
+	ASSERTU1(i4_conditionGT(0, 0), 0);
+	ASSERTU1(i4_conditionGT(0, 1), 0);
+	ASSERTU1(i4_conditionGT(0, I4_MAX), 0);
+	ASSERTU1(i4_conditionGT(0, I4_MIN), 1);
+	ASSERTU1(i4_conditionGT(1, 0), 1);
+	ASSERTU1(i4_conditionGT(1, 1), 0);
+	ASSERTU1(i4_conditionGT(1, I4_MAX), 0);
+	ASSERTU1(i4_conditionGT(1, I4_MIN), 1);
+	ASSERTU1(i4_conditionGT(I4_MAX, 0), 1);
+	ASSERTU1(i4_conditionGT(I4_MAX, 1), 1);
+	ASSERTU1(i4_conditionGT(I4_MAX, I4_MAX), 0);
+	ASSERTU1(i4_conditionGT(I4_MAX, I4_MIN), 1);
+	ASSERTU1(i4_conditionGT(I4_MIN, 0), 0);
+	ASSERTU1(i4_conditionGT(I4_MIN, 1), 0);
+	ASSERTU1(i4_conditionGT(I4_MIN, I4_MAX), 0);
+	ASSERTU1(i4_conditionGT(I4_MIN, I4_MIN), 0);
+
+	ASSERTU1(i4_conditionGTUnused(0, 0, 0), 0);
+	ASSERTU1(i4_conditionGTUnused(0, 0, 1), 0);
+	ASSERTU1(i4_conditionGTUnused(0, 0, I4_MAX), 0);
+	ASSERTU1(i4_conditionGTUnused(0, 0, I4_MIN), 1);
+	ASSERTU1(i4_conditionGTUnused(0, 1, 0), 1);
+	ASSERTU1(i4_conditionGTUnused(0, 1, 1), 0);
+	ASSERTU1(i4_conditionGTUnused(0, 1, I4_MAX), 0);
+	ASSERTU1(i4_conditionGTUnused(0, 1, I4_MIN), 1);
+	ASSERTU1(i4_conditionGTUnused(0, I4_MAX, 0), 1);
+	ASSERTU1(i4_conditionGTUnused(0, I4_MAX, 1), 1);
+	ASSERTU1(i4_conditionGTUnused(0, I4_MAX, I4_MAX), 0);
+	ASSERTU1(i4_conditionGTUnused(0, I4_MAX, I4_MIN), 1);
+	ASSERTU1(i4_conditionGTUnused(0, I4_MIN, 0), 0);
+	ASSERTU1(i4_conditionGTUnused(0, I4_MIN, 1), 0);
+	ASSERTU1(i4_conditionGTUnused(0, I4_MIN, I4_MAX), 0);
+	ASSERTU1(i4_conditionGTUnused(0, I4_MIN, I4_MIN), 0);
+
+	ASSERTU1(i4_conditionGTZero(0), 0);
+	ASSERTU1(i4_conditionGTZero(1), 1);
+	ASSERTU1(i4_conditionGTZero(I4_MAX), 1);
+	ASSERTU1(i4_conditionGTZero(I4_MIN), 0);
+
+	ASSERTU1(i4_conditionGTOne(0), 0);
+	ASSERTU1(i4_conditionGTOne(1), 0);
+	ASSERTU1(i4_conditionGTOne(I4_MAX), 1);
+	ASSERTU1(i4_conditionGTOne(I4_MIN), 0);
+}
+
+TEST i4_conditionGE_Main()
+{
+	extern u1 i4_conditionGE(i4 lhs, i4 rhs);
+	extern u1 i4_conditionGEUnused(i4 val, i4 lhs, i4 rhs);
+	extern u1 i4_conditionGEZero(i4 val);
+	extern u1 i4_conditionGEOne(i4 val);
+
+	ASSERTU1(i4_conditionGE(0, 0), 1);
+	ASSERTU1(i4_conditionGE(0, 1), 0);
+	ASSERTU1(i4_conditionGE(0, I4_MAX), 0);
+	ASSERTU1(i4_conditionGE(0, I4_MIN), 1);
+	ASSERTU1(i4_conditionGE(1, 0), 1);
+	ASSERTU1(i4_conditionGE(1, 1), 1);
+	ASSERTU1(i4_conditionGE(1, I4_MAX), 0);
+	ASSERTU1(i4_conditionGE(1, I4_MIN), 1);
+	ASSERTU1(i4_conditionGE(I4_MAX, 0), 1);
+	ASSERTU1(i4_conditionGE(I4_MAX, 1), 1);
+	ASSERTU1(i4_conditionGE(I4_MAX, I4_MAX), 1);
+	ASSERTU1(i4_conditionGE(I4_MAX, I4_MIN), 1);
+	ASSERTU1(i4_conditionGE(I4_MIN, 0), 0);
+	ASSERTU1(i4_conditionGE(I4_MIN, 1), 0);
+	ASSERTU1(i4_conditionGE(I4_MIN, I4_MAX), 0);
+	ASSERTU1(i4_conditionGE(I4_MIN, I4_MIN), 1);
+
+	ASSERTU1(i4_conditionGEUnused(0, 0, 0), 1);
+	ASSERTU1(i4_conditionGEUnused(0, 0, 1), 0);
+	ASSERTU1(i4_conditionGEUnused(0, 0, I4_MAX), 0);
+	ASSERTU1(i4_conditionGEUnused(0, 0, I4_MIN), 1);
+	ASSERTU1(i4_conditionGEUnused(0, 1, 0), 1);
+	ASSERTU1(i4_conditionGEUnused(0, 1, 1), 1);
+	ASSERTU1(i4_conditionGEUnused(0, 1, I4_MAX), 0);
+	ASSERTU1(i4_conditionGEUnused(0, 1, I4_MIN), 1);
+	ASSERTU1(i4_conditionGEUnused(0, I4_MAX, 0), 1);
+	ASSERTU1(i4_conditionGEUnused(0, I4_MAX, 1), 1);
+	ASSERTU1(i4_conditionGEUnused(0, I4_MAX, I4_MAX), 1);
+	ASSERTU1(i4_conditionGEUnused(0, I4_MAX, I4_MIN), 1);
+	ASSERTU1(i4_conditionGEUnused(0, I4_MIN, 0), 0);
+	ASSERTU1(i4_conditionGEUnused(0, I4_MIN, 1), 0);
+	ASSERTU1(i4_conditionGEUnused(0, I4_MIN, I4_MAX), 0);
+	ASSERTU1(i4_conditionGEUnused(0, I4_MIN, I4_MIN), 1);
+
+	ASSERTU1(i4_conditionGEZero(0), 1);
+	ASSERTU1(i4_conditionGEZero(1), 1);
+	ASSERTU1(i4_conditionGEZero(I4_MAX), 1);
+	ASSERTU1(i4_conditionGEZero(I4_MIN), 0);
+
+	ASSERTU1(i4_conditionGEOne(0), 0);
+	ASSERTU1(i4_conditionGEOne(1), 1);
+	ASSERTU1(i4_conditionGEOne(I4_MAX), 1);
+	ASSERTU1(i4_conditionGEOne(I4_MIN), 0);
+}
+
+TEST i4_conditionEQ_Main()
+{
+	extern u1 i4_conditionEQ(i4 lhs, i4 rhs);
+	extern u1 i4_conditionEQUnused(i4 val, i4 lhs, i4 rhs);
+	extern u1 i4_conditionEQZero(i4 val);
+	extern u1 i4_conditionEQOne(i4 val);
+
+	ASSERTU1(i4_conditionEQ(0, 0), 1);
+	ASSERTU1(i4_conditionEQ(0, 1), 0);
+	ASSERTU1(i4_conditionEQ(0, I4_MAX), 0);
+	ASSERTU1(i4_conditionEQ(0, I4_MIN), 0);
+	ASSERTU1(i4_conditionEQ(1, 0), 0);
+	ASSERTU1(i4_conditionEQ(1, 1), 1);
+	ASSERTU1(i4_conditionEQ(1, I4_MAX), 0);
+	ASSERTU1(i4_conditionEQ(1, I4_MIN), 0);
+	ASSERTU1(i4_conditionEQ(I4_MAX, 0), 0);
+	ASSERTU1(i4_conditionEQ(I4_MAX, 1), 0);
+	ASSERTU1(i4_conditionEQ(I4_MAX, I4_MAX), 1);
+	ASSERTU1(i4_conditionEQ(I4_MAX, I4_MIN), 0);
+	ASSERTU1(i4_conditionEQ(I4_MIN, 0), 0);
+	ASSERTU1(i4_conditionEQ(I4_MIN, 1), 0);
+	ASSERTU1(i4_conditionEQ(I4_MIN, I4_MAX), 0);
+	ASSERTU1(i4_conditionEQ(I4_MIN, I4_MIN), 1);
+
+	ASSERTU1(i4_conditionEQUnused(0, 0, 0), 1);
+	ASSERTU1(i4_conditionEQUnused(0, 0, 1), 0);
+	ASSERTU1(i4_conditionEQUnused(0, 0, I4_MAX), 0);
+	ASSERTU1(i4_conditionEQUnused(0, 0, I4_MIN), 0);
+	ASSERTU1(i4_conditionEQUnused(0, 1, 0), 0);
+	ASSERTU1(i4_conditionEQUnused(0, 1, 1), 1);
+	ASSERTU1(i4_conditionEQUnused(0, 1, I4_MAX), 0);
+	ASSERTU1(i4_conditionEQUnused(0, 1, I4_MIN), 0);
+	ASSERTU1(i4_conditionEQUnused(0, I4_MAX, 0), 0);
+	ASSERTU1(i4_conditionEQUnused(0, I4_MAX, 1), 0);
+	ASSERTU1(i4_conditionEQUnused(0, I4_MAX, I4_MAX), 1);
+	ASSERTU1(i4_conditionEQUnused(0, I4_MAX, I4_MIN), 0);
+	ASSERTU1(i4_conditionEQUnused(0, I4_MIN, 0), 0);
+	ASSERTU1(i4_conditionEQUnused(0, I4_MIN, 1), 0);
+	ASSERTU1(i4_conditionEQUnused(0, I4_MIN, I4_MAX), 0);
+	ASSERTU1(i4_conditionEQUnused(0, I4_MIN, I4_MIN), 1);
+
+	ASSERTU1(i4_conditionEQZero(0), 1);
+	ASSERTU1(i4_conditionEQZero(1), 0);
+	ASSERTU1(i4_conditionEQZero(I4_MAX), 0);
+	ASSERTU1(i4_conditionEQZero(I4_MIN), 0);
+
+	ASSERTU1(i4_conditionEQOne(0), 0);
+	ASSERTU1(i4_conditionEQOne(1), 1);
+	ASSERTU1(i4_conditionEQOne(I4_MAX), 0);
+	ASSERTU1(i4_conditionEQOne(I4_MIN), 0);
+}
+
+TEST i4_conditionLE_Main()
+{
+	extern u1 i4_conditionLE(i4 lhs, i4 rhs);
+	extern u1 i4_conditionLEUnused(i4 val, i4 lhs, i4 rhs);
+	extern u1 i4_conditionLEZero(i4 val);
+	extern u1 i4_conditionLEOne(i4 val);
+
+	ASSERTU1(i4_conditionLE(0, 0), 1);
+	ASSERTU1(i4_conditionLE(0, 1), 1);
+	ASSERTU1(i4_conditionLE(0, I4_MAX), 1);
+	ASSERTU1(i4_conditionLE(0, I4_MIN), 0);
+	ASSERTU1(i4_conditionLE(1, 0), 0);
+	ASSERTU1(i4_conditionLE(1, 1), 1);
+	ASSERTU1(i4_conditionLE(1, I4_MAX), 1);
+	ASSERTU1(i4_conditionLE(1, I4_MIN), 0);
+	ASSERTU1(i4_conditionLE(I4_MAX, 0), 0);
+	ASSERTU1(i4_conditionLE(I4_MAX, 1), 0);
+	ASSERTU1(i4_conditionLE(I4_MAX, I4_MAX), 1);
+	ASSERTU1(i4_conditionLE(I4_MAX, I4_MIN), 0);
+	ASSERTU1(i4_conditionLE(I4_MIN, 0), 1);
+	ASSERTU1(i4_conditionLE(I4_MIN, 1), 1);
+	ASSERTU1(i4_conditionLE(I4_MIN, I4_MAX), 1);
+	ASSERTU1(i4_conditionLE(I4_MIN, I4_MIN), 1);
+
+	ASSERTU1(i4_conditionLEUnused(0, 0, 0), 1);
+	ASSERTU1(i4_conditionLEUnused(0, 0, 1), 1);
+	ASSERTU1(i4_conditionLEUnused(0, 0, I4_MAX), 1);
+	ASSERTU1(i4_conditionLEUnused(0, 0, I4_MIN), 0);
+	ASSERTU1(i4_conditionLEUnused(0, 1, 0), 0);
+	ASSERTU1(i4_conditionLEUnused(0, 1, 1), 1);
+	ASSERTU1(i4_conditionLEUnused(0, 1, I4_MAX), 1);
+	ASSERTU1(i4_conditionLEUnused(0, 1, I4_MIN), 0);
+	ASSERTU1(i4_conditionLEUnused(0, I4_MAX, 0), 0);
+	ASSERTU1(i4_conditionLEUnused(0, I4_MAX, 1), 0);
+	ASSERTU1(i4_conditionLEUnused(0, I4_MAX, I4_MAX), 1);
+	ASSERTU1(i4_conditionLEUnused(0, I4_MAX, I4_MIN), 0);
+	ASSERTU1(i4_conditionLEUnused(0, I4_MIN, 0), 1);
+	ASSERTU1(i4_conditionLEUnused(0, I4_MIN, 1), 1);
+	ASSERTU1(i4_conditionLEUnused(0, I4_MIN, I4_MAX), 1);
+	ASSERTU1(i4_conditionLEUnused(0, I4_MIN, I4_MIN), 1);
+
+	ASSERTU1(i4_conditionLEZero(0), 1);
+	ASSERTU1(i4_conditionLEZero(1), 0);
+	ASSERTU1(i4_conditionLEZero(I4_MAX), 0);
+	ASSERTU1(i4_conditionLEZero(I4_MIN), 1);
+
+	ASSERTU1(i4_conditionLEOne(0), 1);
+	ASSERTU1(i4_conditionLEOne(1), 1);
+	ASSERTU1(i4_conditionLEOne(I4_MAX), 0);
+	ASSERTU1(i4_conditionLEOne(I4_MIN), 1);
+}
+
+TEST i4_conditionLT_Main()
+{
+	extern u1 i4_conditionLT(i4 lhs, i4 rhs);
+	extern u1 i4_conditionLTUnused(i4 val, i4 lhs, i4 rhs);
+	extern u1 i4_conditionLTZero(i4 val);
+	extern u1 i4_conditionLTOne(i4 val);
+
+	ASSERTU1(i4_conditionLT(0, 0), 0);
+	ASSERTU1(i4_conditionLT(0, 1), 1);
+	ASSERTU1(i4_conditionLT(0, I4_MAX), 1);
+	ASSERTU1(i4_conditionLT(0, I4_MIN), 0);
+	ASSERTU1(i4_conditionLT(1, 0), 0);
+	ASSERTU1(i4_conditionLT(1, 1), 0);
+	ASSERTU1(i4_conditionLT(1, I4_MAX), 1);
+	ASSERTU1(i4_conditionLT(1, I4_MIN), 0);
+	ASSERTU1(i4_conditionLT(I4_MAX, 0), 0);
+	ASSERTU1(i4_conditionLT(I4_MAX, 1), 0);
+	ASSERTU1(i4_conditionLT(I4_MAX, I4_MAX), 0);
+	ASSERTU1(i4_conditionLT(I4_MAX, I4_MIN), 0);
+	ASSERTU1(i4_conditionLT(I4_MIN, 0), 1);
+	ASSERTU1(i4_conditionLT(I4_MIN, 1), 1);
+	ASSERTU1(i4_conditionLT(I4_MIN, I4_MAX), 1);
+	ASSERTU1(i4_conditionLT(I4_MIN, I4_MIN), 0);
+
+	ASSERTU1(i4_conditionLTUnused(0, 0, 0), 0);
+	ASSERTU1(i4_conditionLTUnused(0, 0, 1), 1);
+	ASSERTU1(i4_conditionLTUnused(0, 0, I4_MAX), 1);
+	ASSERTU1(i4_conditionLTUnused(0, 0, I4_MIN), 0);
+	ASSERTU1(i4_conditionLTUnused(0, 1, 0), 0);
+	ASSERTU1(i4_conditionLTUnused(0, 1, 1), 0);
+	ASSERTU1(i4_conditionLTUnused(0, 1, I4_MAX), 1);
+	ASSERTU1(i4_conditionLTUnused(0, 1, I4_MIN), 0);
+	ASSERTU1(i4_conditionLTUnused(0, I4_MAX, 0), 0);
+	ASSERTU1(i4_conditionLTUnused(0, I4_MAX, 1), 0);
+	ASSERTU1(i4_conditionLTUnused(0, I4_MAX, I4_MAX), 0);
+	ASSERTU1(i4_conditionLTUnused(0, I4_MAX, I4_MIN), 0);
+	ASSERTU1(i4_conditionLTUnused(0, I4_MIN, 0), 1);
+	ASSERTU1(i4_conditionLTUnused(0, I4_MIN, 1), 1);
+	ASSERTU1(i4_conditionLTUnused(0, I4_MIN, I4_MAX), 1);
+	ASSERTU1(i4_conditionLTUnused(0, I4_MIN, I4_MIN), 0);
+
+	ASSERTU1(i4_conditionLTZero(0), 0);
+	ASSERTU1(i4_conditionLTZero(1), 0);
+	ASSERTU1(i4_conditionLTZero(I4_MAX), 0);
+	ASSERTU1(i4_conditionLTZero(I4_MIN), 1);
+
+	ASSERTU1(i4_conditionLTOne(0), 1);
+	ASSERTU1(i4_conditionLTOne(1), 0);
+	ASSERTU1(i4_conditionLTOne(I4_MAX), 0);
+	ASSERTU1(i4_conditionLTOne(I4_MIN), 1);
+}
+
+TEST i4_conditionNE_Main()
+{
+	extern u1 i4_conditionNE(i4 lhs, i4 rhs);
+	extern u1 i4_conditionNEUnused(i4 val, i4 lhs, i4 rhs);
+	extern u1 i4_conditionNEZero(i4 val);
+	extern u1 i4_conditionNEOne(i4 val);
+
+	ASSERTU1(i4_conditionNE(0, 0), 0);
+	ASSERTU1(i4_conditionNE(0, 1), 1);
+	ASSERTU1(i4_conditionNE(0, I4_MAX), 1);
+	ASSERTU1(i4_conditionNE(0, I4_MIN), 1);
+	ASSERTU1(i4_conditionNE(1, 0), 1);
+	ASSERTU1(i4_conditionNE(1, 1), 0);
+	ASSERTU1(i4_conditionNE(1, I4_MAX), 1);
+	ASSERTU1(i4_conditionNE(1, I4_MIN), 1);
+	ASSERTU1(i4_conditionNE(I4_MAX, 0), 1);
+	ASSERTU1(i4_conditionNE(I4_MAX, 1), 1);
+	ASSERTU1(i4_conditionNE(I4_MAX, I4_MAX), 0);
+	ASSERTU1(i4_conditionNE(I4_MAX, I4_MIN), 1);
+	ASSERTU1(i4_conditionNE(I4_MIN, 0), 1);
+	ASSERTU1(i4_conditionNE(I4_MIN, 1), 1);
+	ASSERTU1(i4_conditionNE(I4_MIN, I4_MAX), 1);
+	ASSERTU1(i4_conditionNE(I4_MIN, I4_MIN), 0);
+
+	ASSERTU1(i4_conditionNEUnused(0, 0, 0), 0);
+	ASSERTU1(i4_conditionNEUnused(0, 0, 1), 1);
+	ASSERTU1(i4_conditionNEUnused(0, 0, I4_MAX), 1);
+	ASSERTU1(i4_conditionNEUnused(0, 0, I4_MIN), 1);
+	ASSERTU1(i4_conditionNEUnused(0, 1, 0), 1);
+	ASSERTU1(i4_conditionNEUnused(0, 1, 1), 0);
+	ASSERTU1(i4_conditionNEUnused(0, 1, I4_MAX), 1);
+	ASSERTU1(i4_conditionNEUnused(0, 1, I4_MIN), 1);
+	ASSERTU1(i4_conditionNEUnused(0, I4_MAX, 0), 1);
+	ASSERTU1(i4_conditionNEUnused(0, I4_MAX, 1), 1);
+	ASSERTU1(i4_conditionNEUnused(0, I4_MAX, I4_MAX), 0);
+	ASSERTU1(i4_conditionNEUnused(0, I4_MAX, I4_MIN), 1);
+	ASSERTU1(i4_conditionNEUnused(0, I4_MIN, 0), 1);
+	ASSERTU1(i4_conditionNEUnused(0, I4_MIN, 1), 1);
+	ASSERTU1(i4_conditionNEUnused(0, I4_MIN, I4_MAX), 1);
+	ASSERTU1(i4_conditionNEUnused(0, I4_MIN, I4_MIN), 0);
+
+	ASSERTU1(i4_conditionNEZero(0), 0);
+	ASSERTU1(i4_conditionNEZero(1), 1);
+	ASSERTU1(i4_conditionNEZero(I4_MAX), 1);
+	ASSERTU1(i4_conditionNEZero(I4_MIN), 1);
+
+	ASSERTU1(i4_conditionNEOne(0), 1);
+	ASSERTU1(i4_conditionNEOne(1), 0);
+	ASSERTU1(i4_conditionNEOne(I4_MAX), 1);
+	ASSERTU1(i4_conditionNEOne(I4_MIN), 1);
+}
+
+TEST u4_minimum_Main()
+{
+	extern u4 u4_minimumNew(u4 lhs, u4 rhs);
+	extern u4 u4_minimum(u4 lhs, u4 rhs);
+
+	ASSERTU4(u4_minimumNew(0, 0), 0);
+	ASSERTU4(u4_minimum(0, 0), 0);
+	ASSERTU4(u4_minimumNew(0, 1), 0);
+	ASSERTU4(u4_minimum(0, 1), 0);
+	ASSERTU4(u4_minimumNew(0, U4_MAX), 0);
+	ASSERTU4(u4_minimum(0, U4_MAX), 0);
+	ASSERTU4(u4_minimumNew(1, 0), 0);
+	ASSERTU4(u4_minimum(1, 0), 0);
+	ASSERTU4(u4_minimumNew(1, 1), 1);
+	ASSERTU4(u4_minimum(1, 1), 1);
+	ASSERTU4(u4_minimumNew(1, U4_MAX), 1);
+	ASSERTU4(u4_minimum(1, U4_MAX), 1);
+	ASSERTU4(u4_minimumNew(U4_MAX, 0), 0);
+	ASSERTU4(u4_minimum(U4_MAX, 0), 0);
+	ASSERTU4(u4_minimumNew(U4_MAX, 1), 1);
+	ASSERTU4(u4_minimum(U4_MAX, 1), 1);
+	ASSERTU4(u4_minimumNew(U4_MAX, U4_MAX), U4_MAX);
+	ASSERTU4(u4_minimum(U4_MAX, U4_MAX), U4_MAX);
+}
+
+TEST u4_maximum_Main()
+{
+	extern u4 u4_maximumNew(u4 lhs, u4 rhs);
+	extern u4 u4_maximum(u4 lhs, u4 rhs);
+
+	ASSERTU4(u4_maximumNew(0, 0), 0);
+	ASSERTU4(u4_maximum(0, 0), 0);
+	ASSERTU4(u4_maximumNew(0, 1), 1);
+	ASSERTU4(u4_maximum(0, 1), 1);
+	ASSERTU4(u4_maximumNew(0, U4_MAX), U4_MAX);
+	ASSERTU4(u4_maximum(0, U4_MAX), U4_MAX);
+	ASSERTU4(u4_maximumNew(1, 0), 1);
+	ASSERTU4(u4_maximum(1, 0), 1);
+	ASSERTU4(u4_maximumNew(1, 1), 1);
+	ASSERTU4(u4_maximum(1, 1), 1);
+	ASSERTU4(u4_maximumNew(1, U4_MAX), U4_MAX);
+	ASSERTU4(u4_maximum(1, U4_MAX), U4_MAX);
+	ASSERTU4(u4_maximumNew(U4_MAX, 0), U4_MAX);
+	ASSERTU4(u4_maximum(U4_MAX, 0), U4_MAX);
+	ASSERTU4(u4_maximumNew(U4_MAX, 1), U4_MAX);
+	ASSERTU4(u4_maximum(U4_MAX, 1), U4_MAX);
+	ASSERTU4(u4_maximumNew(U4_MAX, U4_MAX), U4_MAX);
+	ASSERTU4(u4_maximum(U4_MAX, U4_MAX), U4_MAX);
+}
+
+TEST i4_minimum_Main()
+{
+	extern i4 i4_minimumNew(i4 lhs, i4 rhs);
+	extern i4 i4_minimum(i4 lhs, i4 rhs);
+
+	ASSERTI4(i4_minimumNew(0, 0), 0);
+	ASSERTI4(i4_minimum(0, 0), 0);
+	ASSERTI4(i4_minimumNew(0, 1), 0);
+	ASSERTI4(i4_minimum(0, 1), 0);
+	ASSERTI4(i4_minimumNew(0, -1), -1);
+	ASSERTI4(i4_minimum(0, -1), -1);
+	ASSERTI4(i4_minimumNew(0, I4_MAX), 0);
+	ASSERTI4(i4_minimum(0, I4_MAX), 0);
+	ASSERTI4(i4_minimumNew(0, I4_MIN), I4_MIN);
+	ASSERTI4(i4_minimum(0, I4_MIN), I4_MIN);
+	ASSERTI4(i4_minimumNew(1, 0), 0);
+	ASSERTI4(i4_minimum(1, 0), 0);
+	ASSERTI4(i4_minimumNew(1, 1), 1);
+	ASSERTI4(i4_minimum(1, 1), 1);
+	ASSERTI4(i4_minimumNew(1, -1), -1);
+	ASSERTI4(i4_minimum(1, -1), -1);
+	ASSERTI4(i4_minimumNew(1, I4_MAX), 1);
+	ASSERTI4(i4_minimum(1, I4_MAX), 1);
+	ASSERTI4(i4_minimumNew(1, I4_MIN), I4_MIN);
+	ASSERTI4(i4_minimum(1, I4_MIN), I4_MIN);
+	ASSERTI4(i4_minimumNew(I4_MAX, 0), 0);
+	ASSERTI4(i4_minimum(I4_MAX, 0), 0);
+	ASSERTI4(i4_minimumNew(I4_MAX, 1), 1);
+	ASSERTI4(i4_minimum(I4_MAX, 1), 1);
+	ASSERTI4(i4_minimumNew(I4_MAX, -1), -1);
+	ASSERTI4(i4_minimum(I4_MAX, -1), -1);
+	ASSERTI4(i4_minimumNew(I4_MAX, I4_MAX), I4_MAX);
+	ASSERTI4(i4_minimum(I4_MAX, I4_MAX), I4_MAX);
+	ASSERTI4(i4_minimumNew(I4_MAX, I4_MIN), I4_MIN);
+	ASSERTI4(i4_minimum(I4_MAX, I4_MIN), I4_MIN);
+	ASSERTI4(i4_minimumNew(I4_MIN, 0), I4_MIN);
+	ASSERTI4(i4_minimum(I4_MIN, 0), I4_MIN);
+	ASSERTI4(i4_minimumNew(I4_MIN, 1), I4_MIN);
+	ASSERTI4(i4_minimum(I4_MIN, 1), I4_MIN);
+	ASSERTI4(i4_minimumNew(I4_MIN, -1), I4_MIN);
+	ASSERTI4(i4_minimum(I4_MIN, -1), I4_MIN);
+	ASSERTI4(i4_minimumNew(I4_MIN, I4_MAX), I4_MIN);
+	ASSERTI4(i4_minimum(I4_MIN, I4_MAX), I4_MIN);
+	ASSERTI4(i4_minimumNew(I4_MIN, I4_MIN), I4_MIN);
+	ASSERTI4(i4_minimum(I4_MIN, I4_MIN), I4_MIN);
+}
+
+TEST i4_maximum_Main()
+{
+	extern i4 i4_maximumNew(i4 lhs, i4 rhs);
+	extern i4 i4_maximum(i4 lhs, i4 rhs);
+
+	ASSERTI4(i4_maximumNew(0, 0), 0);
+	ASSERTI4(i4_maximum(0, 0), 0);
+	ASSERTI4(i4_maximumNew(0, 1), 1);
+	ASSERTI4(i4_maximum(0, 1), 1);
+	ASSERTI4(i4_maximumNew(0, -1), 0);
+	ASSERTI4(i4_maximum(0, -1), 0);
+	ASSERTI4(i4_maximumNew(0, I4_MAX), I4_MAX);
+	ASSERTI4(i4_maximum(0, I4_MAX), I4_MAX);
+	ASSERTI4(i4_maximumNew(0, I4_MIN), 0);
+	ASSERTI4(i4_maximum(0, I4_MIN), 0);
+	ASSERTI4(i4_maximumNew(1, 0), 1);
+	ASSERTI4(i4_maximum(1, 0), 1);
+	ASSERTI4(i4_maximumNew(1, 1), 1);
+	ASSERTI4(i4_maximum(1, 1), 1);
+	ASSERTI4(i4_maximumNew(1, -1), 1);
+	ASSERTI4(i4_maximum(1, -1), 1);
+	ASSERTI4(i4_maximumNew(1, I4_MAX), I4_MAX);
+	ASSERTI4(i4_maximum(1, I4_MAX), I4_MAX);
+	ASSERTI4(i4_maximumNew(1, I4_MIN), 1);
+	ASSERTI4(i4_maximum(1, I4_MIN), 1);
+	ASSERTI4(i4_maximumNew(I4_MAX, 0), I4_MAX);
+	ASSERTI4(i4_maximum(I4_MAX, 0), I4_MAX);
+	ASSERTI4(i4_maximumNew(I4_MAX, 1), I4_MAX);
+	ASSERTI4(i4_maximum(I4_MAX, 1), I4_MAX);
+	ASSERTI4(i4_maximumNew(I4_MAX, -1), I4_MAX);
+	ASSERTI4(i4_maximum(I4_MAX, -1), I4_MAX);
+	ASSERTI4(i4_maximumNew(I4_MAX, I4_MAX), I4_MAX);
+	ASSERTI4(i4_maximum(I4_MAX, I4_MAX), I4_MAX);
+	ASSERTI4(i4_maximumNew(I4_MAX, I4_MIN), I4_MAX);
+	ASSERTI4(i4_maximum(I4_MAX, I4_MIN), I4_MAX);
+	ASSERTI4(i4_maximumNew(I4_MIN, 0), 0);
+	ASSERTI4(i4_maximum(I4_MIN, 0), 0);
+	ASSERTI4(i4_maximumNew(I4_MIN, 1), 1);
+	ASSERTI4(i4_maximum(I4_MIN, 1), 1);
+	ASSERTI4(i4_maximumNew(I4_MIN, -1), -1);
+	ASSERTI4(i4_maximum(I4_MIN, -1), -1);
+	ASSERTI4(i4_maximumNew(I4_MIN, I4_MAX), I4_MAX);
+	ASSERTI4(i4_maximum(I4_MIN, I4_MAX), I4_MAX);
+	ASSERTI4(i4_maximumNew(I4_MIN, I4_MIN), I4_MIN);
+	ASSERTI4(i4_maximum(I4_MIN, I4_MIN), I4_MIN);
+}
+
+
+MAIN COMPARE4_main(){ }

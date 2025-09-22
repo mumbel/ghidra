@@ -1,0 +1,222 @@
+#include "pcode_test.h"
+
+#ifdef HAS_DOUBLE
+
+TEST f8_compareLogic_Main()
+{
+	extern f8 f8_compareLogic(f8 lhs, f8 rhs);
+	ASSERTF8(f8_compareLogic(0x1, 0x1), 66);
+	ASSERTF8(f8_compareLogic(0x1, 0x2), 38);
+	ASSERTF8(f8_compareLogic(0x2, 0x1), 42);
+	ASSERTF8(f8_compareLogic(-0x1, -0x1), 65);
+	ASSERTF8(f8_compareLogic(-0x1, -0x2), 41);
+	ASSERTF8(f8_compareLogic(-0x2, -0x1), 37);
+}
+
+TEST f8_conditionGT_Main()
+{
+	extern u1 f8_conditionGT(f8 lhs, f8 rhs);
+	extern u1 f8_conditionGTZero(f8 val);
+	extern u1 f8_conditionGTOne(f8 val);
+
+	ASSERTU1(f8_conditionGT(+0.0, +0.0), 0);
+	ASSERTU1(f8_conditionGT(+0.0, 1.0), 0);
+	ASSERTU1(f8_conditionGT(+0.0, PI_SHORT), 0);
+	ASSERTU1(f8_conditionGT(+0.0, -PI_SHORT), 1);
+	ASSERTU1(f8_conditionGT(1.0, +0.0), 1);
+	ASSERTU1(f8_conditionGT(1.0, 1.0), 0);
+	ASSERTU1(f8_conditionGT(1.0, PI_SHORT), 0);
+	ASSERTU1(f8_conditionGT(1.0, -PI_SHORT), 1);
+	ASSERTU1(f8_conditionGT(PI_SHORT, +0.0), 1);
+	ASSERTU1(f8_conditionGT(PI_SHORT, 1.0), 1);
+	ASSERTU1(f8_conditionGT(PI_SHORT, PI_SHORT), 0);
+	ASSERTU1(f8_conditionGT(PI_SHORT, -PI_SHORT), 1);
+	ASSERTU1(f8_conditionGT(-PI_SHORT, +0.0), 0);
+	ASSERTU1(f8_conditionGT(-PI_SHORT, 1.0), 0);
+	ASSERTU1(f8_conditionGT(-PI_SHORT, PI_SHORT), 0);
+	ASSERTU1(f8_conditionGT(-PI_SHORT, -PI_SHORT), 0);
+
+	ASSERTU1(f8_conditionGTZero(+0.0), 0);
+	ASSERTU1(f8_conditionGTZero(1.0), 1);
+	ASSERTU1(f8_conditionGTZero(PI_SHORT), 1);
+	ASSERTU1(f8_conditionGTZero(-PI_SHORT), 0);
+
+	ASSERTU1(f8_conditionGTOne(+0.0), 0);
+	ASSERTU1(f8_conditionGTOne(1.0), 0);
+	ASSERTU1(f8_conditionGTOne(PI_SHORT), 1);
+	ASSERTU1(f8_conditionGTOne(-PI_SHORT), 0);
+}
+
+TEST f8_conditionGE_Main()
+{
+	extern u1 f8_conditionGE(f8 lhs, f8 rhs);
+	extern u1 f8_conditionGEZero(f8 val);
+	extern u1 f8_conditionGEOne(f8 val);
+
+	ASSERTU1(f8_conditionGE(+0.0, +0.0), 1);
+	ASSERTU1(f8_conditionGE(+0.0, 1.0), 0);
+	ASSERTU1(f8_conditionGE(+0.0, PI_SHORT), 0);
+	ASSERTU1(f8_conditionGE(+0.0, -PI_SHORT), 1);
+	ASSERTU1(f8_conditionGE(1.0, +0.0), 1);
+	ASSERTU1(f8_conditionGE(1.0, 1.0), 1);
+	ASSERTU1(f8_conditionGE(1.0, PI_SHORT), 0);
+	ASSERTU1(f8_conditionGE(1.0, -PI_SHORT), 1);
+	ASSERTU1(f8_conditionGE(PI_SHORT, +0.0), 1);
+	ASSERTU1(f8_conditionGE(PI_SHORT, 1.0), 1);
+	ASSERTU1(f8_conditionGE(PI_SHORT, PI_SHORT), 1);
+	ASSERTU1(f8_conditionGE(PI_SHORT, -PI_SHORT), 1);
+	ASSERTU1(f8_conditionGE(-PI_SHORT, +0.0), 0);
+	ASSERTU1(f8_conditionGE(-PI_SHORT, 1.0), 0);
+	ASSERTU1(f8_conditionGE(-PI_SHORT, PI_SHORT), 0);
+	ASSERTU1(f8_conditionGE(-PI_SHORT, -PI_SHORT), 1);
+
+	ASSERTU1(f8_conditionGEZero(+0.0), 1);
+	ASSERTU1(f8_conditionGEZero(1.0), 1);
+	ASSERTU1(f8_conditionGEZero(PI_SHORT), 1);
+	ASSERTU1(f8_conditionGEZero(-PI_SHORT), 0);
+
+	ASSERTU1(f8_conditionGEOne(+0.0), 0);
+	ASSERTU1(f8_conditionGEOne(1.0), 1);
+	ASSERTU1(f8_conditionGEOne(PI_SHORT), 1);
+	ASSERTU1(f8_conditionGEOne(-PI_SHORT), 0);
+}
+
+TEST f8_conditionEQ_Main()
+{
+	extern u1 f8_conditionEQ(f8 lhs, f8 rhs);
+	extern u1 f8_conditionEQZero(f8 val);
+	extern u1 f8_conditionEQOne(f8 val);
+
+	ASSERTU1(f8_conditionEQ(+0.0, +0.0), 1);
+	ASSERTU1(f8_conditionEQ(+0.0, 1.0), 0);
+	ASSERTU1(f8_conditionEQ(+0.0, PI_SHORT), 0);
+	ASSERTU1(f8_conditionEQ(+0.0, -PI_SHORT), 0);
+	ASSERTU1(f8_conditionEQ(1.0, +0.0), 0);
+	ASSERTU1(f8_conditionEQ(1.0, 1.0), 1);
+	ASSERTU1(f8_conditionEQ(1.0, PI_SHORT), 0);
+	ASSERTU1(f8_conditionEQ(1.0, -PI_SHORT), 0);
+	ASSERTU1(f8_conditionEQ(PI_SHORT, +0.0), 0);
+	ASSERTU1(f8_conditionEQ(PI_SHORT, 1.0), 0);
+	ASSERTU1(f8_conditionEQ(PI_SHORT, PI_SHORT), 1);
+	ASSERTU1(f8_conditionEQ(PI_SHORT, -PI_SHORT), 0);
+	ASSERTU1(f8_conditionEQ(-PI_SHORT, +0.0), 0);
+	ASSERTU1(f8_conditionEQ(-PI_SHORT, 1.0), 0);
+	ASSERTU1(f8_conditionEQ(-PI_SHORT, PI_SHORT), 0);
+	ASSERTU1(f8_conditionEQ(-PI_SHORT, -PI_SHORT), 1);
+
+	ASSERTU1(f8_conditionEQZero(+0.0), 1);
+	ASSERTU1(f8_conditionEQZero(1.0), 0);
+	ASSERTU1(f8_conditionEQZero(PI_SHORT), 0);
+	ASSERTU1(f8_conditionEQZero(-PI_SHORT), 0);
+
+	ASSERTU1(f8_conditionEQOne(+0.0), 0);
+	ASSERTU1(f8_conditionEQOne(1.0), 1);
+	ASSERTU1(f8_conditionEQOne(PI_SHORT), 0);
+	ASSERTU1(f8_conditionEQOne(-PI_SHORT), 0);
+}
+
+TEST f8_conditionLE_Main()
+{
+	extern u1 f8_conditionLE(f8 lhs, f8 rhs);
+	extern u1 f8_conditionLEZero(f8 val);
+	extern u1 f8_conditionLEOne(f8 val);
+
+	ASSERTU1(f8_conditionLE(+0.0, +0.0), 1);
+	ASSERTU1(f8_conditionLE(+0.0, 1.0), 1);
+	ASSERTU1(f8_conditionLE(+0.0, PI_SHORT), 1);
+	ASSERTU1(f8_conditionLE(+0.0, -PI_SHORT), 0);
+	ASSERTU1(f8_conditionLE(1.0, +0.0), 0);
+	ASSERTU1(f8_conditionLE(1.0, 1.0), 1);
+	ASSERTU1(f8_conditionLE(1.0, PI_SHORT), 1);
+	ASSERTU1(f8_conditionLE(1.0, -PI_SHORT), 0);
+	ASSERTU1(f8_conditionLE(PI_SHORT, +0.0), 0);
+	ASSERTU1(f8_conditionLE(PI_SHORT, 1.0), 0);
+	ASSERTU1(f8_conditionLE(PI_SHORT, PI_SHORT), 1);
+	ASSERTU1(f8_conditionLE(PI_SHORT, -PI_SHORT), 0);
+	ASSERTU1(f8_conditionLE(-PI_SHORT, +0.0), 1);
+	ASSERTU1(f8_conditionLE(-PI_SHORT, 1.0), 1);
+	ASSERTU1(f8_conditionLE(-PI_SHORT, PI_SHORT), 1);
+	ASSERTU1(f8_conditionLE(-PI_SHORT, -PI_SHORT), 1);
+
+	ASSERTU1(f8_conditionLEZero(+0.0), 1);
+	ASSERTU1(f8_conditionLEZero(1.0), 0);
+	ASSERTU1(f8_conditionLEZero(PI_SHORT), 0);
+	ASSERTU1(f8_conditionLEZero(-PI_SHORT), 1);
+
+	ASSERTU1(f8_conditionLEOne(+0.0), 1);
+	ASSERTU1(f8_conditionLEOne(1.0), 1);
+	ASSERTU1(f8_conditionLEOne(PI_SHORT), 0);
+	ASSERTU1(f8_conditionLEOne(-PI_SHORT), 1);
+}
+
+TEST f8_conditionLT_Main()
+{
+	extern u1 f8_conditionLT(f8 lhs, f8 rhs);
+	extern u1 f8_conditionLTZero(f8 val);
+	extern u1 f8_conditionLTOne(f8 val);
+
+	ASSERTU1(f8_conditionLT(+0.0, +0.0), 0);
+	ASSERTU1(f8_conditionLT(+0.0, 1.0), 1);
+	ASSERTU1(f8_conditionLT(+0.0, PI_SHORT), 1);
+	ASSERTU1(f8_conditionLT(+0.0, -PI_SHORT), 0);
+	ASSERTU1(f8_conditionLT(1.0, +0.0), 0);
+	ASSERTU1(f8_conditionLT(1.0, 1.0), 0);
+	ASSERTU1(f8_conditionLT(1.0, PI_SHORT), 1);
+	ASSERTU1(f8_conditionLT(1.0, -PI_SHORT), 0);
+	ASSERTU1(f8_conditionLT(PI_SHORT, +0.0), 0);
+	ASSERTU1(f8_conditionLT(PI_SHORT, 1.0), 0);
+	ASSERTU1(f8_conditionLT(PI_SHORT, PI_SHORT), 0);
+	ASSERTU1(f8_conditionLT(PI_SHORT, -PI_SHORT), 0);
+	ASSERTU1(f8_conditionLT(-PI_SHORT, +0.0), 1);
+	ASSERTU1(f8_conditionLT(-PI_SHORT, 1.0), 1);
+	ASSERTU1(f8_conditionLT(-PI_SHORT, PI_SHORT), 1);
+	ASSERTU1(f8_conditionLT(-PI_SHORT, -PI_SHORT), 0);
+
+	ASSERTU1(f8_conditionLTZero(+0.0), 0);
+	ASSERTU1(f8_conditionLTZero(1.0), 0);
+	ASSERTU1(f8_conditionLTZero(PI_SHORT), 0);
+	ASSERTU1(f8_conditionLTZero(-PI_SHORT), 1);
+
+	ASSERTU1(f8_conditionLTOne(+0.0), 1);
+	ASSERTU1(f8_conditionLTOne(1.0), 0);
+	ASSERTU1(f8_conditionLTOne(PI_SHORT), 0);
+	ASSERTU1(f8_conditionLTOne(-PI_SHORT), 1);
+}
+
+TEST f8_conditionNE_Main()
+{
+	extern u1 f8_conditionNE(f8 lhs, f8 rhs);
+	extern u1 f8_conditionNEZero(f8 val);
+	extern u1 f8_conditionNEOne(f8 val);
+
+	ASSERTU1(f8_conditionNE(+0.0, +0.0), 0);
+	ASSERTU1(f8_conditionNE(+0.0, 1.0), 1);
+	ASSERTU1(f8_conditionNE(+0.0, PI_SHORT), 1);
+	ASSERTU1(f8_conditionNE(+0.0, -PI_SHORT), 1);
+	ASSERTU1(f8_conditionNE(1.0, +0.0), 1);
+	ASSERTU1(f8_conditionNE(1.0, 1.0), 0);
+	ASSERTU1(f8_conditionNE(1.0, PI_SHORT), 1);
+	ASSERTU1(f8_conditionNE(1.0, -PI_SHORT), 1);
+	ASSERTU1(f8_conditionNE(PI_SHORT, +0.0), 1);
+	ASSERTU1(f8_conditionNE(PI_SHORT, 1.0), 1);
+	ASSERTU1(f8_conditionNE(PI_SHORT, PI_SHORT), 0);
+	ASSERTU1(f8_conditionNE(PI_SHORT, -PI_SHORT), 1);
+	ASSERTU1(f8_conditionNE(-PI_SHORT, +0.0), 1);
+	ASSERTU1(f8_conditionNE(-PI_SHORT, 1.0), 1);
+	ASSERTU1(f8_conditionNE(-PI_SHORT, PI_SHORT), 1);
+	ASSERTU1(f8_conditionNE(-PI_SHORT, -PI_SHORT), 0);
+
+	ASSERTU1(f8_conditionNEZero(+0.0), 0);
+	ASSERTU1(f8_conditionNEZero(1.0), 1);
+	ASSERTU1(f8_conditionNEZero(PI_SHORT), 1);
+	ASSERTU1(f8_conditionNEZero(-PI_SHORT), 1);
+
+	ASSERTU1(f8_conditionNEOne(+0.0), 1);
+	ASSERTU1(f8_conditionNEOne(1.0), 0);
+	ASSERTU1(f8_conditionNEOne(PI_SHORT), 1);
+	ASSERTU1(f8_conditionNEOne(-PI_SHORT), 1);
+}
+
+#endif /* HAS_DOUBLE */
+
+MAIN COMPARE_DOUBLE_main() { }
