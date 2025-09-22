@@ -386,7 +386,7 @@ u1 typ##_conditionNEOne(			\
 }
 
 
-#define PCODE_BIOPS(typ)			\
+#define PCODE_COMPARE(typ)			\
 	PCODE_BIOP_CMP(typ)			\
 	PCODE_COND_GT(typ)			\
 	PCODE_COND_GTUNUSED(typ)		\
@@ -419,20 +419,20 @@ u1 typ##_conditionNEOne(			\
 	PCODE_BIOP_CONDONE(typ)
 
 
-PCODE_BIOPS(u1)
-PCODE_BIOPS(i1)
-PCODE_BIOPS(u2)
-PCODE_BIOPS(i2)
-PCODE_BIOPS(u4)
-PCODE_BIOPS(i4)
+PCODE_COMPARE(u1)
+PCODE_COMPARE(i1)
+PCODE_COMPARE(u2)
+PCODE_COMPARE(i2)
+PCODE_COMPARE(u4)
+PCODE_COMPARE(i4)
 
 #ifdef HAS_LONGLONG
-PCODE_BIOPS(u8)
-PCODE_BIOPS(i8)
+PCODE_COMPARE(u8)
+PCODE_COMPARE(i8)
 #endif /* #ifdef HAS_LONGLONG */
 
 
-#define PCODE_BIOPS_FP(typ)			       	\
+#define PCODE_COMPARE_FP(typ)			       	\
   PCODE_BIOP_CMP(typ)					\
   PCODE_COND_GT(typ)					\
   PCODE_COND_GTZero(typ)				\
@@ -455,10 +455,10 @@ PCODE_BIOPS(i8)
   
 
 #ifdef HAS_FLOAT
-PCODE_BIOPS_FP(f4)
+PCODE_COMPARE_FP(f4)
 #endif /* #ifdef HAS_FLOAT */
 
 
 #ifdef HAS_DOUBLE
-PCODE_BIOPS_FP(f8)
+PCODE_COMPARE_FP(f8)
 #endif /* #ifdef HAS_DOUBLE */

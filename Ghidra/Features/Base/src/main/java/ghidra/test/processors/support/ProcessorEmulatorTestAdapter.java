@@ -2206,7 +2206,7 @@ public abstract class ProcessorEmulatorTestAdapter extends TestCase implements E
 		// stub
 	}
 
-    	public final void test_UNOPS_DOUBLE() {
+	public final void test_UNOPS_DOUBLE() {
 		// stub
 	}
 
@@ -2215,6 +2215,30 @@ public abstract class ProcessorEmulatorTestAdapter extends TestCase implements E
 	}
 
 	public final void test_UNOPS_LONGLONG() {
+		// stub
+	}
+
+	public final void test_UNOPS() {
+		// stub
+	}
+
+	public final void test_UNOPS2() {
+		// stub
+	}
+
+	public final void test_UNOPS4() {
+		// stub
+	}
+
+    	public final void test_COMPARE_DOUBLE() {
+		// stub
+	}
+
+	public final void test_COMPARE_FLOAT() {
+		// stub
+	}
+
+	public final void test_COMPARE_LONGLONG() {
 		// stub
 	}
 
