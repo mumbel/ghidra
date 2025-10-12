@@ -1,7 +1,6 @@
 #include "pcode_test.h"
 
 #ifdef HAS_LONGLONG
-
 TEST i8_compareLogic_Main()
 {
 	extern i8 i8_compareLogic(i8 lhs, i8 rhs);
@@ -12,8 +11,10 @@ TEST i8_compareLogic_Main()
 	ASSERTI8(i8_compareLogic(-0x1, -0x2), 41);
 	ASSERTI8(i8_compareLogic(-0x2, -0x1), 37);
 }
+#endif /* HAS_LONGLONG */
 
 
+#ifdef HAS_LONGLONG
 TEST u8_compareLogic_Main()
 {
 	extern u8 u8_compareLogic(u8 lhs, u8 rhs);
@@ -21,8 +22,10 @@ TEST u8_compareLogic_Main()
 	ASSERTU8(u8_compareLogic(0x1, 0x2), 38);
 	ASSERTU8(u8_compareLogic(0x2, 0x1), 42);
 }
+#endif /* HAS_LONGLONG */
 
 
+#ifdef HAS_LONGLONG
 TEST u8_conditionGT_Main()
 {
 	extern u1 u8_conditionGT(u8 lhs, u8 rhs);
@@ -58,7 +61,10 @@ TEST u8_conditionGT_Main()
 	ASSERTU1(u8_conditionGTOne(1), 0);
 	ASSERTU1(u8_conditionGTOne(U8_MAX), 1);
 }
+#endif /* HAS_LONGLONG */
 
+
+#ifdef HAS_LONGLONG
 TEST u8_conditionGE_Main()
 {
 	extern u1 u8_conditionGE(u8 lhs, u8 rhs);
@@ -94,7 +100,10 @@ TEST u8_conditionGE_Main()
 	ASSERTU1(u8_conditionGEOne(1), 1);
 	ASSERTU1(u8_conditionGEOne(U8_MAX), 1);
 }
+#endif /* HAS_LONGLONG */
 
+
+#ifdef HAS_LONGLONG
 TEST u8_conditionEQ_Main()
 {
 	extern u1 u8_conditionEQ(u8 lhs, u8 rhs);
@@ -130,7 +139,10 @@ TEST u8_conditionEQ_Main()
 	ASSERTU1(u8_conditionEQOne(1), 1);
 	ASSERTU1(u8_conditionEQOne(U8_MAX), 0);
 }
+#endif /* HAS_LONGLONG */
 
+
+#ifdef HAS_LONGLONG
 TEST u8_conditionLE_Main()
 {
 	extern u1 u8_conditionLE(u8 lhs, u8 rhs);
@@ -166,7 +178,10 @@ TEST u8_conditionLE_Main()
 	ASSERTU1(u8_conditionLEOne(1), 1);
 	ASSERTU1(u8_conditionLEOne(U8_MAX), 0);
 }
+#endif /* HAS_LONGLONG */
 
+
+#ifdef HAS_LONGLONG
 TEST u8_conditionLT_Main()
 {
 	extern u1 u8_conditionLT(u8 lhs, u8 rhs);
@@ -202,7 +217,10 @@ TEST u8_conditionLT_Main()
 	ASSERTU1(u8_conditionLTOne(1), 0);
 	ASSERTU1(u8_conditionLTOne(U8_MAX), 0);
 }
+#endif /* HAS_LONGLONG */
 
+
+#ifdef HAS_LONGLONG
 TEST u8_conditionNE_Main()
 {
 	extern u1 u8_conditionNE(u8 lhs, u8 rhs);
@@ -238,7 +256,10 @@ TEST u8_conditionNE_Main()
 	ASSERTU1(u8_conditionNEOne(1), 0);
 	ASSERTU1(u8_conditionNEOne(U8_MAX), 1);
 }
+#endif /* HAS_LONGLONG */
 
+
+#ifdef HAS_LONGLONG
 TEST i8_conditionGT_Main()
 {
 	extern u1 i8_conditionGT(i8 lhs, i8 rhs);
@@ -290,7 +311,10 @@ TEST i8_conditionGT_Main()
 	ASSERTU1(i8_conditionGTOne(I8_MAX), 1);
 	ASSERTU1(i8_conditionGTOne(I8_MIN), 0);
 }
+#endif /* HAS_LONGLONG */
 
+
+#ifdef HAS_LONGLONG
 TEST i8_conditionGE_Main()
 {
 	extern u1 i8_conditionGE(i8 lhs, i8 rhs);
@@ -342,7 +366,10 @@ TEST i8_conditionGE_Main()
 	ASSERTU1(i8_conditionGEOne(I8_MAX), 1);
 	ASSERTU1(i8_conditionGEOne(I8_MIN), 0);
 }
+#endif /* HAS_LONGLONG */
 
+
+#ifdef HAS_LONGLONG
 TEST i8_conditionEQ_Main()
 {
 	extern u1 i8_conditionEQ(i8 lhs, i8 rhs);
@@ -394,7 +421,10 @@ TEST i8_conditionEQ_Main()
 	ASSERTU1(i8_conditionEQOne(I8_MAX), 0);
 	ASSERTU1(i8_conditionEQOne(I8_MIN), 0);
 }
+#endif /* HAS_LONGLONG */
 
+
+#ifdef HAS_LONGLONG
 TEST i8_conditionLE_Main()
 {
 	extern u1 i8_conditionLE(i8 lhs, i8 rhs);
@@ -446,7 +476,10 @@ TEST i8_conditionLE_Main()
 	ASSERTU1(i8_conditionLEOne(I8_MAX), 0);
 	ASSERTU1(i8_conditionLEOne(I8_MIN), 1);
 }
+#endif /* HAS_LONGLONG */
 
+
+#ifdef HAS_LONGLONG
 TEST i8_conditionLT_Main()
 {
 	extern u1 i8_conditionLT(i8 lhs, i8 rhs);
@@ -498,7 +531,10 @@ TEST i8_conditionLT_Main()
 	ASSERTU1(i8_conditionLTOne(I8_MAX), 0);
 	ASSERTU1(i8_conditionLTOne(I8_MIN), 1);
 }
+#endif /* HAS_LONGLONG */
 
+
+#ifdef HAS_LONGLONG
 TEST i8_conditionNE_Main()
 {
 	extern u1 i8_conditionNE(i8 lhs, i8 rhs);
@@ -550,7 +586,10 @@ TEST i8_conditionNE_Main()
 	ASSERTU1(i8_conditionNEOne(I8_MAX), 1);
 	ASSERTU1(i8_conditionNEOne(I8_MIN), 1);
 }
+#endif /* HAS_LONGLONG */
 
+
+#ifdef HAS_LONGLONG
 TEST u8_minimum_Main()
 {
 	extern u8 u8_minimumNew(u8 lhs, u8 rhs);
@@ -575,7 +614,10 @@ TEST u8_minimum_Main()
 	ASSERTU8(u8_minimumNew(U8_MAX, U8_MAX), U8_MAX);
 	ASSERTU8(u8_minimum(U8_MAX, U8_MAX), U8_MAX);
 }
+#endif /* HAS_LONGLONG */
 
+
+#ifdef HAS_LONGLONG
 TEST u8_maximum_Main()
 {
 	extern u8 u8_maximumNew(u8 lhs, u8 rhs);
@@ -600,7 +642,10 @@ TEST u8_maximum_Main()
 	ASSERTU8(u8_maximumNew(U8_MAX, U8_MAX), U8_MAX);
 	ASSERTU8(u8_maximum(U8_MAX, U8_MAX), U8_MAX);
 }
+#endif /* HAS_LONGLONG */
 
+
+#ifdef HAS_LONGLONG
 TEST i8_minimum_Main()
 {
 	extern i8 i8_minimumNew(i8 lhs, i8 rhs);
@@ -647,7 +692,10 @@ TEST i8_minimum_Main()
 	ASSERTI8(i8_minimumNew(I8_MIN, I8_MIN), I8_MIN);
 	ASSERTI8(i8_minimum(I8_MIN, I8_MIN), I8_MIN);
 }
+#endif /* HAS_LONGLONG */
 
+
+#ifdef HAS_LONGLONG
 TEST i8_maximum_Main()
 {
 	extern i8 i8_maximumNew(i8 lhs, i8 rhs);
@@ -694,8 +742,7 @@ TEST i8_maximum_Main()
 	ASSERTI8(i8_maximumNew(I8_MIN, I8_MIN), I8_MIN);
 	ASSERTI8(i8_maximum(I8_MIN, I8_MIN), I8_MIN);
 }
-
 #endif /* HAS_LONGLONG */
 
-MAIN COMPARE_LONGLONG_main() { }
 
+MAIN COMPARE_LONGLONG_main() { }

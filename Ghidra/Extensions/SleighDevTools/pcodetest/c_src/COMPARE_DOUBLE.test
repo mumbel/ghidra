@@ -1,7 +1,6 @@
 #include "pcode_test.h"
 
 #ifdef HAS_DOUBLE
-
 TEST f8_compareLogic_Main()
 {
 	extern f8 f8_compareLogic(f8 lhs, f8 rhs);
@@ -12,7 +11,10 @@ TEST f8_compareLogic_Main()
 	ASSERTF8(f8_compareLogic(-0x1, -0x2), 41);
 	ASSERTF8(f8_compareLogic(-0x2, -0x1), 37);
 }
+#endif /* HAS_DOUBLE */
 
+
+#ifdef HAS_DOUBLE
 TEST f8_conditionGT_Main()
 {
 	extern u1 f8_conditionGT(f8 lhs, f8 rhs);
@@ -46,7 +48,10 @@ TEST f8_conditionGT_Main()
 	ASSERTU1(f8_conditionGTOne(PI_SHORT), 1);
 	ASSERTU1(f8_conditionGTOne(-PI_SHORT), 0);
 }
+#endif /* HAS_DOUBLE */
 
+
+#ifdef HAS_DOUBLE
 TEST f8_conditionGE_Main()
 {
 	extern u1 f8_conditionGE(f8 lhs, f8 rhs);
@@ -80,7 +85,10 @@ TEST f8_conditionGE_Main()
 	ASSERTU1(f8_conditionGEOne(PI_SHORT), 1);
 	ASSERTU1(f8_conditionGEOne(-PI_SHORT), 0);
 }
+#endif /* HAS_DOUBLE */
 
+
+#ifdef HAS_DOUBLE
 TEST f8_conditionEQ_Main()
 {
 	extern u1 f8_conditionEQ(f8 lhs, f8 rhs);
@@ -114,7 +122,10 @@ TEST f8_conditionEQ_Main()
 	ASSERTU1(f8_conditionEQOne(PI_SHORT), 0);
 	ASSERTU1(f8_conditionEQOne(-PI_SHORT), 0);
 }
+#endif /* HAS_DOUBLE */
 
+
+#ifdef HAS_DOUBLE
 TEST f8_conditionLE_Main()
 {
 	extern u1 f8_conditionLE(f8 lhs, f8 rhs);
@@ -148,7 +159,10 @@ TEST f8_conditionLE_Main()
 	ASSERTU1(f8_conditionLEOne(PI_SHORT), 0);
 	ASSERTU1(f8_conditionLEOne(-PI_SHORT), 1);
 }
+#endif /* HAS_DOUBLE */
 
+
+#ifdef HAS_DOUBLE
 TEST f8_conditionLT_Main()
 {
 	extern u1 f8_conditionLT(f8 lhs, f8 rhs);
@@ -182,7 +196,10 @@ TEST f8_conditionLT_Main()
 	ASSERTU1(f8_conditionLTOne(PI_SHORT), 0);
 	ASSERTU1(f8_conditionLTOne(-PI_SHORT), 1);
 }
+#endif /* HAS_DOUBLE */
 
+
+#ifdef HAS_DOUBLE
 TEST f8_conditionNE_Main()
 {
 	extern u1 f8_conditionNE(f8 lhs, f8 rhs);
@@ -216,7 +233,7 @@ TEST f8_conditionNE_Main()
 	ASSERTU1(f8_conditionNEOne(PI_SHORT), 1);
 	ASSERTU1(f8_conditionNEOne(-PI_SHORT), 1);
 }
-
 #endif /* HAS_DOUBLE */
+
 
 MAIN COMPARE_DOUBLE_main() { }

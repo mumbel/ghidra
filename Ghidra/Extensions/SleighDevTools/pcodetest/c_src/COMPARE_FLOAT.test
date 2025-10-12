@@ -1,7 +1,6 @@
 #include "pcode_test.h"
 
 #ifdef HAS_FLOAT
-
 TEST f4_compareLogic_Main()
 {
 	extern f4 f4_compareLogic(f4 lhs, f4 rhs);
@@ -12,7 +11,9 @@ TEST f4_compareLogic_Main()
 	ASSERTF4(f4_compareLogic(-0x1, -0x2), 41);
 	ASSERTF4(f4_compareLogic(-0x2, -0x1), 37);
 }
+#endif  /* HAS_FLOAT */
 
+#ifdef HAS_FLOAT
 TEST f4_conditionGT_Main()
 {
 	extern u1 f4_conditionGT(f4 lhs, f4 rhs);
@@ -46,7 +47,9 @@ TEST f4_conditionGT_Main()
 	ASSERTU1(f4_conditionGTOne(PI_SHORT), 1);
 	ASSERTU1(f4_conditionGTOne(-PI_SHORT), 0);
 }
+#endif  /* HAS_FLOAT */
 
+#ifdef HAS_FLOAT
 TEST f4_conditionGE_Main()
 {
 	extern u1 f4_conditionGE(f4 lhs, f4 rhs);
@@ -80,7 +83,9 @@ TEST f4_conditionGE_Main()
 	ASSERTU1(f4_conditionGEOne(PI_SHORT), 1);
 	ASSERTU1(f4_conditionGEOne(-PI_SHORT), 0);
 }
+#endif
 
+#ifdef HAS_FLOAT
 TEST f4_conditionEQ_Main()
 {
 	extern u1 f4_conditionEQ(f4 lhs, f4 rhs);
@@ -114,7 +119,9 @@ TEST f4_conditionEQ_Main()
 	ASSERTU1(f4_conditionEQOne(PI_SHORT), 0);
 	ASSERTU1(f4_conditionEQOne(-PI_SHORT), 0);
 }
+#endif
 
+#ifdef HAS_FLOAT
 TEST f4_conditionLE_Main()
 {
 	extern u1 f4_conditionLE(f4 lhs, f4 rhs);
@@ -148,7 +155,9 @@ TEST f4_conditionLE_Main()
 	ASSERTU1(f4_conditionLEOne(PI_SHORT), 0);
 	ASSERTU1(f4_conditionLEOne(-PI_SHORT), 1);
 }
+#endif
 
+#ifdef HAS_FLOAT
 TEST f4_conditionLT_Main()
 {
 	extern u1 f4_conditionLT(f4 lhs, f4 rhs);
@@ -182,7 +191,9 @@ TEST f4_conditionLT_Main()
 	ASSERTU1(f4_conditionLTOne(PI_SHORT), 0);
 	ASSERTU1(f4_conditionLTOne(-PI_SHORT), 1);
 }
+#endif
 
+#ifdef HAS_FLOAT
 TEST f4_conditionNE_Main()
 {
 	extern u1 f4_conditionNE(f4 lhs, f4 rhs);
@@ -216,7 +227,6 @@ TEST f4_conditionNE_Main()
 	ASSERTU1(f4_conditionNEOne(PI_SHORT), 1);
 	ASSERTU1(f4_conditionNEOne(-PI_SHORT), 1);
 }
-
 #endif /* HAS_FLOAT */
 
 
