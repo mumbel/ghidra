@@ -1,8 +1,6 @@
 #include "pcode_test.h"
 
 #ifdef HAS_DOUBLE
-
-/* Logical operators */
 TEST f8_logicalAnd_Main()
 {
 	extern f8 f8_logicalAnd(f8 lhs, f8 rhs);
@@ -14,8 +12,10 @@ TEST f8_logicalAnd_Main()
 	ASSERTF8(f8_logicalAnd(PI_SHORT, PI_SHORT), 1);
 	ASSERTF8(f8_logicalAnd(PI_SHORT, 0), 0.0);
 }
+#endif /* HAS_DOUBLE */
 
 
+#ifdef HAS_DOUBLE
 TEST f8_logicalOr_Main()
 {
 	extern f8 f8_logicalOr(f8 lhs, f8 rhs);
@@ -27,10 +27,10 @@ TEST f8_logicalOr_Main()
 	ASSERTF8(f8_logicalOr(PI_SHORT, PI_SHORT), 1);
 	ASSERTF8(f8_logicalOr(PI_SHORT, 0), 1);
 }
+#endif /* HAS_DOUBLE */
 
 
-/* Arithmetic operators */
-
+#ifdef HAS_DOUBLE
 TEST f8_addition_Main()
 {
 	extern f8 f8_addition(f8 lhs, f8 rhs);
@@ -41,8 +41,10 @@ TEST f8_addition_Main()
 	ASSERTF8(retVal, 3);
 	ASSERTF8(f8_addition(PI_SHORT, PI_SHORT), 6.28);
 }
+#endif /* HAS_DOUBLE */
 
 
+#ifdef HAS_DOUBLE
 TEST f8_subtract_Main()
 {
 	extern f8 f8_subtract(f8 lhs, f8 rhs);
@@ -53,8 +55,10 @@ TEST f8_subtract_Main()
 	ASSERTF8(retVal, 1);
 	ASSERTF8(f8_subtract(PI_SHORT, PI_SHORT), 0.0);
 }
+#endif /* HAS_DOUBLE */
 
 
+#ifdef HAS_DOUBLE
 TEST f8_multiply_Main()
 {
 	extern f8 f8_multiply(f8 lhs, f8 rhs);
@@ -65,7 +69,7 @@ TEST f8_multiply_Main()
 	ASSERTF8(retVal, 2);
 	ASSERTF8(f8_multiply(PI_SHORT, PI_SHORT), 9.8596);
 }
-
 #endif /* HAS_DOUBLE */
+
 
 MAIN BIOPS_DOUBLE_main() { }

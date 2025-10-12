@@ -9,6 +9,7 @@ TEST u4_complexLogic_Main()
 	ASSERTU4(u4_complexLogic(0, 1516266761, 1866000081, 0, 1175526309, 1586903190), 10);
 }
 
+
 TEST i4_complexLogic_Main()
 {
 	extern i4 i4_complexLogic(i4 a, i4 b, i4 c, i4 d, i4 e, i4 f);
@@ -18,7 +19,7 @@ TEST i4_complexLogic_Main()
 	ASSERTI4(i4_complexLogic(0, 386839851, (i4) -771476364, 0, (i4) -942724790, 1833488263), 10);
 }
 
-/* Bitwise operators */
+
 TEST u4_bitwiseAnd_Main()
 {
 	extern u4 u4_bitwiseAnd(u4 lhs, u4 rhs);
@@ -29,6 +30,7 @@ TEST u4_bitwiseAnd_Main()
 	ASSERTU4(u4_bitwiseAnd(U4_MAX, 0), 0);
 }
 
+
 TEST u4_bitwiseOr_Main()
 {
 	extern u4 u4_bitwiseOr(u4 lhs, u4 rhs);
@@ -37,6 +39,7 @@ TEST u4_bitwiseOr_Main()
 	ASSERTU4(u4_bitwiseOr(U4_MAX, U4_MAX), U4_MAX);
 	ASSERTU4(u4_bitwiseOr(U4_MAX, 0), U4_MAX);
 }
+
 
 TEST u4_bitwiseXor_Main()
 {
@@ -48,6 +51,7 @@ TEST u4_bitwiseXor_Main()
 	ASSERTU4(u4_bitwiseXor(U4_MAX, 0), -1);
 }
 
+
 TEST i4_bitwiseAnd_Main()
 {
 	extern i4 i4_bitwiseAnd(i4 lhs, i4 rhs);
@@ -58,6 +62,7 @@ TEST i4_bitwiseAnd_Main()
 	ASSERTI4(/*val*/ i4_bitwiseAnd(I4_MIN, I4_MIN), -2147483648)
 }
 
+
 TEST i4_bitwiseOr_Main()
 {
 	extern i4 i4_bitwiseOr(i4 lhs, i4 rhs);
@@ -67,6 +72,7 @@ TEST i4_bitwiseOr_Main()
 	ASSERTI4(i4_bitwiseOr(I4_MAX, I4_MAX), 2147483647);
 	ASSERTI4(i4_bitwiseOr(0, 0), 0);
 }
+
 
 TEST i4_bitwiseXor_Main()
 {
@@ -79,7 +85,7 @@ TEST i4_bitwiseXor_Main()
 	ASSERTI4(i4_bitwiseXor(0, 0), 0);
 }
 
-/* Logical operators */
+
 TEST u4_logicalAnd_Main()
 {
 	extern u4 u4_logicalAnd(u4 lhs, u4 rhs);
@@ -111,6 +117,7 @@ TEST i4_logicalAnd_Main()
 	ASSERTI4(i4_logicalAnd(0, 0), 0);
 }
 
+
 TEST i4_logicalOr_Main()
 {
 	extern i4 i4_logicalOr(i4 lhs, i4 rhs);
@@ -122,7 +129,6 @@ TEST i4_logicalOr_Main()
 }
 
 
-/* Shift operators */
 TEST u4_shiftLeft_Main()
 {
 	extern u4 u4_shiftLeft(u4 lhs, u4 rhs);
@@ -131,6 +137,7 @@ TEST u4_shiftLeft_Main()
 	ASSERTU4(u4_shiftLeft(U4_MAX, 4*8-1), 2147483648);
 	ASSERTU4(u4_shiftLeft(U4_MAX, 4), -16);
 }
+
 
 TEST u4_shiftRight_Main()
 {
@@ -142,6 +149,7 @@ TEST u4_shiftRight_Main()
 	ASSERTU4(u4_shiftRight(4, 4), 0);
 }
 
+
 TEST i4_shiftLeft_Main()
 {
 	extern i4 i4_shiftLeft(i4 lhs, i4 rhs);
@@ -151,6 +159,7 @@ TEST i4_shiftLeft_Main()
 	ASSERTI4(i4_shiftLeft(I4_MAX, 2), -4);
 	ASSERTI4(i4_shiftLeft(I4_MAX, 0), 2147483647);
 }
+
 
 TEST i4_shiftRight_Main()
 {
@@ -162,7 +171,7 @@ TEST i4_shiftRight_Main()
 	ASSERTI4(i4_shiftRight(I4_MAX, 2), 536870911);
 }
 
-/* Arithmetic operators */
+
 TEST u4_addition_Main()
 {
 	extern u4 u4_addition(u4 lhs, u4 rhs);
@@ -173,6 +182,7 @@ TEST u4_addition_Main()
 	ASSERTU4(u4_addition(U4_MAX, 0), -1);
 	ASSERTU4(u4_addition(0, 0), 0);
 }
+
 
 TEST u4_subtract_Main()
 {
@@ -185,6 +195,7 @@ TEST u4_subtract_Main()
 	ASSERTU4(u4_subtract(0, U4_MAX), 1);
 }
 
+
 TEST u4_multiply_Main()
 {
 	extern u4 u4_multiply(u4 lhs, u4 rhs);
@@ -196,6 +207,7 @@ TEST u4_multiply_Main()
 	ASSERTU4(u4_multiply(U4_MAX, 0), 0);
 }
 
+
 TEST u4_divide_Main()
 {
 	extern u4 u4_divide(u4 lhs, u4 rhs);
@@ -206,6 +218,7 @@ TEST u4_divide_Main()
 	ASSERTU4(u4_divide(U4_MAX, U4_MAX), 1);
 	ASSERTU4(u4_divide(U4_MAX, 1), U4_MAX);
 }
+
 
 TEST u4_remainder_Main()
 {
@@ -230,6 +243,7 @@ TEST i4_addition_Main()
 	ASSERTI4(i4_addition(I4_MIN, I4_MIN), 0);
 }
 
+
 TEST i4_subtract_Main()
 {
 	extern i4 i4_subtract(i4 lhs, i4 rhs);
@@ -243,6 +257,7 @@ TEST i4_subtract_Main()
 	ASSERTI4(i4_subtract(0, I4_MAX), -2147483647);
 }
 
+
 TEST i4_multiply_Main()
 {
 	extern i4 i4_multiply(i4 lhs, i4 rhs);
@@ -255,6 +270,7 @@ TEST i4_multiply_Main()
 	ASSERTI4(i4_multiply(I4_MAX, 0), 0);
 }
 
+
 TEST i4_divide_Main()
 {
 	extern i4 i4_divide(i4 lhs, i4 rhs);
@@ -266,6 +282,7 @@ TEST i4_divide_Main()
 	ASSERTI4(i4_divide(I4_MIN, I4_MIN), 1);
 	ASSERTI4(i4_divide(-1, I4_MIN), 0);
 }
+
 
 TEST i4_remainder_Main()
 {
