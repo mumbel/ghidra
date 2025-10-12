@@ -26,13 +26,13 @@ TEST u2_bitwiseAnd_Main()
 	extern u2 u2_bitwiseAndUnused(u2 val, u2 lhs, u2 rhs);
 
 	ASSERTU2(u2_bitwiseAnd(2, 1), 0);
-	ASSERTU2(u2_bitwiseAnd(U2_MAX, U2_MAX), 65535);
+	ASSERTU2(u2_bitwiseAnd(U2_MAX, U2_MAX), U2_MAX);
 	ASSERTU2(u2_bitwiseAnd(U2_MIN, U2_MIN), 0);
 	ASSERTU2(u2_bitwiseAnd(0, U2_MAX), 0);
 	ASSERTU2(u2_bitwiseAnd(0, 0), 0);
 
 	ASSERTU2(u2_bitwiseAndUnused(0, 2, 1), 0);
-	ASSERTU2(u2_bitwiseAndUnused(0, U2_MAX, U2_MAX), 65535);
+	ASSERTU2(u2_bitwiseAndUnused(0, U2_MAX, U2_MAX), U2_MAX);
 	ASSERTU2(u2_bitwiseAndUnused(0, U2_MIN, U2_MIN), 0);
 	ASSERTU2(u2_bitwiseAndUnused(0, 0, U2_MAX), 0);
 	ASSERTU2(u2_bitwiseAndUnused(0, 0, 0), 0);
@@ -45,14 +45,14 @@ TEST u2_bitwiseOr_Main()
 	extern u2 u2_bitwiseOrUnused(u2 val, u2 lhs, u2 rhs);
 	
 	ASSERTU2(u2_bitwiseOr(2, 1), 3);
-	ASSERTU2(u2_bitwiseOr(U2_MAX, U2_MAX), 65535);
-	ASSERTU2(u2_bitwiseOr(U2_MAX, 0), 65535);
-	ASSERTU2(u2_bitwiseOr(U2_MAX, U2_MAX), 65535);
+	ASSERTU2(u2_bitwiseOr(U2_MAX, U2_MAX), U2_MAX);
+	ASSERTU2(u2_bitwiseOr(U2_MAX, 0), U2_MAX);
+	ASSERTU2(u2_bitwiseOr(U2_MAX, U2_MAX), U2_MAX);
 
 	ASSERTU2(u2_bitwiseOrUnused(0, 2, 1), 3);
-	ASSERTU2(u2_bitwiseOrUnused(0, U2_MAX, U2_MAX), 65535);
-	ASSERTU2(u2_bitwiseOrUnused(0, U2_MAX, 0), 65535);
-	ASSERTU2(u2_bitwiseOrUnused(0, U2_MAX, U2_MAX), 65535);
+	ASSERTU2(u2_bitwiseOrUnused(0, U2_MAX, U2_MAX), U2_MAX);
+	ASSERTU2(u2_bitwiseOrUnused(0, U2_MAX, 0), U2_MAX);
+	ASSERTU2(u2_bitwiseOrUnused(0, U2_MAX, U2_MAX), U2_MAX);
 }
 
 
@@ -64,12 +64,12 @@ TEST u2_bitwiseXor_Main()
 	ASSERTU2(u2_bitwiseXor(2, 1), 3);
 	ASSERTU2(u2_bitwiseXor(U2_MAX, U2_MAX), 0);
 	ASSERTU2(u2_bitwiseXor(0, 0), 0);
-	ASSERTU2(u2_bitwiseXor(0, U2_MAX), 65535);
+	ASSERTU2(u2_bitwiseXor(0, U2_MAX), U2_MAX);
 
 	ASSERTU2(u2_bitwiseXorUnused(0, 2, 1), 3);
 	ASSERTU2(u2_bitwiseXorUnused(0, U2_MAX, U2_MAX), 0);
 	ASSERTU2(u2_bitwiseXorUnused(0, 0, 0), 0);
-	ASSERTU2(u2_bitwiseXorUnused(0, 0, U2_MAX), 65535);
+	ASSERTU2(u2_bitwiseXorUnused(0, 0, U2_MAX), U2_MAX);
 }
 
 
@@ -81,16 +81,16 @@ TEST i2_bitwiseAnd_Main()
 	ASSERTI2(i2_bitwiseAnd(2, 1), 0);
 	ASSERTI2(i2_bitwiseAnd(0x0101, 0x0101), 0x0101);
 	ASSERTI2(i2_bitwiseAnd(0x0101, 0x1010), 0x0);
-	ASSERTI2(i2_bitwiseAnd(I2_MAX, I2_MAX), 32767);
-	ASSERTI2(i2_bitwiseAnd(I2_MIN, I2_MIN), -32768);
+	ASSERTI2(i2_bitwiseAnd(I2_MAX, I2_MAX), I2_MAX);
+	ASSERTI2(i2_bitwiseAnd(I2_MIN, I2_MIN), I2_MIN);
 	ASSERTI2(i2_bitwiseAnd(I2_MAX, I2_MIN), 0);
 	ASSERTI2(i2_bitwiseAnd(I2_MAX, 0), 0x0);
 
 	ASSERTI2(i2_bitwiseAndUnused(0, 2, 1), 0);
 	ASSERTI2(i2_bitwiseAndUnused(0, 0x0101, 0x0101), 0x0101);
 	ASSERTI2(i2_bitwiseAndUnused(0, 0x0101, 0x1010), 0x0);
-	ASSERTI2(i2_bitwiseAndUnused(0, I2_MAX, I2_MAX), 32767);
-	ASSERTI2(i2_bitwiseAndUnused(0, I2_MIN, I2_MIN), -32768);
+	ASSERTI2(i2_bitwiseAndUnused(0, I2_MAX, I2_MAX), I2_MAX);
+	ASSERTI2(i2_bitwiseAndUnused(0, I2_MIN, I2_MIN), I2_MIN);
 	ASSERTI2(i2_bitwiseAndUnused(0, I2_MAX, I2_MIN), 0);
 	ASSERTI2(i2_bitwiseAndUnused(0, I2_MAX, 0), 0x0);
 }
@@ -105,17 +105,17 @@ TEST i2_bitwiseOr_Main()
 	ASSERTI2(i2_bitwiseOr(0x0101, 0x0101), 0x0101);
 	ASSERTI2(i2_bitwiseOr(0x0101, 0x1010), 0x1111);
 	ASSERTI2(i2_bitwiseOr(0x0101, 0x0), 0x0101);
-	ASSERTI2(i2_bitwiseOr(I2_MAX, I2_MAX), 32767);
+	ASSERTI2(i2_bitwiseOr(I2_MAX, I2_MAX), I2_MAX);
 	ASSERTI2(i2_bitwiseOr(I2_MAX, I2_MIN), -1);
-	ASSERTI2(i2_bitwiseOr(I2_MAX, 0), 32767);
+	ASSERTI2(i2_bitwiseOr(I2_MAX, 0), I2_MAX);
 
 	ASSERTI2(i2_bitwiseOrUnused(0, 2, 1), 3);
 	ASSERTI2(i2_bitwiseOrUnused(0, 0x0101, 0x0101), 0x0101);
 	ASSERTI2(i2_bitwiseOrUnused(0, 0x0101, 0x1010), 0x1111);
 	ASSERTI2(i2_bitwiseOrUnused(0, 0x0101, 0x0), 0x0101);
-	ASSERTI2(i2_bitwiseOrUnused(0, I2_MAX, I2_MAX), 32767);
+	ASSERTI2(i2_bitwiseOrUnused(0, I2_MAX, I2_MAX), I2_MAX);
 	ASSERTI2(i2_bitwiseOrUnused(0, I2_MAX, I2_MIN), -1);
-	ASSERTI2(i2_bitwiseOrUnused(0, I2_MAX, 0), 32767);
+	ASSERTI2(i2_bitwiseOrUnused(0, I2_MAX, 0), I2_MAX);
 }
 
 
@@ -129,16 +129,16 @@ TEST i2_bitwiseXor_Main()
 	ASSERTI2(i2_bitwiseXor(0x0101, 0x1010), 0x1111);
 	ASSERTI2(i2_bitwiseXor(I2_MAX, I2_MAX), 0);
 	ASSERTI2(i2_bitwiseXor(I2_MAX, I2_MIN), -1);
-	ASSERTI2(i2_bitwiseXor(I2_MAX, 0), 32767);
-	ASSERTI2(i2_bitwiseXor(I2_MAX, -1), -32768);
+	ASSERTI2(i2_bitwiseXor(I2_MAX, 0), I2_MAX);
+	ASSERTI2(i2_bitwiseXor(I2_MAX, -1), I2_MIN);
 
 	ASSERTI2(i2_bitwiseXorUnused(0, 2, 1), 3);
 	ASSERTI2(i2_bitwiseXorUnused(0, 0x0101, 0x0101), 0);
 	ASSERTI2(i2_bitwiseXorUnused(0, 0x0101, 0x1010), 0x1111);
 	ASSERTI2(i2_bitwiseXorUnused(0, I2_MAX, I2_MAX), 0);
 	ASSERTI2(i2_bitwiseXorUnused(0, I2_MAX, I2_MIN), -1);
-	ASSERTI2(i2_bitwiseXorUnused(0, I2_MAX, 0), 32767);
-	ASSERTI2(i2_bitwiseXorUnused(0, I2_MAX, -1), -32768);
+	ASSERTI2(i2_bitwiseXorUnused(0, I2_MAX, 0), I2_MAX);
+	ASSERTI2(i2_bitwiseXorUnused(0, I2_MAX, -1), I2_MIN);
 }
 
 
@@ -238,12 +238,12 @@ TEST u2_shiftLeft_Main()
 	ASSERTU2(u2_shiftLeft(2, 1), 4);
 	ASSERTU2(u2_shiftLeft(2, 1), 4);
 	ASSERTU2(u2_shiftLeft(U2_MAX, 2), 65532);
-	ASSERTU2(u2_shiftLeft(U2_MAX, 0), 65535);
+	ASSERTU2(u2_shiftLeft(U2_MAX, 0), U2_MAX);
 
 	ASSERTU2(u2_shiftLeftUnused(0, 2, 1), 4);
 	ASSERTU2(u2_shiftLeftUnused(0, 2, 1), 4);
 	ASSERTU2(u2_shiftLeftUnused(0, U2_MAX, 2), 65532);
-	ASSERTU2(u2_shiftLeftUnused(0, U2_MAX, 0), 65535);
+	ASSERTU2(u2_shiftLeftUnused(0, U2_MAX, 0), U2_MAX);
 }
 
 
@@ -254,11 +254,11 @@ TEST u2_shiftRight_Main()
 	
 	ASSERTU2(u2_shiftRight(2, 1), 1);
 	ASSERTU2(u2_shiftRight(U2_MAX, 2), 16383);
-	ASSERTU2(u2_shiftRight(U2_MAX, 0), 65535);
+	ASSERTU2(u2_shiftRight(U2_MAX, 0), U2_MAX);
 
 	ASSERTU2(u2_shiftRightUnused(0, 2, 1), 1);
 	ASSERTU2(u2_shiftRightUnused(0, U2_MAX, 2), 16383);
-	ASSERTU2(u2_shiftRightUnused(0, U2_MAX, 0), 65535);
+	ASSERTU2(u2_shiftRightUnused(0, U2_MAX, 0), U2_MAX);
 }
 
 
@@ -295,18 +295,18 @@ TEST i2_shiftRight_Main()
 	ASSERTI2(i2_shiftRight(0x0101, 0), 0x0101);
 	ASSERTI2(i2_shiftRight(2, 1), 1);
 	ASSERTI2(i2_shiftRight(I2_MAX, 4), 2047);
-	ASSERTI2(i2_shiftRight(I2_MAX, 0), 32767);
+	ASSERTI2(i2_shiftRight(I2_MAX, 0), I2_MAX);
 	ASSERTI2(i2_shiftRight(I2_MIN, 4), -2048);
-	ASSERTI2(i2_shiftRight(I2_MIN, 0), -32768);
+	ASSERTI2(i2_shiftRight(I2_MIN, 0), I2_MIN);
 
 	ASSERTI2(i2_shiftRightUnused(0, 0x7fff, 15), 0x0000);
 	ASSERTI2(i2_shiftRightUnused(0, 0x0101, 8), 0x1);
 	ASSERTI2(i2_shiftRightUnused(0, 0x0101, 0), 0x0101);
 	ASSERTI2(i2_shiftRightUnused(0, 2, 1), 1);
 	ASSERTI2(i2_shiftRightUnused(0, I2_MAX, 4), 2047);
-	ASSERTI2(i2_shiftRightUnused(0, I2_MAX, 0), 32767);
+	ASSERTI2(i2_shiftRightUnused(0, I2_MAX, 0), I2_MAX);
 	ASSERTI2(i2_shiftRightUnused(0, I2_MIN, 4), -2048);
-	ASSERTI2(i2_shiftRightUnused(0, I2_MIN, 0), -32768);
+	ASSERTI2(i2_shiftRightUnused(0, I2_MIN, 0), I2_MIN);
 }
 
 

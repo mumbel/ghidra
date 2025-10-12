@@ -23,28 +23,70 @@ TEST i1_complexLogic_Main()
 TEST u1_bitwiseAnd_Main()
 {
 	extern u1 u1_bitwiseAnd(u1 lhs, u1 rhs);
+	extern u1 u1_bitwiseAndUnused(u1 val, u1 lhs, u1 rhs);
+
+	ASSERTU1(u1_bitwiseAnd(0x00, 0x01), 0x00);
+	ASSERTU1(u1_bitwiseAnd(0x00, 0x01), 0x00);
+	ASSERTU1(u1_bitwiseAnd(0x00, U1_MAX), 0x00);
+	ASSERTU1(u1_bitwiseAnd(0x01, 0x00), 0x00);
 	ASSERTU1(u1_bitwiseAnd(0x01, 0x01), 0x01);
-	ASSERTU1(u1_bitwiseAnd(U1_MAX, U1_MAX), 255);
-	ASSERTU1(u1_bitwiseAnd(U1_MAX, 0), 0);
-	ASSERTU1(u1_bitwiseAnd(U1_MAX, 1), 0x01);
+	ASSERTU1(u1_bitwiseAnd(0x01, U1_MAX), 0x01);
+	ASSERTU1(u1_bitwiseAnd(U1_MAX, 0x0), 0x00);
+	ASSERTU1(u1_bitwiseAnd(U1_MAX, 0x01), 0x01);
+	ASSERTU1(u1_bitwiseAnd(U1_MAX, U1_MAX), U1_MAX);
+
+	ASSERTU1(u1_bitwiseAndUnused(0x00, 0x01), 0x00);
+	ASSERTU1(u1_bitwiseAndUnused(0x00, 0x01), 0x00);
+	ASSERTU1(u1_bitwiseAndUnused(0x00, U1_MAX), 0x00);
+	ASSERTU1(u1_bitwiseAndUnused(0x01, 0x00), 0x00);
+	ASSERTU1(u1_bitwiseAndUnused(0x01, 0x01), 0x01);
+	ASSERTU1(u1_bitwiseAndUnused(0x01, U1_MAX), 0x01);
+	ASSERTU1(u1_bitwiseAndUnused(U1_MAX, 0x0), 0x00);
+	ASSERTU1(u1_bitwiseAndUnused(U1_MAX, 0x01), 0x01);
+	ASSERTU1(u1_bitwiseAndUnused(U1_MAX, U1_MAX), U1_MAX);
 }
 
 
 TEST u1_bitwiseOr_Main()
 {
 	extern u1 u1_bitwiseOr(u1 lhs, u1 rhs);
+	extern u1 u1_bitwiseOrUnused(u1 val, u1 lhs, u1 rhs);
+
+	ASSERTU1(u1_bitwiseOr(0x00, 0x00), 0x00);
+	ASSERTU1(u1_bitwiseOr(0x00, 0x01), 0x01);
+	ASSERTU1(u1_bitwiseOr(0x00, U1_MAX), U1_MAX);
+	ASSERTU1(u1_bitwiseOr(0x01, 0x00), 0x01);
 	ASSERTU1(u1_bitwiseOr(0x01, 0x01), 0x01);
+	ASSERTU1(u1_bitwiseOr(0x01, U1_MAX), U1_MAX);
+	ASSERTU1(u1_bitwiseOr(U1_MAX, 0), U1_MAX);
+	ASSERTU1(u1_bitwiseOr(U1_MAX, 1), U1_MAX);
 	ASSERTU1(u1_bitwiseOr(U1_MAX, U1_MAX), U1_MAX);
-	ASSERTU1(u1_bitwiseOr(U1_MAX, U1_MIN), 255);
+
+	ASSERTU1(u1_bitwiseOrUnused(0x00, 0x00), 0x00);
+	ASSERTU1(u1_bitwiseOrUnused(0x00, 0x01), 0x01);
+	ASSERTU1(u1_bitwiseOrUnused(0x00, U1_MAX), U1_MAX);
+	ASSERTU1(u1_bitwiseOrUnused(0x01, 0x00), 0x01);
+	ASSERTU1(u1_bitwiseOrUnused(0x01, 0x01), 0x01);
+	ASSERTU1(u1_bitwiseOrUnused(0x01, U1_MAX), U1_MAX);
+	ASSERTU1(u1_bitwiseOrUnused(U1_MAX, 0), U1_MAX);
+	ASSERTU1(u1_bitwiseOrUnused(U1_MAX, 1), U1_MAX);
+	ASSERTU1(u1_bitwiseOrUnused(U1_MAX, U1_MAX), U1_MAX);
 }
 
 
 TEST u1_bitwiseXor_Main()
 {
 	extern u1 u1_bitwiseXor(u1 lhs, u1 rhs);
-	ASSERTU1(u1_bitwiseXor(0x01, 0x01), 0);
-	ASSERTU1(u1_bitwiseXor(U1_MAX, U1_MAX), 0);
-	ASSERTU1(u1_bitwiseXor(U1_MAX, 0), 255);
+
+	ASSERTU1(u1_bitwiseXor(0x00, 0x00), 0x00);
+	ASSERTU1(u1_bitwiseXor(0x00, 0x01), 0x01);
+	ASSERTU1(u1_bitwiseXor(0x00, U1_MAX), U1_MAX);
+	ASSERTU1(u1_bitwiseXor(0x01, 0x00), 0x01);
+	ASSERTU1(u1_bitwiseXor(0x01, 0x01), 0x00);
+	ASSERTU1(u1_bitwiseXor(0x01, U1_MAX), 0xfe);
+	ASSERTU1(u1_bitwiseXor(U1_MAX, 0x00), U1_MAX);
+	ASSERTU1(u1_bitwiseXor(U1_MAX, 0x01), 0xfe);
+	ASSERTU1(u1_bitwiseXor(U1_MAX, U1_MAX), 0x00);
 }
 
 
@@ -52,8 +94,8 @@ TEST i1_bitwiseAnd_Main()
 {
 	extern i1 i1_bitwiseAnd(i1 lhs, i1 rhs);
 	ASSERTI1(i1_bitwiseAnd(2, 1), 0);
-	ASSERTI1(i1_bitwiseAnd(I1_MAX, I1_MAX), 127);
-	ASSERTI1(i1_bitwiseAnd(I1_MIN, I1_MIN), -128);
+	ASSERTI1(i1_bitwiseAnd(I1_MAX, I1_MAX), I1_MAX);
+	ASSERTI1(i1_bitwiseAnd(I1_MIN, I1_MIN), I1_MIN);
 	ASSERTI1(i1_bitwiseAnd(0, 0), 0);
 }
 
@@ -62,8 +104,8 @@ TEST i1_bitwiseOr_Main()
 {
 	extern i1 i1_bitwiseOr(i1 lhs, i1 rhs);
 	ASSERTI1(i1_bitwiseOr(2, 1), 3);
-	ASSERTI1(i1_bitwiseOr(I1_MAX, I1_MAX), 127);
-	ASSERTI1(i1_bitwiseOr(I1_MIN, I1_MIN), -128);
+	ASSERTI1(i1_bitwiseOr(I1_MAX, I1_MAX), I1_MAX);
+	ASSERTI1(i1_bitwiseOr(I1_MIN, I1_MIN), I1_MIN);
 	ASSERTI1(i1_bitwiseOr(0, 0), 0);
 }
 
@@ -74,7 +116,7 @@ TEST i1_bitwiseXor_Main()
 	ASSERTI1(i1_bitwiseXor(2, 1), 3);
 	ASSERTI1(i1_bitwiseXor(I1_MAX, I1_MAX), 0);
 	ASSERTI1(i1_bitwiseXor(I1_MIN, I1_MIN), 0);
-	ASSERTI1(i1_bitwiseXor(I1_MAX, 0), 127);
+	ASSERTI1(i1_bitwiseXor(I1_MAX, 0), I1_MAX);
 	ASSERTI1(i1_bitwiseXor(I1_MAX, 1), 126);
 }
 
@@ -148,7 +190,7 @@ TEST i1_shiftLeft_Main()
 	ASSERTI1(i1_shiftLeft(2, 1), 4);
 	ASSERTI1(i1_shiftLeft(I1_MAX, 2), -4);
 	ASSERTI1(i1_shiftLeft(I1_MIN, 2), 0);
-	ASSERTI1(i1_shiftLeft(I1_MAX, 0), 127);
+	ASSERTI1(i1_shiftLeft(I1_MAX, 0), I1_MAX);
 }
 
 
@@ -166,7 +208,7 @@ TEST u1_addition_Main()
 	extern u1 u1_addition(u1 lhs, u1 rhs);
 	ASSERTU1(u1_addition(0x01, 0x01), 2);
 	ASSERTU1(u1_addition(U1_MAX, U1_MAX), 254);
-	ASSERTU1(u1_addition(U1_MAX, 0), 255);
+	ASSERTU1(u1_addition(U1_MAX, 0), U1_MAX);
 	ASSERTU1(u1_addition(U1_MAX, 1), 0);
 }
 
@@ -215,7 +257,7 @@ TEST i1_addition_Main()
 	ASSERTI1(i1_addition(2, 1), 3);
 	ASSERTI1(i1_addition(I1_MAX, I1_MAX), -2);
 	ASSERTI1(i1_addition(I1_MAX, I1_MIN), -1);
-	ASSERTI1(i1_addition(I1_MAX, 0), 127);
+	ASSERTI1(i1_addition(I1_MAX, 0), I1_MAX);
 }
 
 
@@ -227,7 +269,7 @@ TEST i1_subtract_Main()
 	ASSERTI1(i1_subtract(I1_MAX, I1_MIN), -1);
 	ASSERTI1(i1_subtract(I1_MIN, I1_MAX), 1);
 	ASSERTI1(i1_subtract(I1_MIN, I1_MIN), 0);
-	ASSERTI1(i1_subtract(I1_MAX, 0), 127);
+	ASSERTI1(i1_subtract(I1_MAX, 0), I1_MAX);
 }
 
 
@@ -236,7 +278,7 @@ TEST i1_multiply_Main()
 	extern i1 i1_multiply(i1 lhs, i1 rhs);
 	ASSERTI1(i1_multiply(2, 1), 2);
 	ASSERTI1(i1_multiply(I1_MAX, I1_MAX), 1);
-	ASSERTI1(i1_multiply(I1_MAX, I1_MIN), -128);
+	ASSERTI1(i1_multiply(I1_MAX, I1_MIN), I1_MIN);
 	ASSERTI1(i1_multiply(I1_MAX, 0), 0);
 }
 
