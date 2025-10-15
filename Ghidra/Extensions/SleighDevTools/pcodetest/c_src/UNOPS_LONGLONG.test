@@ -1,14 +1,16 @@
 #include "pcode_test.h"
 
-#ifdef HAS_LONGLONG
 
+#ifdef HAS_LONGLONG
 TEST u8_logicalNot_Main()
 {
 	extern u8 u8_logicalNot(u8 lhs);
 	ASSERTU8(u8_logicalNot(2), 0);
 }
+#endif /* HAS_LONGLONG */
 
 
+#ifdef HAS_LONGLONG
 TEST i8_logicalNot_Main()
 {
 	extern i8 i8_logicalNot(i8 lhs);
@@ -18,8 +20,10 @@ TEST i8_logicalNot_Main()
 	ASSERTI8(i8_logicalNot(I8_MIN), 0);
 	ASSERTI8(i8_logicalNot(0), 1);
 }
+#endif /* HAS_LONGLONG */
 
 
+#ifdef HAS_LONGLONG
 TEST u8_unaryPositive_Main()
 {
 	extern u8 u8_unaryPositive(u8 lhs);
@@ -27,8 +31,11 @@ TEST u8_unaryPositive_Main()
 	ASSERTU8(u8_unaryPositive(U8_MAX), U8_MAX);
 	ASSERTU8(u8_unaryPositive(0), 0);
 }
+#endif /* HAS_LONGLONG */
 
 
+
+#ifdef HAS_LONGLONG
 TEST u8_unaryComp_Main()
 {
 	extern u8 u8_unaryComp(u8 val);
@@ -36,7 +43,10 @@ TEST u8_unaryComp_Main()
 	ASSERTU8(u8_unaryComp(1), U8_MAX-1);
 	ASSERTU8(u8_unaryComp(U8_MAX), 0);
 }
+#endif /* HAS_LONGLONG */
 
+
+#ifdef HAS_LONGLONG
 TEST u8_unaryIncPost_Main()
 {
 	extern u8 u8_unaryIncPost(u8 val);
@@ -44,7 +54,10 @@ TEST u8_unaryIncPost_Main()
 	ASSERTU8(u8_unaryIncPost(1), 1);
 	ASSERTU8(u8_unaryIncPost(U8_MAX), U8_MAX);
 }
+#endif /* HAS_LONGLONG */
 
+
+#ifdef HAS_LONGLONG
 TEST u8_unaryIncPre_Main()
 {
 	extern u8 u8_unaryIncPre(u8 val);
@@ -52,7 +65,10 @@ TEST u8_unaryIncPre_Main()
 	ASSERTU8(u8_unaryIncPre(1), 2);
 	ASSERTU8(u8_unaryIncPre(U8_MAX), 0);
 }
+#endif /* HAS_LONGLONG */
 
+
+#ifdef HAS_LONGLONG
 TEST u8_unaryDecPost_Main()
 {
 	extern u8 u8_unaryDecPost(u8 val);
@@ -60,7 +76,10 @@ TEST u8_unaryDecPost_Main()
 	ASSERTU8(u8_unaryDecPost(1), 1);
 	ASSERTU8(u8_unaryDecPost(U8_MAX), U8_MAX);
 }
+#endif /* HAS_LONGLONG */
 
+
+#ifdef HAS_LONGLONG
 TEST u8_unaryDecPre_Main()
 {
 	extern u8 u8_unaryDecPre(u8 val);
@@ -68,8 +87,10 @@ TEST u8_unaryDecPre_Main()
 	ASSERTU8(u8_unaryDecPre(1), 0);
 	ASSERTU8(u8_unaryDecPre(U8_MAX), U8_MAX-1);
 }
+#endif /* HAS_LONGLONG */
 
 
+#ifdef HAS_LONGLONG
 TEST i8_unaryNegative_Main()
 {
 	extern i8 i8_unaryNegative(i8 lhs);
@@ -80,8 +101,10 @@ TEST i8_unaryNegative_Main()
 	ASSERTI8(i8_unaryNegative(I8_MIN), I8_MIN);
 	ASSERTI8(i8_unaryNegative(0), 0);
 }
+#endif /* HAS_LONGLONG */
 
 
+#ifdef HAS_LONGLONG
 TEST i8_unaryPositive_Main()
 {
 	extern i8 i8_unaryPositive(i8 lhs);
@@ -92,8 +115,10 @@ TEST i8_unaryPositive_Main()
 	ASSERTI8(i8_unaryPositive(I8_MIN), I8_MIN);
 	ASSERTI8(i8_unaryPositive(0), 0);
 }
+#endif /* HAS_LONGLONG */
 
 
+#ifdef HAS_LONGLONG
 TEST i8_unaryComp_Main()
 {
 	extern i8 i8_unaryComp(i8 val);
@@ -103,7 +128,10 @@ TEST i8_unaryComp_Main()
 	ASSERTI8(i8_unaryComp(I8_MAX), I8_MIN);
 	ASSERTI8(i8_unaryComp(I8_MIN), I8_MAX);
 }
+#endif /* HAS_LONGLONG */
 
+
+#ifdef HAS_LONGLONG
 TEST i8_unaryIncPost_Main()
 {
 	extern i8 i8_unaryIncPost(i8 val);
@@ -113,7 +141,10 @@ TEST i8_unaryIncPost_Main()
 	ASSERTI8(i8_unaryIncPost(I8_MAX), I8_MAX);
 	ASSERTI8(i8_unaryIncPost(I8_MIN), I8_MIN);
 }
+#endif /* HAS_LONGLONG */
 
+
+#ifdef HAS_LONGLONG
 TEST i8_unaryIncPre_Main()
 {
 	extern i8 i8_unaryIncPre(i8 val);
@@ -123,7 +154,10 @@ TEST i8_unaryIncPre_Main()
 	ASSERTI8(i8_unaryIncPre(I8_MAX), I8_MIN);
 	ASSERTI8(i8_unaryIncPre(I8_MIN), I8_MIN+1);
 }
+#endif /* HAS_LONGLONG */
 
+
+#ifdef HAS_LONGLONG
 TEST i8_unaryDecPost_Main()
 {
 	extern i8 i8_unaryDecPost(i8 val);
@@ -133,7 +167,10 @@ TEST i8_unaryDecPost_Main()
 	ASSERTI8(i8_unaryDecPost(I8_MAX), I8_MAX);
 	ASSERTI8(i8_unaryDecPost(I8_MIN), I8_MIN);
 }
+#endif /* HAS_LONGLONG */
 
+
+#ifdef HAS_LONGLONG
 TEST i8_unaryDecPre_Main()
 {
 	extern i8 i8_unaryDecPre(i8 val);
@@ -143,8 +180,10 @@ TEST i8_unaryDecPre_Main()
 	ASSERTI8(i8_unaryDecPre(I8_MAX), I8_MAX-1);
 	ASSERTI8(i8_unaryDecPre(I8_MIN), I8_MAX);
 }
+#endif /* HAS_LONGLONG */
 
 
+#ifdef HAS_LONGLONG
 TEST u8_swap_Main()
 {
 	extern u8 u8_swapRef(u8 val);
@@ -208,7 +247,10 @@ TEST u8_swap_Main()
 	ASSERTU8(u8_swapMask(0x00008000), 0x0080000000000000);
 	ASSERTU8(u8_swapMask(0x0000000000000080), 0x8000000000000000);
 }
+#endif /* HAS_LONGLONG */
 
+
+#ifdef HAS_LONGLONG
 TEST i8_swap_Main()
 {
 	extern i8 i8_swapRef(i8 val);
@@ -276,8 +318,9 @@ TEST i8_swap_Main()
 	ASSERTI8(i8_swapMask(I8_MAX), 0xffffffffffffff7f);
 	ASSERTI8(i8_swapMask(I8_MIN), 0x0000000000000080);
 }
-
 #endif /* HAS_LONGLONG */
 
+
 MAIN UNOPS_LONGLONG_main() { }
+
 

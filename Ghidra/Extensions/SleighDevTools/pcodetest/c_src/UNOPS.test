@@ -28,6 +28,7 @@ TEST u1_unaryPositive_Main()
 	ASSERTU1(u1_unaryPositive(0), 0);
 }
 
+
 TEST u1_unaryComp_Main()
 {
 	extern u1 u1_unaryComp(u1 lhs);
@@ -36,6 +37,7 @@ TEST u1_unaryComp_Main()
 	ASSERTU1(u1_unaryComp(U1_MAX), 0);
 }
 
+
 TEST u1_unaryIncPost_Main()
 {
 	extern u1 u1_unaryIncPost(u1 lhs);
@@ -43,6 +45,7 @@ TEST u1_unaryIncPost_Main()
 	ASSERTU1(u1_unaryIncPost(1), 1);
 	ASSERTU1(u1_unaryIncPost(U1_MAX), U1_MAX);
 }
+
 
 TEST u1_unaryIncPre_Main()
 {
@@ -59,6 +62,7 @@ TEST u1_unaryDecPost_Main()
 	ASSERTU1(u1_unaryDecPost(1), 1);
 	ASSERTU1(u1_unaryDecPost(U1_MAX), U1_MAX);
 }
+
 
 TEST u1_unaryDecPre_Main()
 {
@@ -87,6 +91,7 @@ TEST i1_unaryPositive_Main()
 	ASSERTI1(i1_unaryPositive(0), 0);
 }
 
+
 TEST i1_unaryComp_Main()
 {
 	extern i1 i1_unaryComp(i1 val);
@@ -96,6 +101,7 @@ TEST i1_unaryComp_Main()
 	ASSERTI1(i1_unaryComp(I1_MAX), I1_MIN);
 	ASSERTI1(i1_unaryComp(I1_MIN), I1_MAX);
 }
+
 
 TEST i1_unaryIncPost_Main()
 {
@@ -117,6 +123,7 @@ TEST i1_unaryIncPre_Main()
 	ASSERTI1(i1_unaryIncPre(I1_MIN), I1_MIN+1);
 }
 
+
 TEST i1_unaryDecPost_Main()
 {
 	extern i1 i1_unaryDecPost(i1 val);
@@ -126,6 +133,7 @@ TEST i1_unaryDecPost_Main()
 	ASSERTI1(i1_unaryDecPost(I1_MAX), I1_MAX);
 	ASSERTI1(i1_unaryDecPost(I1_MIN), I1_MIN);
 }
+
 
 TEST i1_unaryDecPre_Main()
 {
