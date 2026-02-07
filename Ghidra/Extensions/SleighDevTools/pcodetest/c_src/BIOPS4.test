@@ -23,32 +23,81 @@ TEST i4_complexLogic_Main()
 TEST u4_bitwiseAnd_Main()
 {
 	extern u4 u4_bitwiseAnd(u4 lhs, u4 rhs);
-	ASSERTU4(u4_bitwiseAnd(0x01010101, 0x01010101), 0x01010101);
-	ASSERTU4(u4_bitwiseAnd(2, 1), 0);
-	ASSERTU4(u4_bitwiseAnd(U4_MAX, U4_MAX), -1);
-	ASSERTU4(u4_bitwiseAnd(U4_MAX, U4_MIN), 0);
+	extern u4 u4_bitwiseAndUnysed(u4 var, u4 lhs, u4 rhs);
+
+	ASSERTU4(u4_bitwiseAnd(0, 0), 0);
+	ASSERTU4(u4_bitwiseAnd(0, 1), 0);
+	ASSERTU4(u4_bitwiseAnd(0, U4_MAX), 0);
+	ASSERTU4(u4_bitwiseAnd(1, 0), 0);
+	ASSERTU4(u4_bitwiseAnd(1, 1), 1);
+	ASSERTU4(u4_bitwiseAnd(1, U4_MAX), 1);
 	ASSERTU4(u4_bitwiseAnd(U4_MAX, 0), 0);
+	ASSERTU4(u4_bitwiseAnd(U4_MAX, 1), 1);
+	ASSERTU4(u4_bitwiseAnd(U4_MAX, U4_MAX), U4_MAX);
+
+	ASSERTU4(u4_bitwiseAndUnused(0, 0, 0), 0);
+	ASSERTU4(u4_bitwiseAndUnused(0, 0, 1), 0);
+	ASSERTU4(u4_bitwiseAndUnused(0, 0, U4_MAX), 0);
+	ASSERTU4(u4_bitwiseAndUnused(0, 1, 0), 0);
+	ASSERTU4(u4_bitwiseAndUnused(0, 1, 1), 1);
+	ASSERTU4(u4_bitwiseAndUnused(0, 1, U4_MAX), 1);
+	ASSERTU4(u4_bitwiseAndUnused(0, U4_MAX, 0), 0);
+	ASSERTU4(u4_bitwiseAndUnused(0, U4_MAX, 1), 1);
+	ASSERTU4(u4_bitwiseAndUnused(0, U4_MAX, U4_MAX), U4_MAX);
 }
 
 
 TEST u4_bitwiseOr_Main()
 {
 	extern u4 u4_bitwiseOr(u4 lhs, u4 rhs);
-	ASSERTU4(u4_bitwiseOr(0x01010101, 0x01010101), 0x01010101);
-	ASSERTU4(u4_bitwiseOr(2, 1), 3);
-	ASSERTU4(u4_bitwiseOr(U4_MAX, U4_MAX), U4_MAX);
+	extern u4 u4_bitwiseOrUnused(u4 val, u4 lhs, u4 rhs);
+
+	ASSERTU4(u4_bitwiseOr(0, 0), 0);
+	ASSERTU4(u4_bitwiseOr(0, 1), 1);
+	ASSERTU4(u4_bitwiseOr(0, U4_MAX), U4_MAX);
+	ASSERTU4(u4_bitwiseOr(1, 0), 1);
+	ASSERTU4(u4_bitwiseOr(1, 1), 1);
+	ASSERTU4(u4_bitwiseOr(1, U4_MAX), U4_MAX);
 	ASSERTU4(u4_bitwiseOr(U4_MAX, 0), U4_MAX);
+	ASSERTU4(u4_bitwiseOr(U4_MAX, 1), U4_MAX);
+	ASSERTU4(u4_bitwiseOr(U4_MAX, U4_MAX), U4_MAX);
+
+	ASSERTU4(u4_bitwiseOrUnused(0, 0, 0), 0);
+	ASSERTU4(u4_bitwiseOrUnused(0, 0, 1), 1);
+	ASSERTU4(u4_bitwiseOrUnused(0, 0, U4_MAX), U4_MAX);
+	ASSERTU4(u4_bitwiseOrUnused(0, 1, 0), 1);
+	ASSERTU4(u4_bitwiseOrUnused(0, 1, 1), 1);
+	ASSERTU4(u4_bitwiseOrUnused(0, 1, U4_MAX), U4_MAX);
+	ASSERTU4(u4_bitwiseOrUnused(0, U4_MAX, 0), U4_MAX);
+	ASSERTU4(u4_bitwiseOrUnused(0, U4_MAX, 1), U4_MAX);
+	ASSERTU4(u4_bitwiseOrUnused(0, U4_MAX, U4_MAX), U4_MAX);
 }
 
 
 TEST u4_bitwiseXor_Main()
 {
 	extern u4 u4_bitwiseXor(u4 lhs, u4 rhs);
-	ASSERTU4(u4_bitwiseXor(0x01010101, 0x01010101), 0);
-	ASSERTU4(u4_bitwiseXor(2, 1), 3);
+	extern u4 u4_bitwiseXorUnused(u4 val, u4 lhs, u4 rhs);
+
+	ASSERTU4(u4_bitwiseXor(0, 0), 0);
+	ASSERTU4(u4_bitwiseXor(0, 1), 1);
+	ASSERTU4(u4_bitwiseXor(0, U4_MAX), U4_MAX);
+	ASSERTU4(u4_bitwiseXor(1, 0), 1);
+	ASSERTU4(u4_bitwiseXor(1, 1), 0);
+	ASSERTU4(u4_bitwiseXor(1, U4_MAX), 0xfffffffe);
+	ASSERTU4(u4_bitwiseXor(U4_MAX, 0), U4_MAX);
+	ASSERTU4(u4_bitwiseXor(U4_MAX, 1), 0xfffffffe);
 	ASSERTU4(u4_bitwiseXor(U4_MAX, U4_MAX), 0);
-	ASSERTU4(u4_bitwiseXor(U4_MAX, U4_MIN), -1);
-	ASSERTU4(u4_bitwiseXor(U4_MAX, 0), -1);
+
+	ASSERTU4(u4_bitwiseXorUnused(0, 0, 0), 0);
+	ASSERTU4(u4_bitwiseXorUnused(0, 0, 1), 1);
+	ASSERTU4(u4_bitwiseXorUnused(0, 0, U4_MAX), U4_MAX);
+	ASSERTU4(u4_bitwiseXorUnused(0, 1, 0), 1);
+	ASSERTU4(u4_bitwiseXorUnused(0, 1, 1), 0);
+	ASSERTU4(u4_bitwiseXorUnused(0, 1, U4_MAX), 0xfffffffe);
+	ASSERTU4(u4_bitwiseXorUnused(0, U4_MAX, 0), U4_MAX);
+	ASSERTU4(u4_bitwiseXorUnused(0, U4_MAX, 1), 0xfffffffe);
+	ASSERTU4(u4_bitwiseXorUnused(0, U4_MAX, U4_MAX), 0);
 }
 
 

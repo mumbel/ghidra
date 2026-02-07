@@ -395,7 +395,7 @@ PCodeTest({
     'name': 'MIPS64_32addr',
     'build_all': 1,
     'toolchain': 'MIPS/mipsr6-elf',
-    'ccflags': '-mips64r2',
+    'ccflags': '-mips64r2 -mabi=n32',
     'language_id': 'MIPS:BE:64:64-32addr',
 })
 
