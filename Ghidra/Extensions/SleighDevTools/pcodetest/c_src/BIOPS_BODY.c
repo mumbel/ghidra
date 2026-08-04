@@ -366,7 +366,7 @@ typ typ##_divide(			\
 }
 
 #define PCODE_BIOP_DIVZERO(typ)		\
-typ typ##_diviceZero(			\
+typ typ##_divideZero(			\
 			typ val)	\
 {					\
 	typ z;				\
