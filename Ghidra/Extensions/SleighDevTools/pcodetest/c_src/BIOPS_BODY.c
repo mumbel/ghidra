@@ -251,7 +251,7 @@ typ typ##_bitwiseXor(			\
 }
 
 #define PCODE_BIOP_XORZERO(typ)		\
-typ typ##_bitwiseXorZoer(			\
+typ typ##_bitwiseXorZero(			\
 			typ val)	\
 {					\
 	typ z;				\
