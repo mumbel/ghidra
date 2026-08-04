@@ -62,21 +62,22 @@ TEST u1_bitwiseOr_Main()
 	ASSERTU1(u1_bitwiseOr(U1_MAX, 1), U1_MAX);
 	ASSERTU1(u1_bitwiseOr(U1_MAX, U1_MAX), U1_MAX);
 
-	ASSERTU1(u1_bitwiseOrUnused(0x00, 0x00), 0x00);
-	ASSERTU1(u1_bitwiseOrUnused(0x00, 0x01), 0x01);
-	ASSERTU1(u1_bitwiseOrUnused(0x00, U1_MAX), U1_MAX);
-	ASSERTU1(u1_bitwiseOrUnused(0x01, 0x00), 0x01);
-	ASSERTU1(u1_bitwiseOrUnused(0x01, 0x01), 0x01);
-	ASSERTU1(u1_bitwiseOrUnused(0x01, U1_MAX), U1_MAX);
-	ASSERTU1(u1_bitwiseOrUnused(U1_MAX, 0), U1_MAX);
-	ASSERTU1(u1_bitwiseOrUnused(U1_MAX, 1), U1_MAX);
-	ASSERTU1(u1_bitwiseOrUnused(U1_MAX, U1_MAX), U1_MAX);
+	ASSERTU1(u1_bitwiseOrUnused(0x00, 0x00, 0x00), 0x00);
+	ASSERTU1(u1_bitwiseOrUnused(0x00, 0x00, 0x01), 0x01);
+	ASSERTU1(u1_bitwiseOrUnused(0x00, 0x00, U1_MAX), U1_MAX);
+	ASSERTU1(u1_bitwiseOrUnused(0x00, 0x01, 0x00), 0x01);
+	ASSERTU1(u1_bitwiseOrUnused(0x00, 0x01, 0x01), 0x01);
+	ASSERTU1(u1_bitwiseOrUnused(0x00, 0x01, U1_MAX), U1_MAX);
+	ASSERTU1(u1_bitwiseOrUnused(0x00, U1_MAX, 0), U1_MAX);
+	ASSERTU1(u1_bitwiseOrUnused(0x00, U1_MAX, 1), U1_MAX);
+	ASSERTU1(u1_bitwiseOrUnused(0x00, U1_MAX, U1_MAX), U1_MAX);
 }
 
 
 TEST u1_bitwiseXor_Main()
 {
 	extern u1 u1_bitwiseXor(u1 lhs, u1 rhs);
+	extern u1 u1_bitwiseXorUnused(u1 val, u1 lhs, u1 rhs);
 
 	ASSERTU1(u1_bitwiseXor(0x00, 0x00), 0x00);
 	ASSERTU1(u1_bitwiseXor(0x00, 0x01), 0x01);

@@ -48,6 +48,16 @@ typ typ##_subtract(			\
 	return z;			\
 }
 
+#define PCODE_BIOP_SUB_UF(typ)		\
+typ typ##_subtractUnderflow(	       	\
+			typ lhs,	\
+			typ rhs)	\
+{					\
+	typ z;				\
+	z = lhs - rhs;			\
+	return z > lhs;			\
+}
+
 #define PCODE_BIOP_SUBUNUSED(typ)		\
   typ typ##_subtractUnused(UNUSED typ val,	\
 			typ lhs,	\
@@ -83,6 +93,16 @@ typ typ##_addition(			\
 	typ z;				\
 	z = lhs + rhs;			\
 	return z;			\
+}
+
+#define PCODE_BIOP_ADD_OV(typ)		\
+typ typ##_additionOverflow(    		\
+			typ lhs,	\
+			typ rhs)	\
+{					\
+	typ z;				\
+	z = lhs + rhs;			\
+	return z < lhs;			\
 }
 
 #define PCODE_BIOP_ADDUNUSED(typ)		\
@@ -123,6 +143,46 @@ typ typ##_bitwiseAnd(			\
 	return z;			\
 }
 
+#define PCODE_BIOP_ANDEQZero(typ)      	\
+typ typ##_bitwiseAndEQZero(    		\
+			typ lhs,	\
+			typ rhs)	\
+{					\
+	typ z;				\
+	z = lhs & rhs;			\
+	return z == 0;			\
+}
+
+#define PCODE_BIOP_ANDNEZero(typ)      	\
+typ typ##_bitwiseAndNEZero(    		\
+			typ lhs,	\
+			typ rhs)	\
+{					\
+	typ z;				\
+	z = lhs & rhs;			\
+	return z != 0;			\
+}
+
+#define PCODE_BIOP_ANDEQ(typ)		\
+typ typ##_bitwiseAndEQ(			\
+			typ lhs,	\
+			typ rhs)	\
+{					\
+	typ z;				\
+	z = lhs & rhs;			\
+	return z == lhs;       		\
+}
+
+#define PCODE_BIOP_ANDNE(typ)		\
+typ typ##_bitwiseAndNE(			\
+			typ lhs,	\
+			typ rhs)	\
+{					\
+	typ z;				\
+	z = lhs & rhs;			\
+	return z != lhs;	       	\
+}
+
 #define PCODE_BIOP_ANDUNUSED(typ)		\
   typ typ##_bitwiseAndUnused(UNUSED typ val,	\
 			typ lhs,	\
@@ -159,6 +219,46 @@ typ typ##_bitwiseOr(			\
 	typ z;				\
 	z = lhs | rhs;			\
 	return z;			\
+}
+
+#define PCODE_BIOP_OREQZero(typ)       	\
+typ typ##_bitwiseOrEQZero(     		\
+			 typ lhs,	\
+			 typ rhs)	\
+{					\
+	typ z;				\
+	z = lhs | rhs;			\
+	return z == 0;			\
+}
+
+#define PCODE_BIOP_ORNEZero(typ)       	\
+typ typ##_bitwiseOrNEZero(     		\
+			 typ lhs,	\
+			 typ rhs)	\
+{					\
+	typ z;				\
+	z = lhs | rhs;			\
+	return z != 0;			\
+}
+
+#define PCODE_BIOP_OREQ(typ)		\
+typ typ##_bitwiseOrEQ(			\
+			 typ lhs,	\
+			 typ rhs)	\
+{					\
+	typ z;				\
+	z = lhs | rhs;			\
+	return z == lhs;	       	\
+}
+
+#define PCODE_BIOP_ORNE(typ)		\
+typ typ##_bitwiseOrNE(			\
+			 typ lhs,	\
+			 typ rhs)	\
+{					\
+	typ z;				\
+	z = lhs | rhs;			\
+	return z != lhs;       		\
 }
 
 #define PCODE_BIOP_ORUNUSED(typ)		\
@@ -240,6 +340,46 @@ typ typ##_bitwiseXor(			\
 	return z;			\
 }
 
+#define PCODE_BIOP_XOREQZero(typ)      	\
+typ typ##_bitwiseXorEQZero(    		\
+			typ lhs,	\
+			typ rhs)	\
+{					\
+	typ z;				\
+	z = lhs ^ rhs;			\
+	return z == 0;			\
+}
+
+#define PCODE_BIOP_XORNEZero(typ)      	\
+typ typ##_bitwiseXorNEZero(    		\
+			typ lhs,	\
+			typ rhs)	\
+{					\
+	typ z;				\
+	z = lhs ^ rhs;			\
+	return z != 0;			\
+}
+
+#define PCODE_BIOP_XOREQ(typ)		\
+typ typ##_bitwiseXorEQ(			\
+			typ lhs,	\
+			typ rhs)	\
+{					\
+	typ z;				\
+	z = lhs ^ rhs;			\
+	return z == lhs;	       	\
+}
+
+#define PCODE_BIOP_XORNE(typ)		\
+typ typ##_bitwiseXorNE(			\
+			typ lhs,	\
+			typ rhs)	\
+{					\
+	typ z;				\
+	z = lhs ^ rhs;			\
+	return z != lhs;	       	\
+}
+
 #define PCODE_BIOP_XORUNUSED(typ)		\
   typ typ##_bitwiseXorUnused(UNUSED typ val,	\
 			typ lhs,	\
@@ -279,6 +419,26 @@ typ typ##_shiftLeft(			\
 	return z;			\
 }
 
+#define PCODE_BIOP_SHLEQZero(typ)      	\
+typ typ##_shiftLeftEQZero(     		\
+			typ lhs,	\
+			typ rhs)	\
+{					\
+	typ z;				\
+	z = lhs << rhs;		\
+	return z == 0;			\
+}
+
+#define PCODE_BIOP_SHLNEZero(typ)      	\
+typ typ##_shiftLeftNEZero(	       	\
+			typ lhs,	\
+			typ rhs)	\
+{					\
+	typ z;				\
+	z = lhs << rhs;		\
+	return z != 0;			\
+}
+
 #define PCODE_BIOP_SHLUNUSED(typ)		\
   typ typ##_shiftLeftUnused(UNUSED typ val,	\
 			typ lhs,	\
@@ -315,6 +475,26 @@ typ typ##_shiftRight(			\
 	typ z;				\
 	z = lhs >> rhs;		\
 	return z;			\
+}
+
+#define PCODE_BIOP_SHREQZero(typ)      	\
+typ typ##_shiftRightEQZero(	       	\
+			typ lhs,	\
+			typ rhs)	\
+{					\
+	typ z;				\
+	z = lhs >> rhs;		\
+	return z == 0;			\
+}
+
+#define PCODE_BIOP_SHRNEZero(typ)      	\
+typ typ##_shiftRightNEZero(	       	\
+			typ lhs,	\
+			typ rhs)	\
+{					\
+	typ z;				\
+	z = lhs >> rhs;		\
+	return z != 0;			\
 }
 
 #define PCODE_BIOP_SHRUNUSED(typ)		\
@@ -462,30 +642,48 @@ typ typ##_multiplyOne(			\
 
 #define PCODE_BIOPS(typ)			\
 	PCODE_BIOP_ADD(typ)			\
+	PCODE_BIOP_ADD_OV(typ)			\
 	PCODE_BIOP_ADDUNUSED(typ)		\
 	PCODE_BIOP_ADDZERO(typ)			\
 	PCODE_BIOP_ADDONE(typ)			\
 	PCODE_BIOP_AND(typ)			\
+	PCODE_BIOP_ANDEQZero(typ)      		\
+	PCODE_BIOP_ANDNEZero(typ)      		\
+	PCODE_BIOP_ANDEQ(typ)			\
+	PCODE_BIOP_ANDNE(typ)			\
 	PCODE_BIOP_ANDUNUSED(typ)		\
 	PCODE_BIOP_ANDZERO(typ)			\
 	PCODE_BIOP_ANDONE(typ)			\
 	PCODE_BIOP_OR(typ)			\
+	PCODE_BIOP_OREQZero(typ)       		\
+	PCODE_BIOP_ORNEZero(typ)     		\
+	PCODE_BIOP_OREQ(typ)			\
+	PCODE_BIOP_ORNE(typ)			\
 	PCODE_BIOP_ORUNUSED(typ)		\
 	PCODE_BIOP_ORZERO(typ)			\
 	PCODE_BIOP_ORONE(typ)			\
 	PCODE_BIOP_SHL(typ)			\
+	PCODE_BIOP_SHLEQZero(typ)      		\
+	PCODE_BIOP_SHLNEZero(typ)      		\
 	PCODE_BIOP_SHLUNUSED(typ)		\
 	PCODE_BIOP_SHLZERO(typ)			\
 	PCODE_BIOP_SHLONE(typ)			\
 	PCODE_BIOP_SHR(typ)			\
+	PCODE_BIOP_SHREQZero(typ)      		\
+	PCODE_BIOP_SHRNEZero(typ)	       	\
 	PCODE_BIOP_SHRUNUSED(typ)		\
 	PCODE_BIOP_SHRZERO(typ)			\
 	PCODE_BIOP_SHRONE(typ)			\
 	PCODE_BIOP_SUB(typ)			\
+	PCODE_BIOP_SUB_UF(typ)			\
 	PCODE_BIOP_SUBUNUSED(typ)		\
 	PCODE_BIOP_SUBZERO(typ)			\
 	PCODE_BIOP_SUBONE(typ)			\
 	PCODE_BIOP_XOR(typ)			\
+	PCODE_BIOP_XOREQZero(typ)      		\
+	PCODE_BIOP_XORNEZero(typ)      		\
+	PCODE_BIOP_XOREQ(typ)			\
+	PCODE_BIOP_XORNE(typ)			\
 	PCODE_BIOP_XORUNUSED(typ)		\
 	PCODE_BIOP_XORZERO(typ)			\
 	PCODE_BIOP_XORONE(typ)			\

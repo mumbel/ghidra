@@ -20,6 +20,20 @@
   typ0 pcode_##typ##_to_##typ0##_convert(typ a) {			\
     return (typ0)a;							\
   }									\
+  typ0 pcode_##typ##_to_##typ0##_convert_EQZero(UNUSED typ val, typ a) {       		\
+    return ((typ0)a) == 0;						\
+  }									\
+  typ0 pcode_##typ##_to_##typ0##_convert_NEZero(UNUSED typ val, typ a) {       		\
+    return ((typ0)a) != 0;	       					\
+  }									\
+  typ0 pcode_##typ##_to_##typ0##_convert_EQ(UNUSED typ val, typ a) {       		\
+    typ0 z = (typ0)a;							\
+    return ((typ)z) == a;						\
+  }									\
+  typ0 pcode_##typ##_to_##typ0##_convert_NE(UNUSED typ val, typ a) {       		\
+    typ0 z = (typ0)a;							\
+    return ((typ)z) != a;						\
+  }									\
   typ0 pcode_##typ##_to_##typ0##_convertUnused(UNUSED typ val, typ a) { \
     return (typ0)a;							\
   }

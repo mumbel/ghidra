@@ -23,7 +23,7 @@ TEST i4_complexLogic_Main()
 TEST u4_bitwiseAnd_Main()
 {
 	extern u4 u4_bitwiseAnd(u4 lhs, u4 rhs);
-	extern u4 u4_bitwiseAndUnysed(u4 var, u4 lhs, u4 rhs);
+	extern u4 u4_bitwiseAndUnused(u4 var, u4 lhs, u4 rhs);
 
 	ASSERTU4(u4_bitwiseAnd(0, 0), 0);
 	ASSERTU4(u4_bitwiseAnd(0, 1), 0);
