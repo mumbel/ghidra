@@ -120,6 +120,33 @@ typ typ##_conditionLogicOne(		\
 	return z;			\
 }
 
+#define PCODE_BIOP_CONDNEGONE(typ)	\
+typ typ##_conditionLogicNegOne(		\
+			typ val,	\
+			typ val0,	\
+			typ val1,	\
+			typ val2,	\
+			typ val3,	\
+			typ val4,	\
+			typ val5,	\
+			typ val6)	\
+{					\
+	typ z = val0;			\
+	if (val < (typ)-1)     		\
+		z = z + val1;		\
+	if (val > (typ)-1)     		\
+		z = z - val2;		\
+	if (val != (typ)-1)	       	\
+		z = z * val3;		\
+	if (val == (typ)-1)	       	\
+		z = z / val4;		\
+	if (val <= (typ)-1)    		\
+		z = z ^ val5;		\
+	if (val >= (typ)-1)	       	\
+		z = z | val6;		\
+	return z;			\
+}
+
 #define PCODE_BIOP_MAX(typ)		\
 typ typ##_maximumNew(			\
 		typ lhs,		\
@@ -195,6 +222,15 @@ u1 typ##_conditionGTOne(			\
 	return z;			\
 }
 
+#define PCODE_COND_GTNegOne(typ)       	\
+u1 typ##_conditionGTNegOne(		\
+			typ val)	\
+{					\
+	u1 z;				\
+	z = (u1)(val > (typ)-1);       	\
+	return z;			\
+}
+
 #define PCODE_COND_GE(typ)		\
 u1 typ##_conditionGE(			\
 			typ lhs,	\
@@ -230,6 +266,15 @@ u1 typ##_conditionGEOne(			\
 {					\
 	u1 z;				\
 	z = (u1)(val >= 1);		\
+	return z;			\
+}
+
+#define PCODE_COND_GENegOne(typ)			\
+u1 typ##_conditionGENegOne(			\
+			typ val)	\
+{					\
+	u1 z;				\
+	z = (u1)(val >= (typ)-1);		\
 	return z;			\
 }
 
@@ -271,6 +316,15 @@ u1 typ##_conditionEQOne(			\
 	return z;			\
 }
 
+#define PCODE_COND_EQNegOne(typ)			\
+u1 typ##_conditionEQNegOne(			\
+			typ val)	\
+{					\
+	u1 z;				\
+	z = (u1)(val == (typ)-1);		\
+	return z;			\
+}
+
 #define PCODE_COND_LE(typ)		\
 u1 typ##_conditionLE(			\
 			typ lhs,	\
@@ -306,6 +360,15 @@ u1 typ##_conditionLEOne(			\
 {					\
 	u1 z;				\
 	z = (u1)(val <= 1);		\
+	return z;			\
+}
+
+#define PCODE_COND_LENegOne(typ)			\
+u1 typ##_conditionLENegOne(			\
+			typ val)	\
+{					\
+	u1 z;				\
+	z = (u1)(val <= (typ)-1);		\
 	return z;			\
 }
 
@@ -347,6 +410,15 @@ u1 typ##_conditionLTOne(			\
 	return z;			\
 }
 
+#define PCODE_COND_LTNegOne(typ)		\
+u1 typ##_conditionLTNegOne(			\
+			typ val)	\
+{					\
+	u1 z;				\
+	z = (u1)(val < (typ)-1);		\
+	return z;			\
+}
+
 #define PCODE_COND_NE(typ)		\
 u1 typ##_conditionNE(			\
 			typ lhs,	\
@@ -385,6 +457,77 @@ u1 typ##_conditionNEOne(			\
 	return z;			\
 }
 
+#define PCODE_COND_NENegOne(typ)	\
+u1 typ##_conditionNENegOne(		\
+			typ val)	\
+{					\
+	u1 z;				\
+	z = (u1)(val != (typ)-1);	\
+	return z;			\
+}
+
+
+#define PCODE_COND_COMPEQZERO(typ)	\
+typ typ##_conditionCompEqZero(typ val,	\
+			      typ lhs,	\
+			      typ rhs)	\
+{					\
+	return val == 0 ? lhs : rhs;	\
+}
+
+#define PCODE_COND_COMPNEZERO(typ)	\
+typ typ##_conditionCompNeZero(typ val,	\
+			      typ lhs,	\
+			      typ rhs)	\
+{					\
+	return val != 0 ? lhs : rhs;	\
+}
+
+#define PCODE_COND_COMPEQNEGONE(typ)	\
+typ typ##_conditionCompEqNegOne(typ val,	\
+			      typ lhs,	\
+			      typ rhs)	\
+{					\
+	return val == (typ)-1 ? lhs : rhs;	\
+}
+
+#define PCODE_COND_COMPNENEGONE(typ)	\
+typ typ##_conditionCompNeNegOne(typ val,	\
+			      typ lhs,	\
+			      typ rhs)	\
+{					\
+	return val != (typ)-1 ? lhs : rhs;	\
+}
+
+#define PCODE_COND_COMPIMMEQZERO(typ)	\
+typ typ##_conditionCompImmEqZero(typ val,	\
+				 typ lhs)	\
+{					\
+	return val == 0 ? lhs : 5;	\
+}
+
+#define PCODE_COND_COMPIMMNEZERO(typ)	\
+typ typ##_conditionCompImmNeZero(typ val,	\
+				 typ lhs)	\
+{					\
+	return val != 0 ? lhs : 5;	\
+}
+
+#define PCODE_COND_COMPIMMEQNEGONE(typ)	\
+typ typ##_conditionCompImmEqNegOne(typ val,	\
+				   typ lhs)	\
+{					\
+	return val == (typ)-1 ? lhs : 5;	\
+}
+
+#define PCODE_COND_COMPIMMNENEGONE(typ)	\
+typ typ##_conditionCompImmNeNegOne(typ val,	\
+				   typ lhs)	\
+{					\
+	return val != (typ)-1 ? lhs : 5;	\
+}
+
+
 
 #define PCODE_COMPARE(typ)			\
 	PCODE_BIOP_CMP(typ)			\
@@ -392,31 +535,46 @@ u1 typ##_conditionNEOne(			\
 	PCODE_COND_GTUNUSED(typ)		\
 	PCODE_COND_GTZero(typ)			\
 	PCODE_COND_GTOne(typ)			\
+	PCODE_COND_GTNegOne(typ)		\
 	PCODE_COND_GE(typ)			\
 	PCODE_COND_GEUNUSED(typ)		\
 	PCODE_COND_GEZero(typ)			\
 	PCODE_COND_GEOne(typ)			\
+	PCODE_COND_GENegOne(typ)	       	\
 	PCODE_COND_EQ(typ)			\
 	PCODE_COND_EQUNUSED(typ)		\
 	PCODE_COND_EQZero(typ)			\
 	PCODE_COND_EQOne(typ)			\
+	PCODE_COND_EQNegOne(typ)	       	\
 	PCODE_COND_LE(typ)			\
 	PCODE_COND_LEUNUSED(typ)		\
 	PCODE_COND_LEZero(typ)			\
 	PCODE_COND_LEOne(typ)			\
+	PCODE_COND_LENegOne(typ)	       	\
 	PCODE_COND_LT(typ)			\
 	PCODE_COND_LTUNUSED(typ)		\
 	PCODE_COND_LTZero(typ)			\
 	PCODE_COND_LTOne(typ)			\
+	PCODE_COND_LTNegOne(typ)	       	\
 	PCODE_COND_NE(typ)			\
 	PCODE_COND_NEUNUSED(typ)		\
 	PCODE_COND_NEZero(typ)			\
 	PCODE_COND_NEOne(typ)			\
+	PCODE_COND_NENegOne(typ)	       	\
 	PCODE_BIOP_MAX(typ)			\
 	PCODE_BIOP_MIN(typ)			\
 	PCODE_BIOP_COND(typ)			\
 	PCODE_BIOP_CONDZERO(typ)		\
-	PCODE_BIOP_CONDONE(typ)
+	PCODE_BIOP_CONDONE(typ)			\
+	PCODE_BIOP_CONDNEGONE(typ)		\
+	PCODE_COND_COMPEQZERO(typ)		\
+	PCODE_COND_COMPNEZERO(typ)		\
+	PCODE_COND_COMPEQNEGONE(typ)		\
+	PCODE_COND_COMPNENEGONE(typ)		\
+	PCODE_COND_COMPIMMEQZERO(typ)		\
+	PCODE_COND_COMPIMMNEZERO(typ)		\
+	PCODE_COND_COMPIMMEQNEGONE(typ)		\
+	PCODE_COND_COMPIMMNENEGONE(typ)		\
 
 
 PCODE_COMPARE(u1)

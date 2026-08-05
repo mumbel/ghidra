@@ -26,6 +26,18 @@
   typ0 pcode_##typ##_to_##typ0##_convert_NEZero(UNUSED typ val, typ a) {       		\
     return ((typ0)a) != 0;	       					\
   }									\
+  typ0 pcode_##typ##_to_##typ0##_convert_EQNegOne(UNUSED typ val, typ a) {       		\
+    return ((typ0)a) == (typ0)(typ)-1;					\
+  }									\
+  typ0 pcode_##typ##_to_##typ0##_convert_NENegOne(UNUSED typ val, typ a) {       		\
+    return ((typ0)a) != (typ0)(typ)-1;					\
+  }									\
+  typ0 pcode_##typ##_to_##typ0##_convert_EQNegOne0(UNUSED typ val, typ a) {       		\
+    return ((typ0)a) == (typ0)-1;						\
+  }									\
+  typ0 pcode_##typ##_to_##typ0##_convert_NENegOne0(UNUSED typ val, typ a) {       		\
+    return ((typ0)a) != (typ0)-1;	       					\
+  }									\
   typ0 pcode_##typ##_to_##typ0##_convert_EQ(UNUSED typ val, typ a) {       		\
     typ0 z = (typ0)a;							\
     return ((typ)z) == a;						\
